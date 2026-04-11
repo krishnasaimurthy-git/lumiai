@@ -8,289 +8,243 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LUMIAI">
 <meta name="mobile-web-app-capable" content="yes">
-<title>LUMIAI — Essay Scanner</title>
+<title>LUMIAI</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow-x:hidden;font-family:'Segoe UI',Arial,sans-serif;touch-action:manipulation}
 :root{
-  --slate:#2D3561;
-  --slate2:#3D4A7A;
-  --coral:#CC785C;
-  --coral2:#B8634A;
-  --coral-light:#E8A088;
-  --coral-pale:#FAEEE9;
-  --white:#fff;
-  --green:#1D9E75;
-  --red:#D94F4F;
-  --text:#1A2342;
-  --muted:#6B7BA0;
-  --surface:#F7F5F2;
-  --border:#DDE4F0;
+  --slate:#2D3561;--slate2:#3D4A7A;--slate3:#1E2245;
+  --coral:#CC785C;--coral2:#B8634A;--coral-light:#E8A088;--coral-pale:#FAEEE9;
+  --white:#fff;--green:#1D9E75;--green2:#0F6E56;--red:#D94F4F;
+  --text:#1A2342;--muted:#6B7BA0;--surface:#F7F5F2;--border:#DDE4F0;
+  --amber:#D4900A;--amber-bg:#FEF3DC;
 }
-body{background:var(--slate);min-height:100vh}
-
-/* ── Shell & bg ── */
-.shell{min-height:100vh;background:linear-gradient(160deg,#1E2245 0%,#2D3561 45%,#3D4A7A 100%);position:relative;overflow-x:hidden}
+body{background:var(--slate3);min-height:100vh}
+.shell{min-height:100vh;background:linear-gradient(160deg,#1E2245 0%,#2D3561 48%,#3D4A7A 100%);position:relative;overflow-x:hidden}
 .bg-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bgl{position:absolute;font-weight:900;user-select:none;line-height:1}
-
-/* ── App ── */
 .app{position:relative;z-index:1;max-width:430px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── Header with LUMIAI logo ── */
-.top-bar{
-  padding:14px 18px 12px;
-  display:flex;align-items:center;justify-content:center;
-  border-bottom:1px solid rgba(255,255,255,0.1);
-  background:rgba(0,0,0,0.22);
-  flex-shrink:0
-}
-.lumiai-logo{display:flex;align-items:center;gap:12px}
-.logo-icon{width:44px;height:44px;flex-shrink:0}
-.logo-words{}
-.logo-name{
-  font-size:22px;font-weight:900;color:#fff;
-  letter-spacing:3px;line-height:1;
-  display:flex;align-items:baseline;gap:0
-}
-.logo-name .lum{color:#fff}
-.logo-name .i-coral{color:var(--coral-light)}
-.logo-name .ai{color:#fff}
-.logo-sub{
-  font-size:9px;color:rgba(255,255,255,0.42);
-  letter-spacing:.2em;text-transform:uppercase;
-  margin-top:2px
-}
+/* ── Header ── */
+.top-bar{padding:13px 16px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.22);flex-shrink:0}
+.lumiai-logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;flex-shrink:0}
+.logo-name{font-size:22px;font-weight:900;color:#fff;letter-spacing:4px;line-height:1}
+.logo-name .ic{color:var(--coral-light)}
+.owner-trigger{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;transition:background .15s;flex-shrink:0}
+.owner-trigger:active{background:rgba(255,255,255,0.15)}
 
 /* ── Progress ── */
-.prog-strip{padding:10px 18px 9px;background:rgba(0,0,0,0.15);flex-shrink:0}
+.prog-strip{padding:10px 18px 8px;background:rgba(0,0,0,0.15);flex-shrink:0}
 .prog-steps{display:flex;align-items:center;margin-bottom:5px}
 .ps{display:flex;align-items:center;flex:1}
-.ps-dot{
-  width:27px;height:27px;border-radius:50%;
-  background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.2);
-  display:flex;align-items:center;justify-content:center;
-  font-size:11px;font-weight:800;color:rgba(255,255,255,0.45);
-  transition:all .2s;flex-shrink:0
-}
+.ps-dot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(255,255,255,0.4);transition:all .2s;flex-shrink:0}
 .ps-dot.active{background:var(--coral);border-color:var(--coral);color:#fff}
 .ps-dot.done{background:var(--green);border-color:var(--green);color:#fff}
-.ps-line{flex:1;height:2px;background:rgba(255,255,255,0.12);margin:0 3px;transition:background .2s}
+.ps-line{flex:1;height:2px;background:rgba(255,255,255,0.1);margin:0 3px;transition:background .2s}
 .ps-line.done{background:var(--green)}
-.prog-lbl{font-size:10px;color:rgba(255,255,255,0.55);text-align:center}
+.prog-lbl{font-size:10px;color:rgba(255,255,255,0.5);text-align:center}
 
-/* ── Screens ── */
 .screens{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:2rem}
 .screen{display:none}.screen.active{display:block}
 
 /* ── Card ── */
-.card{margin:13px 13px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,0.22)}
-.card-hdr{padding:15px 20px 12px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border)}
-.card-step{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-.card-title{font-size:20px;font-weight:800;color:var(--slate)}
+.card{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,0.22)}
+.card-hdr{padding:13px 18px 10px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border)}
+.card-step{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.card-title{font-size:19px;font-weight:800;color:var(--slate)}
 .card-sub{font-size:12px;color:var(--muted);margin-top:2px}
-.card-body{padding:16px 16px 18px}
+.card-body{padding:14px 14px 16px}
 
 /* ── Forms ── */
-.fg{margin-bottom:12px}
-label.fl{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.fg{margin-bottom:11px}
+label.fl{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
 .req{color:var(--red)}
-input,select{
-  width:100%;height:44px;padding:0 13px;
-  border:1.5px solid var(--border);border-radius:9px;
-  background:#FAFBFF;color:var(--text);font-size:15px;outline:none;
-  -webkit-appearance:none;appearance:none;
-  transition:border-color .15s,box-shadow .15s
-}
+input,select{width:100%;height:44px;padding:0 12px;border:1.5px solid var(--border);border-radius:9px;background:#FAFBFF;color:var(--text);font-size:15px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s,box-shadow .15s}
 input:focus,select:focus{border-color:var(--coral);background:#fff;box-shadow:0 0 0 3px rgba(204,120,92,0.15)}
 input.err,select.err{border-color:var(--red);background:#FFF5F5}
-.em{font-size:11px;color:var(--red);margin-top:3px;display:none}
-.em.show{display:block}
+.em{font-size:11px;color:var(--red);margin-top:3px;display:none}.em.show{display:block}
 
 /* ── Buttons ── */
-.btn-row{display:flex;gap:9px;margin-top:16px}
-button{
-  height:48px;border-radius:12px;font-size:15px;font-weight:700;
-  cursor:pointer;border:none;flex:1;
-  touch-action:manipulation;-webkit-user-select:none;user-select:none;
-  transition:transform 0.06s,background 0.08s
-}
+.btn-row{display:flex;gap:9px;margin-top:14px}
+button{height:48px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;flex:1;touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:transform 0.06s,background 0.08s}
 button:active{transform:scale(0.93)}
 .bn{background:var(--slate);color:#fff}.bn:active{background:var(--slate2)}
 .bb{background:#ECEEF8;color:var(--slate)}.bb:active{background:#D8DCF0}
-.bd{background:var(--green);color:#fff}.bd:active{background:#178862}
+.bd{background:var(--green);color:#fff}.bd:active{background:var(--green2)}
 .bc{background:var(--coral);color:#fff}.bc:active{background:var(--coral2)}
 
-.divider{height:1px;background:var(--border);margin:11px 0}
+.divider{height:1px;background:var(--border);margin:10px 0}
 
 /* ── Role chips ── */
-.role-chips{display:flex;gap:8px;margin-bottom:11px}
-.chip{
-  flex:1;padding:12px 6px;border-radius:12px;
-  border:2px solid var(--border);background:#FAFBFF;
-  cursor:pointer;text-align:center;
-  font-size:12px;font-weight:700;color:var(--text);
-  touch-action:manipulation;
-  transition:transform 0.06s,border-color .1s,background .1s
-}
+.role-chips{display:flex;gap:7px;margin-bottom:10px}
+.chip{flex:1;padding:11px 5px;border-radius:12px;border:2px solid var(--border);background:#FAFBFF;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--text);touch-action:manipulation;transition:transform 0.06s,border-color .1s,background .1s}
 .chip:active{transform:scale(0.92)}
 .chip.sel{border-color:var(--coral);background:var(--coral);color:#fff}
-.chip-icon{font-size:22px;display:block;margin-bottom:4px}
+.chip-icon{font-size:20px;display:block;margin-bottom:3px}
 
-/* ── SEVA footer — Screen 1 ── */
-.seva-footer{
-  text-align:center;padding:20px 0 6px;
-  display:flex;flex-direction:column;align-items:center;gap:6px
+/* ── Topic banner (on S2) ── */
+.topic-session-banner{
+  background:linear-gradient(135deg,#2D3561,#3D4A7A);
+  border-radius:12px;padding:13px 15px;margin-bottom:14px;
+  display:flex;align-items:flex-start;gap:12px
 }
-.seva-badge{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:20px;padding:6px 16px
-}
-.seva-dot{width:7px;height:7px;border-radius:50%;background:var(--coral)}
-.seva-word{
-  font-size:13px;font-weight:900;color:#fff;
-  letter-spacing:3px
-}
+.topic-icon-wrap{width:36px;height:36px;border-radius:50%;background:var(--coral);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.topic-session-label{font-size:10px;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
+.topic-session-name{font-size:14px;font-weight:800;color:#fff;line-height:1.35}
+.topic-not-set{font-size:12px;color:rgba(255,255,255,0.5);font-style:italic}
+
+/* ── SAI·SEVA footer ── */
+.seva-footer{text-align:center;padding:18px 0 4px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.seva-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.11);border-radius:20px;padding:6px 16px}
+.seva-dot{width:6px;height:6px;border-radius:50%;background:var(--coral)}
+.seva-word{font-size:13px;font-weight:900;color:#fff;letter-spacing:3px}
 .seva-word span{color:var(--coral-light)}
-.seva-full{
-  font-size:9px;color:rgba(255,255,255,0.38);
-  letter-spacing:.18em;text-transform:uppercase
-}
+.seva-full{font-size:9px;color:rgba(255,255,255,0.32);letter-spacing:.18em;text-transform:uppercase}
 
 /* ── Doc type grid ── */
-.dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:4px}
-.dt-chip{
-  padding:11px 7px;border-radius:11px;border:2px solid var(--border);background:#FAFBFF;
-  cursor:pointer;text-align:center;font-size:12px;font-weight:700;
-  color:var(--text);line-height:1.4;touch-action:manipulation;
-  transition:transform 0.06s,border-color .1s,background .1s
-}
+.dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
+.dt-chip{padding:10px 6px;border-radius:11px;border:2px solid var(--border);background:#FAFBFF;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:var(--text);line-height:1.4;touch-action:manipulation;transition:transform 0.06s,border-color .1s,background .1s}
 .dt-chip:active{transform:scale(0.92)}
 .dt-chip.sel{border-color:var(--coral);background:var(--coral);color:#fff}
+.dt-chip.g{border-color:#C5B8F0;background:#F2F0FE}
+.dt-chip.g.sel{border-color:var(--coral);background:var(--coral);color:#fff}
+.grade-tag{font-size:9px;color:#6B52C8;font-weight:700;display:block;margin-top:2px}
+.dt-chip.g.sel .grade-tag{color:rgba(255,255,255,0.8)}
 
 /* ── Camera ── */
-.cam-wrap{
-  background:#000;border-radius:14px;overflow:hidden;
-  position:relative;width:100%;aspect-ratio:3/4;
-  display:flex;align-items:center;justify-content:center;margin-bottom:12px
-}
+.cam-wrap{background:#000;border-radius:14px;overflow:hidden;position:relative;width:100%;aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 #vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.crop-guide{
-  position:absolute;top:8%;left:6%;right:6%;bottom:16%;
-  border:2px solid rgba(255,255,255,0.55);border-radius:8px;pointer-events:none;z-index:2
-}
-.cg-c{position:absolute;width:24px;height:24px;border-color:var(--coral-light);border-style:solid}
-.cc-tl{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:3px 0 0 0}
-.cc-tr{top:-2px;right:-2px;border-width:3px 3px 0 0;border-radius:0 3px 0 0}
-.cc-bl{bottom:-2px;left:-2px;border-width:0 0 3px 3px;border-radius:0 0 0 3px}
-.cc-br{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 3px 0}
-.cam-hint-ov{
-  position:absolute;bottom:10px;left:0;right:0;z-index:2;
-  text-align:center;font-size:12px;color:rgba(255,255,255,.85);
-  pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,0.7)
-}
-.cam-denied{
-  color:#fff;font-size:13px;text-align:center;
-  padding:30px 18px;line-height:1.8;
-  display:none;flex-direction:column;align-items:center;gap:10px;z-index:3
-}
+#detCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;display:block}
+#snapCanvas{display:none;position:absolute}
+.cam-status{position:absolute;top:10px;left:0;right:0;text-align:center;z-index:4;pointer-events:none}
+.cam-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,0.58);border-radius:20px;padding:4px 12px;font-size:12px;color:#fff;font-weight:600}
+.sdot{width:8px;height:8px;border-radius:50%;background:#666;transition:background .3s;flex-shrink:0}
+.sdot.look{background:rgba(232,160,32,0.9);animation:pulse 1s infinite}
+.sdot.found{background:var(--green)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.cam-hint{position:absolute;bottom:10px;left:0;right:0;z-index:4;text-align:center;font-size:12px;color:rgba(255,255,255,.88);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.8)}
+.cam-denied{color:#fff;font-size:13px;text-align:center;padding:28px 16px;line-height:1.8;display:none;flex-direction:column;align-items:center;gap:10px;z-index:5}
 
-/* ── LUMIAI pill shutter button ── */
-.shutter-zone{display:flex;justify-content:center;align-items:center;gap:20px;padding:6px 0 10px}
-.pg-ct{width:54px;text-align:center;font-size:11px;color:var(--muted);font-weight:700;line-height:1.4}
-.cam-btn{
-  display:flex;align-items:center;gap:10px;
-  padding:0 22px;height:56px;border-radius:28px;
-  background:var(--slate);border:none;cursor:pointer;
-  box-shadow:0 0 0 4px rgba(204,120,92,0.3),0 4px 18px rgba(0,0,0,0.28);
-  touch-action:manipulation;-webkit-user-select:none;user-select:none;
-  transition:transform 0.07s,box-shadow 0.07s
-}
-.cam-btn:active{transform:scale(0.88);box-shadow:0 0 0 2px rgba(204,120,92,0.5)}
-.cam-btn-icon{
-  width:32px;height:32px;background:var(--coral);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0
-}
-.cam-btn-label{font-size:13px;font-weight:900;color:#fff;letter-spacing:2px}
+/* ── Shutter ── */
+.shutter-zone{display:flex;justify-content:center;align-items:center;gap:18px;padding:5px 0 8px}
+.pg-ct{width:50px;text-align:center;font-size:11px;color:var(--muted);font-weight:700;line-height:1.4}
+.cam-btn{display:flex;align-items:center;gap:9px;padding:0 20px;height:54px;border-radius:27px;background:var(--slate);border:none;cursor:pointer;box-shadow:0 0 0 4px rgba(204,120,92,0.28),0 4px 16px rgba(0,0,0,.28);touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:transform .07s,box-shadow .07s}
+.cam-btn:active{transform:scale(.88);box-shadow:0 0 0 2px rgba(204,120,92,.5)}
+.cam-btn-icon{width:30px;height:30px;background:var(--coral);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cam-btn-lbl{font-size:13px;font-weight:900;color:#fff;letter-spacing:2px}
 
 /* ── Preview ── */
-.prev-wrap{
-  background:#111;border-radius:14px;overflow:hidden;
-  position:relative;aspect-ratio:3/4;margin-bottom:10px;
-  display:flex;align-items:center;justify-content:center
-}
+.prev-wrap{background:#111;border-radius:14px;overflow:hidden;position:relative;aspect-ratio:3/4;margin-bottom:10px;display:flex;align-items:center;justify-content:center}
 .prev-wrap img{width:100%;height:100%;object-fit:contain}
-.ocr-pill{
-  position:absolute;top:10px;left:10px;
-  background:rgba(29,158,117,.92);color:#fff;
-  font-size:13px;font-weight:700;padding:5px 12px;border-radius:20px;z-index:2
-}
+.ocr-pill{position:absolute;top:10px;left:10px;background:rgba(29,158,117,.92);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;z-index:2}
 .submit-fab{position:absolute;top:10px;right:10px;z-index:2}
-.submit-fab button{
-  height:38px;width:auto;padding:0 14px;font-size:13px;flex:none;
-  background:var(--coral);color:#fff;border-radius:9px;font-weight:800
-}
+.submit-fab button{height:36px;width:auto;padding:0 13px;font-size:13px;flex:none;background:var(--coral);color:#fff;border-radius:9px;font-weight:800}
 .scan-actions{display:flex;gap:8px;margin-bottom:10px}
-.sa-btn{
-  flex:1;height:46px;border-radius:11px;font-size:14px;font-weight:700;
-  cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;
-  touch-action:manipulation;transition:transform 0.06s
-}
-.sa-btn:active{transform:scale(0.92)}
+.sa-btn{flex:1;height:44px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:5px;touch-action:manipulation;transition:transform .06s}
+.sa-btn:active{transform:scale(.92)}
 .sa-rescan{background:#ECEEF8;color:var(--slate)}
 .sa-add{background:var(--coral-pale);color:var(--coral2)}
-
-.page-strip{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
-.pg-thumb{
-  width:52px;height:68px;border-radius:7px;overflow:hidden;
-  border:2px solid var(--border);background:#eee;position:relative;flex-shrink:0
-}
+.pg-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.pg-thumb{width:50px;height:65px;border-radius:7px;overflow:hidden;border:2px solid var(--border);background:#eee;position:relative;flex-shrink:0}
 .pg-thumb img{width:100%;height:100%;object-fit:cover}
-.pg-num{
-  position:absolute;bottom:0;left:0;right:0;
-  background:rgba(45,53,97,.88);color:#fff;
-  font-size:10px;font-weight:700;text-align:center;padding:2px 0
-}
-.pg-tick{
-  position:absolute;top:2px;right:2px;
-  width:16px;height:16px;background:var(--green);
-  border-radius:50%;display:flex;align-items:center;justify-content:center
-}
+.pg-num{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.88);color:#fff;font-size:10px;font-weight:700;text-align:center;padding:2px 0}
+.pg-tick{position:absolute;top:2px;right:2px;width:15px;height:15px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center}
 
-/* ── S5 ── */
+/* ══ GRADING SCREEN ══ */
+.grade-panel{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.22)}
+.grade-hdr{padding:16px 18px 12px;background:linear-gradient(135deg,var(--slate),var(--slate2));text-align:center}
+.grade-hdr-title{font-size:16px;font-weight:800;color:#fff;letter-spacing:.5px}
+.grade-hdr-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:2px}
+.grade-body{padding:14px}
+
+/* Topic shown prominently on grading screen */
+.grade-topic-box{
+  background:linear-gradient(135deg,#2D3561,#3D4A7A);
+  border-radius:14px;padding:14px 16px;margin-bottom:14px;
+  display:flex;gap:12px;align-items:flex-start
+}
+.grade-topic-icon{width:38px;height:38px;border-radius:10px;background:var(--coral);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.grade-topic-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.grade-topic-name{font-size:15px;font-weight:800;color:#fff;line-height:1.3}
+.grade-edition{font-size:11px;color:var(--coral-light);margin-top:4px;font-weight:600}
+
+.ai-loading{display:flex;flex-direction:column;align-items:center;padding:24px 0;gap:12px}
+.ai-spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--coral);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ai-loading-text{font-size:13px;color:var(--muted);font-weight:600;text-align:center}
+
+.param-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.param-row{background:var(--surface);border-radius:12px;padding:12px 13px}
+.param-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.param-letter{width:27px;height:27px;border-radius:50%;background:var(--slate);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.param-name{font-size:13px;font-weight:700;color:var(--text);flex:1;margin:0 9px}
+.param-score{font-size:18px;font-weight:900;color:var(--slate)}
+.param-score span{font-size:11px;font-weight:600;color:var(--muted)}
+.param-bar{height:6px;background:var(--border);border-radius:6px;overflow:hidden}
+.param-fill{height:100%;border-radius:6px;transition:width .8s ease}
+.param-remark{font-size:11px;color:var(--muted);margin-top:5px;font-style:italic;line-height:1.4}
+
+.total-box{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px}
+.total-label{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.total-num{font-size:52px;font-weight:900;color:#fff;line-height:1}
+.total-denom{font-size:20px;font-weight:600;color:rgba(255,255,255,.45)}
+.total-grade-pill{font-size:13px;font-weight:700;margin-top:7px;padding:4px 16px;border-radius:20px;display:inline-block}
+.gA{background:rgba(29,158,117,.2);color:#1D9E75}
+.gB{background:rgba(212,144,10,.2);color:var(--amber)}
+.gC{background:rgba(217,79,79,.2);color:var(--red)}
+
+.ai-note{font-size:11px;color:var(--muted);background:var(--surface);border-radius:8px;padding:8px 12px;margin-bottom:12px;line-height:1.5;text-align:center}
+
+/* ══ OWNER OVERLAY ══ */
+.ov{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.72);align-items:flex-end;justify-content:center}
+.ov.show{display:flex}
+.ov-sheet{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:430px;animation:slideUp .22s ease;max-height:90vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.ov-handle{width:38px;height:4px;background:var(--border);border-radius:4px;margin:0 auto 16px}
+.ov-title{font-size:17px;font-weight:800;color:var(--slate);text-align:center;margin-bottom:3px}
+.ov-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:16px}
+.pin-row{display:flex;gap:10px;margin-bottom:14px}
+.pin-row input{height:48px;font-size:20px;text-align:center;letter-spacing:4px;font-weight:700}
+
+/* Owner dashboard inside panel */
+.dash-section{margin-bottom:16px}
+.dash-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dash-title:before{content:'';display:inline-block;width:3px;height:14px;background:var(--coral);border-radius:2px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat-card{background:var(--surface);border-radius:10px;padding:10px 8px;text-align:center}
+.stat-num{font-size:22px;font-weight:900;color:var(--slate)}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3}
+.score-list{display:flex;flex-direction:column;gap:6px}
+.score-row{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px}
+.score-type{flex:1;font-size:12px;font-weight:700;color:var(--text)}
+.score-val{font-size:13px;font-weight:800;color:var(--slate)}
+.score-bar-wrap{width:60px;height:5px;background:var(--border);border-radius:5px;overflow:hidden}
+.score-bar-fill{height:100%;background:var(--coral);border-radius:5px}
+.topic-current-box{background:var(--coral-pale);border-radius:10px;padding:10px 13px;margin-bottom:12px;border-left:3px solid var(--coral)}
+.tc-label{font-size:10px;font-weight:700;color:var(--coral2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.tc-name{font-size:14px;font-weight:800;color:var(--slate)}
+.export-btn{width:100%;height:42px;border-radius:10px;background:var(--slate);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.export-btn:active{background:var(--slate2)}
+.ov-actions{display:flex;gap:9px;margin-top:6px}
+
+/* ── Share ── */
 .success-wrap{text-align:center;padding:8px 0 10px}
-.tick-big{width:54px;height:54px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.s5ok{font-size:16px;font-weight:800;color:#065F46;margin-bottom:3px}
+.tick-big{width:52px;height:52px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.s5ok{font-size:15px;font-weight:800;color:#065F46;margin-bottom:3px}
 .s5sub{font-size:13px;color:var(--green)}
-.pdf-note{
-  display:flex;align-items:center;gap:8px;
-  background:var(--coral-pale);border-radius:9px;
-  padding:9px 12px;font-size:12px;color:var(--coral2);font-weight:600;margin-bottom:12px
-}
-.share-grid{display:flex;flex-direction:column;gap:6px}
-.share-row{
-  display:flex;align-items:center;gap:10px;padding:10px 12px;
-  border-radius:10px;border:1.5px solid var(--border);background:#FAFBFF;
-  cursor:pointer;touch-action:manipulation;transition:border-color .12s,background .12s
-}
+.pdf-note{display:flex;align-items:center;gap:8px;background:var(--coral-pale);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--coral2);font-weight:600;margin-bottom:12px}
+.share-grid{display:flex;flex-direction:column;gap:5px}
+.share-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#FAFBFF;cursor:pointer;touch-action:manipulation;transition:border-color .12s}
 .share-row:active{border-color:var(--coral);background:var(--coral-pale)}
 .share-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--coral);cursor:pointer;flex-shrink:0}
 .share-lbl{flex:1;font-size:13px;font-weight:600;color:var(--text)}
 .sh-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
-.sh-ready{background:#D1FAE5;color:#065F46}
-.sh-none{background:#F1EFE8;color:#5F5E5A}
+.sh-ready{background:#D1FAE5;color:#065F46}.sh-none{background:#F1EFE8;color:#5F5E5A}
 .summ-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
 .summ-row:last-child{border-bottom:none}
-.sk{font-size:12px;color:var(--muted)}
-.sv{font-size:13px;font-weight:700;color:var(--text);text-align:right;max-width:60%;word-break:break-word}
-.toast{
-  display:none;background:var(--slate);color:#fff;
-  border-radius:10px;padding:11px 16px;margin-top:10px;
-  font-size:13px;font-weight:600;text-align:center;
-  border-left:4px solid var(--coral)
-}
+.sk{font-size:12px;color:var(--muted)}.sv{font-size:13px;font-weight:700;color:var(--text);text-align:right;max-width:60%;word-break:break-word}
+.toast{display:none;background:var(--slate);color:#fff;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;font-weight:600;text-align:center;border-left:4px solid var(--coral)}
 .toast.show{display:block}
 </style>
 </head>
@@ -299,269 +253,355 @@ button:active{transform:scale(0.93)}
 <div class="bg-layer" id="bgLayer"></div>
 <div class="app">
 
-  <!-- ══ HEADER ══ -->
-  <div class="top-bar">
-    <div class="lumiai-logo">
-      <!-- LUMIAI icon mark -->
-      <svg class="logo-icon" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="22" cy="22" r="20" stroke="#CC785C" stroke-width="1.5" opacity="0.4"/>
-        <circle cx="22" cy="22" r="13" fill="#CC785C" opacity="0.15"/>
-        <line x1="22" y1="22" x2="35" y2="7" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
-        <line x1="22" y1="22" x2="6" y2="8" stroke="#E8A088" stroke-width="1.8" stroke-linecap="round"/>
-        <line x1="22" y1="22" x2="36" y2="31" stroke="#E8A088" stroke-width="1.4" stroke-linecap="round"/>
-        <circle cx="22" cy="22" r="4.5" fill="#CC785C"/>
-        <circle cx="35" cy="7" r="2.8" fill="#CC785C"/>
-        <circle cx="6" cy="8" r="2" fill="#E8A088" opacity="0.85"/>
-        <circle cx="36" cy="31" r="1.8" fill="#E8A088" opacity="0.7"/>
-      </svg>
-      <div class="logo-words">
-        <div class="logo-name">
-          <span class="lum">LUM</span><span class="i-coral">I</span><span class="ai">AI</span>
-        </div>
-        <div class="logo-sub">School Event &amp; Visit Analytics</div>
-      </div>
-    </div>
+<!-- HEADER: LUMIAI only, no tagline -->
+<div class="top-bar">
+  <div class="lumiai-logo">
+    <svg class="logo-icon" viewBox="0 0 38 38" fill="none">
+      <circle cx="19" cy="19" r="17" stroke="#CC785C" stroke-width="1.5" opacity="0.4"/>
+      <circle cx="19" cy="19" r="11" fill="#CC785C" opacity="0.15"/>
+      <line x1="19" y1="19" x2="31" y2="5" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="19" y1="19" x2="4" y2="6" stroke="#E8A088" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="19" y1="19" x2="32" y2="28" stroke="#E8A088" stroke-width="1.4" stroke-linecap="round"/>
+      <circle cx="19" cy="19" r="4" fill="#CC785C"/>
+      <circle cx="31" cy="5" r="2.5" fill="#CC785C"/>
+      <circle cx="4" cy="6" r="1.8" fill="#E8A088" opacity="0.85"/>
+      <circle cx="32" cy="28" r="1.6" fill="#E8A088" opacity="0.7"/>
+    </svg>
+    <div class="logo-name">LUM<span class="ic">I</span>AI</div>
   </div>
-
-  <!-- ══ PROGRESS ══ -->
-  <div class="prog-strip">
-    <div class="prog-steps" id="progSteps"></div>
-    <div class="prog-lbl" id="progLbl">Step 1 of 5</div>
-  </div>
-
-  <div class="screens">
-
-  <!-- ════ S1: IDENTIFY ════ -->
-  <div class="screen active" id="s1">
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-step">Step 1 of 5</div>
-        <div class="card-title">Identify Yourself</div>
-        <div class="card-sub">Select your role to continue</div>
-      </div>
-      <div class="card-body">
-        <div class="role-chips">
-          <div class="chip" id="chip-tcs" onclick="pickRole('tcs')">
-            <span class="chip-icon">🏢</span>TCS
-          </div>
-          <div class="chip" id="chip-agency" onclick="pickRole('agency')">
-            <span class="chip-icon">🤝</span>Agency
-          </div>
-          <div class="chip" id="chip-school" onclick="pickRole('school')">
-            <span class="chip-icon">🏫</span>School
-          </div>
-        </div>
-        <div class="em show" id="role-e" style="margin-bottom:8px">Please select your role.</div>
-
-        <div id="tcs-f" style="display:none">
-          <div class="divider"></div>
-          <div class="fg"><label class="fl">Employee ID <span class="req">*</span></label><input id="tcs-id" type="text" inputmode="numeric" placeholder="e.g. 12345678" autocomplete="off"><div class="em" id="tid-e">Required.</div></div>
-          <div class="fg"><label class="fl">Full Name <span class="req">*</span></label><input id="tcs-nm" type="text" placeholder="Your full name" autocomplete="name"><div class="em" id="tnm-e">Required.</div></div>
-          <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="tcs-lc" type="text" placeholder="City / Office" autocomplete="off"><div class="em" id="tlc-e">Required.</div></div>
-        </div>
-
-        <div id="ag-f" style="display:none">
-          <div class="divider"></div>
-          <div class="fg"><label class="fl">Agency Name <span class="req">*</span></label><input id="ag-a" type="text" placeholder="Agency name" autocomplete="organization"><div class="em" id="aa-e">Required.</div></div>
-          <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="ag-n" type="text" placeholder="Your full name" autocomplete="name"><div class="em" id="an-e">Required.</div></div>
-          <div class="fg"><label class="fl">Mobile Number <span class="req">*</span></label><input id="ag-m" type="tel" inputmode="tel" placeholder="10-digit mobile" autocomplete="tel"><div class="em" id="am-e">Required.</div></div>
-        </div>
-
-        <div id="sc-f" style="display:none">
-          <div class="divider"></div>
-          <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="sc-s" type="text" placeholder="School name" autocomplete="off"><div class="em" id="ss-e">Required.</div></div>
-          <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="sc-n" type="text" placeholder="Your full name" autocomplete="name"><div class="em" id="sn-e">Required.</div></div>
-          <div class="fg"><label class="fl">Designation <span class="req">*</span></label><input id="sc-d" type="text" placeholder="e.g. Headmaster, Teacher" autocomplete="off"><div class="em" id="sd-e">Required.</div></div>
-        </div>
-
-        <div class="btn-row">
-          <button class="bn" onclick="s1next()">Next →</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- SAI · SEVA footer -->
-    <div class="seva-footer">
-      <div class="seva-badge">
-        <div class="seva-dot"></div>
-        <div class="seva-word">S<span>AI</span> · SEVA</div>
-        <div class="seva-dot"></div>
-      </div>
-      <div class="seva-full">School Event &amp; Visit Analytics</div>
-    </div>
-  </div>
-
-  <!-- ════ S2: SCHOOL INFO ════ -->
-  <div class="screen" id="s2">
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-step">Step 2 of 5</div>
-        <div class="card-title">School Information</div>
-        <div class="card-sub">Enter school details for this session</div>
-      </div>
-      <div class="card-body">
-        <div class="fg"><label class="fl">UDISE Code <span class="req">*</span></label><input id="udise" type="text" inputmode="numeric" placeholder="11-digit UDISE code" maxlength="11" autocomplete="off"><div class="em" id="ud-e">Required.</div></div>
-        <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="s-nm" type="text" placeholder="Full school name" autocomplete="off"><div class="em" id="snm-e">Required.</div></div>
-        <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="s-lc" type="text" placeholder="District / City" autocomplete="off"><div class="em" id="slc-e">Required.</div></div>
-        <div class="btn-row">
-          <button class="bb" onclick="goTo(1)">← Back</button>
-          <button class="bn" onclick="s2next()">Next →</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════ S3: CHOOSE SCAN ════ -->
-  <div class="screen" id="s3">
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-step">Step 3 of 5</div>
-        <div class="card-title">Choose the Scan</div>
-        <div class="card-sub">Tap a type — camera opens instantly</div>
-      </div>
-      <div class="card-body">
-        <div class="dt-grid" id="dt-grid"></div>
-        <div class="em" id="dt-e" style="margin-top:6px">Please select a document type.</div>
-        <div class="btn-row" style="margin-top:14px">
-          <button class="bb" onclick="goTo(2)">← Back</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════ S4: CAMERA ════ -->
-  <div class="screen" id="s4">
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-step">Step 4 of 5</div>
-        <div class="card-title" id="s4title">Let's Scan!</div>
-        <div class="card-sub" id="s4sub">Align sheet in the frame, then tap Scan</div>
-      </div>
-      <div class="card-body" style="padding:13px">
-
-        <div id="cam-view">
-          <div class="cam-wrap">
-            <video id="vid" autoplay playsinline muted></video>
-            <div class="crop-guide">
-              <div class="cg-c cc-tl"></div><div class="cg-c cc-tr"></div>
-              <div class="cg-c cc-bl"></div><div class="cg-c cc-br"></div>
-            </div>
-            <div class="cam-hint-ov">Keep essay sheet within the coral corners</div>
-            <div class="cam-denied" id="camDenied">
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
-              Camera access denied.<br>Allow camera in browser settings &amp; refresh.
-            </div>
-          </div>
-          <canvas id="snapCanvas" style="display:none"></canvas>
-
-          <div class="shutter-zone">
-            <div class="pg-ct" id="pgCt"></div>
-            <button class="cam-btn" onclick="takePicture()">
-              <div class="cam-btn-icon">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>
-                  <circle cx="12" cy="13" r="4" stroke="#fff" stroke-width="2"/>
-                </svg>
-              </div>
-              <div class="cam-btn-label">SCAN</div>
-            </button>
-            <div class="pg-ct" style="font-size:10px;color:#aaa;line-height:1.5">tap<br>to capture</div>
-          </div>
-        </div>
-
-        <div id="prev-view" style="display:none">
-          <div class="prev-wrap">
-            <img id="prevImg" src="" alt="Captured">
-            <div class="ocr-pill" id="ocrPill">OCR —%</div>
-            <div class="submit-fab"><button onclick="submitScans()">Submit ✓</button></div>
-          </div>
-          <div class="page-strip" id="pageStrip"></div>
-          <div class="scan-actions">
-            <button class="sa-btn sa-rescan" onclick="rescan()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
-              Re-Scan
-            </button>
-            <button class="sa-btn sa-add" onclick="addScan()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              Add Scan
-            </button>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="bb" onclick="backFromCam()">← Back</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ════ S5: SHARE ════ -->
-  <div class="screen" id="s5">
-    <div class="card">
-      <div class="card-hdr">
-        <div class="card-step">Step 5 of 5</div>
-        <div class="card-title">Share Scans</div>
-        <div class="card-sub">Save to device · share via WhatsApp / Email</div>
-      </div>
-      <div class="card-body">
-        <div class="success-wrap">
-          <div class="tick-big">
-            <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </div>
-          <div class="s5ok" id="s5ok">Scan saved!</div>
-          <div class="s5sub" id="s5sub"></div>
-        </div>
-        <div class="pdf-note">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--coral2)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-          PDF ≤ 3 MB · saved on this device · no cloud
-        </div>
-        <div style="background:var(--surface);border-radius:10px;padding:11px 13px;margin-bottom:12px" id="summRows"></div>
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Select scans to share</div>
-        <div class="share-grid" id="shareGrid"></div>
-        <div class="toast" id="toastMsg"></div>
-        <div class="btn-row">
-          <button class="bb" onclick="goTo(4)">← Back</button>
-          <button class="bc" id="doneBtn" onclick="finalDone()">Share &amp; Done ✓</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <!-- Triple-tap secret trigger -->
+  <div class="owner-trigger" id="ownerTrigger" onclick="ownerTap()">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
   </div>
 </div>
+
+<div class="prog-strip">
+  <div class="prog-steps" id="progSteps"></div>
+  <div class="prog-lbl" id="progLbl">Step 1 of 5</div>
 </div>
+
+<div class="screens">
+
+<!-- ════ S1: IDENTIFY ════ -->
+<div class="screen active" id="s1">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-step">Step 1 of 5</div>
+      <div class="card-title">Identify Yourself</div>
+      <div class="card-sub">Select your role to continue</div>
+    </div>
+    <div class="card-body">
+      <div class="role-chips">
+        <div class="chip" id="chip-tcs" onclick="pickRole('tcs')"><span class="chip-icon">🏢</span>TCS</div>
+        <div class="chip" id="chip-agency" onclick="pickRole('agency')"><span class="chip-icon">🤝</span>Agency</div>
+        <div class="chip" id="chip-school" onclick="pickRole('school')"><span class="chip-icon">🏫</span>School</div>
+      </div>
+      <div class="em show" id="role-e" style="margin-bottom:8px">Please select your role.</div>
+      <div id="tcs-f" style="display:none">
+        <div class="divider"></div>
+        <div class="fg"><label class="fl">Employee ID <span class="req">*</span></label><input id="tcs-id" inputmode="numeric" placeholder="e.g. 12345678" autocomplete="off"><div class="em" id="tid-e">Required.</div></div>
+        <div class="fg"><label class="fl">Full Name <span class="req">*</span></label><input id="tcs-nm" placeholder="Your full name" autocomplete="name"><div class="em" id="tnm-e">Required.</div></div>
+        <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="tcs-lc" placeholder="City / Office" autocomplete="off"><div class="em" id="tlc-e">Required.</div></div>
+      </div>
+      <div id="ag-f" style="display:none">
+        <div class="divider"></div>
+        <div class="fg"><label class="fl">Agency Name <span class="req">*</span></label><input id="ag-a" placeholder="Agency name" autocomplete="organization"><div class="em" id="aa-e">Required.</div></div>
+        <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="ag-n" placeholder="Your full name" autocomplete="name"><div class="em" id="an-e">Required.</div></div>
+        <div class="fg"><label class="fl">Mobile <span class="req">*</span></label><input id="ag-m" type="tel" inputmode="tel" placeholder="10-digit mobile" autocomplete="tel"><div class="em" id="am-e">Required.</div></div>
+      </div>
+      <div id="sc-f" style="display:none">
+        <div class="divider"></div>
+        <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="sc-s" placeholder="School name" autocomplete="off"><div class="em" id="ss-e">Required.</div></div>
+        <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="sc-n" placeholder="Your full name" autocomplete="name"><div class="em" id="sn-e">Required.</div></div>
+        <div class="fg"><label class="fl">Designation <span class="req">*</span></label><input id="sc-d" placeholder="e.g. Headmaster, Teacher" autocomplete="off"><div class="em" id="sd-e">Required.</div></div>
+      </div>
+      <div class="btn-row"><button class="bn" onclick="s1next()">Next →</button></div>
+    </div>
+  </div>
+  <div class="seva-footer">
+    <div class="seva-badge"><div class="seva-dot"></div><div class="seva-word">S<span>AI</span> · SEVA</div><div class="seva-dot"></div></div>
+    <div class="seva-full">School Event &amp; Visit Analytics</div>
+  </div>
+</div>
+
+<!-- ════ S2: SCHOOL INFO + TOPIC ════ -->
+<div class="screen" id="s2">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-step">Step 2 of 5</div>
+      <div class="card-title">School Information</div>
+      <div class="card-sub">Confirm school &amp; this edition's essay topic</div>
+    </div>
+    <div class="card-body">
+      <!-- Essay topic prominently shown here -->
+      <div class="topic-session-banner" id="topicBanner">
+        <div class="topic-icon-wrap">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div>
+          <div class="topic-session-label">Essay Topic — This Edition</div>
+          <div class="topic-session-name" id="topicBannerText">Loading...</div>
+        </div>
+      </div>
+      <div class="fg"><label class="fl">UDISE Code <span class="req">*</span></label><input id="udise" inputmode="numeric" placeholder="11-digit UDISE code" maxlength="11" autocomplete="off"><div class="em" id="ud-e">Required.</div></div>
+      <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="s-nm" placeholder="Full school name" autocomplete="off"><div class="em" id="snm-e">Required.</div></div>
+      <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="s-lc" placeholder="District / City" autocomplete="off"><div class="em" id="slc-e">Required.</div></div>
+      <div class="btn-row">
+        <button class="bb" onclick="goTo(1)">← Back</button>
+        <button class="bn" onclick="s2next()">Next →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S3: CHOOSE SCAN ════ -->
+<div class="screen" id="s3">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-step">Step 3 of 5</div>
+      <div class="card-title">Choose the Scan</div>
+      <div class="card-sub">★ types are AI graded out of 50</div>
+    </div>
+    <div class="card-body">
+      <div class="dt-grid" id="dt-grid"></div>
+      <div class="em" id="dt-e" style="margin-top:6px">Please select a document type.</div>
+      <div class="btn-row" style="margin-top:14px"><button class="bb" onclick="goTo(2)">← Back</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S4: CAMERA ════ -->
+<div class="screen" id="s4">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-step">Step 4 of 5</div>
+      <div class="card-title" id="s4title">Let's Scan!</div>
+      <div class="card-sub" id="s4sub">Hold camera over the essay sheet</div>
+    </div>
+    <div class="card-body" style="padding:12px">
+      <div id="cam-view">
+        <div class="cam-wrap" id="camWrap">
+          <video id="vid" autoplay playsinline muted></video>
+          <canvas id="detCanvas"></canvas>
+          <canvas id="snapCanvas"></canvas>
+          <div class="cam-status"><div class="cam-pill"><div class="sdot look" id="sdot"></div><span id="stxt">Looking for sheet...</span></div></div>
+          <div class="cam-hint" id="camHint">Move camera closer to the essay sheet</div>
+          <div class="cam-denied" id="camDenied">
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
+            Camera access denied.<br>Allow camera in browser settings &amp; refresh.
+          </div>
+        </div>
+        <div class="shutter-zone">
+          <div class="pg-ct" id="pgCt"></div>
+          <button class="cam-btn" onclick="takePicture()">
+            <div class="cam-btn-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="13" r="4" stroke="#fff" stroke-width="2"/></svg>
+            </div>
+            <div class="cam-btn-lbl">SCAN</div>
+          </button>
+          <div class="pg-ct" style="font-size:10px;color:#aaa;line-height:1.5">tap to<br>capture</div>
+        </div>
+      </div>
+      <div id="prev-view" style="display:none">
+        <div class="prev-wrap">
+          <img id="prevImg" src="" alt="Captured">
+          <div class="ocr-pill" id="ocrPill">OCR —%</div>
+          <div class="submit-fab"><button id="fabBtn" onclick="fabAction()">Submit ✓</button></div>
+        </div>
+        <div class="pg-strip" id="pgStrip"></div>
+        <div class="scan-actions">
+          <button class="sa-btn sa-rescan" onclick="rescan()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>Re-Scan</button>
+          <button class="sa-btn sa-add" onclick="addScan()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Scan</button>
+        </div>
+      </div>
+      <div class="btn-row"><button class="bb" onclick="backFromCam()">← Back</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S4b: GRADING ════ -->
+<div class="screen" id="s4b">
+  <div class="grade-panel">
+    <div class="grade-hdr">
+      <div class="grade-hdr-title" id="gradeTitle">★ AI Grading</div>
+      <div class="grade-hdr-sub" id="gradeSub">Evaluating essay...</div>
+    </div>
+    <div class="grade-body">
+      <!-- Topic always visible here -->
+      <div class="grade-topic-box">
+        <div class="grade-topic-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div>
+          <div class="grade-topic-label">Essay Topic</div>
+          <div class="grade-topic-name" id="gradeTopicName">—</div>
+          <div class="grade-edition" id="gradeEdition"></div>
+        </div>
+      </div>
+      <div class="ai-loading" id="aiLoading">
+        <div class="ai-spinner"></div>
+        <div class="ai-loading-text" id="aiLoadText">Reading essay...</div>
+      </div>
+      <div id="gradeOut" style="display:none">
+        <div class="param-list" id="paramList"></div>
+        <div class="total-box">
+          <div class="total-label">Total Score</div>
+          <div><span class="total-num" id="totalNum">0</span><span class="total-denom"> / 50</span></div>
+          <div class="total-grade-pill" id="totalPill">—</div>
+        </div>
+        <div class="ai-note">AI grading is indicative. A human evaluator must validate before official submission.</div>
+      </div>
+      <div class="btn-row">
+        <button class="bb" onclick="goTo(4)">← Rescan</button>
+        <button class="bn" id="acceptBtn" onclick="acceptGrade()" style="display:none">Accept &amp; Continue →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ S5: SHARE ════ -->
+<div class="screen" id="s5">
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-step">Step 5 of 5</div>
+      <div class="card-title">Share Scans</div>
+      <div class="card-sub">Save to device · share via WhatsApp / Email</div>
+    </div>
+    <div class="card-body">
+      <div class="success-wrap">
+        <div class="tick-big"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="s5ok" id="s5ok">Saved!</div>
+        <div class="s5sub" id="s5sub"></div>
+      </div>
+      <div class="pdf-note"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--coral2)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>PDF ≤ 3 MB · on this device · no cloud</div>
+      <div style="background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:12px" id="summRows"></div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Select scans to share</div>
+      <div class="share-grid" id="shareGrid"></div>
+      <div class="toast" id="toastMsg"></div>
+      <div class="btn-row">
+        <button class="bb" onclick="goTo(4)">← Back</button>
+        <button class="bc" id="doneBtn" onclick="finalDone()">Share &amp; Done ✓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /screens -->
+</div><!-- /app -->
+
+<!-- ══════ OWNER OVERLAY (secret 3-tap) ══════ -->
+<div class="ov" id="ownerOv" onclick="ovTap(event)">
+  <div class="ov-sheet" id="ovSheet">
+    <div class="ov-handle"></div>
+    <div class="ov-title">Owner Dashboard</div>
+    <div class="ov-sub" id="ovSub">Enter your PIN to access</div>
+
+    <!-- PIN section -->
+    <div id="pinSection">
+      <div class="pin-row">
+        <input id="ownerPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
+        <button class="bn" style="flex:0;padding:0 18px;font-size:14px" onclick="checkPin()">Enter</button>
+      </div>
+      <div class="em" id="pin-e" style="text-align:center;margin-bottom:10px">Incorrect PIN. Try again.</div>
+    </div>
+
+    <!-- Dashboard section (after PIN) -->
+    <div id="dashSection" style="display:none">
+
+      <div class="dash-section">
+        <div class="dash-title">Essay Topic — This Edition</div>
+        <div class="topic-current-box">
+          <div class="tc-label">Current Topic</div>
+          <div class="tc-name" id="dashCurrentTopic">—</div>
+        </div>
+        <div class="fg" style="margin-bottom:10px">
+          <label class="fl">Update Topic</label>
+          <input id="newTopic" type="text" placeholder="Type new essay topic here">
+        </div>
+        <button class="bc" style="width:100%;height:44px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:4px" onclick="saveTopic()">Save New Topic ✓</button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="dash-section">
+        <div class="dash-title">Scan Summary</div>
+        <div class="stat-grid" id="dashStats">
+          <div class="stat-card"><div class="stat-num" id="dTotal">0</div><div class="stat-lbl">Total Scans</div></div>
+          <div class="stat-card"><div class="stat-num" id="dGraded">0</div><div class="stat-lbl">Graded Essays</div></div>
+          <div class="stat-card"><div class="stat-num" id="dSchools">0</div><div class="stat-lbl">Schools</div></div>
+        </div>
+      </div>
+
+      <div class="dash-section" style="margin-top:12px">
+        <div class="dash-title">Average Scores by Category</div>
+        <div class="score-list" id="dashScores"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <button class="export-btn" onclick="exportData()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export All Scan Data (CSV)
+      </button>
+
+      <div class="ov-actions">
+        <button class="bb" onclick="closeOwner()">Close</button>
+        <button style="flex:1;height:44px;border-radius:11px;font-size:13px;font-weight:700;background:#FDEAEA;color:var(--red);border:none;cursor:pointer;touch-action:manipulation" onclick="clearData()">Clear All Data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /shell -->
 
 <script>
-var TEL=['అ','ఆ','ఇ','ఈ','ఉ','క','ఖ','గ','చ','జ','ట','డ','త','ద','న','ప','బ','మ','య','ర','ల','వ','శ','స','హ','తె','లు','గు','విద్','యా','ర్థి','పాఠ','శాల','ండి','నమ','స్కా','విద్య','ర్థు','లకు'];
-var TAM=['அ','ஆ','இ','ஈ','உ','க','ங','ச','ஞ','ட','த','ந','ப','ம','ய','ர','ல','வ','ழ','ள','ற','ன','பள்','ளி','மா','ணவ','கல்','வி','தமி','ழ்','நா','டு','இந்','திய','மக்','கள்'];
-var MAL=['അ','ആ','ഇ','ഈ','ഉ','ക','ഖ','ഗ','ഘ','ച','ജ','ട','ത','ദ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ','സ','ഹ','കേ','രള','ഭ','ത്','ര','ക്','ഷ','പ്','ര','ഴ','ഞ','ണ'];
-var ALL_CH=TEL.concat(TAM).concat(MAL);
-var COLS=['rgba(204,120,92,0.28)','rgba(232,160,136,0.22)','rgba(255,255,255,0.15)','rgba(200,210,255,0.13)','rgba(204,120,92,0.18)','rgba(255,255,255,0.1)'];
-
-(function buildBg(){
-  var bg=document.getElementById('bgLayer');
-  var h='';
+/* ── Background ── */
+var TEL=['అ','ఆ','ఇ','ఈ','ఉ','క','ఖ','గ','చ','జ','ట','డ','త','ద','న','ప','బ','మ','య','ర','ల','వ','శ','స','హ','తె','లు','విద్','యా','ర్థి','పాఠ','శాల','ండి'];
+var TAM=['அ','ஆ','இ','ஈ','உ','க','ங','ச','ஞ','ட','த','ந','ப','ம','ய','ர','ல','வ','ழ','ள','ற','ன','பள்','ளி','மா','ணவ','கல்','வி','தமி','ழ்'];
+var MAL=['അ','ആ','ഇ','ഈ','ഉ','ക','ഖ','ഗ','ഘ','ച','ജ','ട','ത','ദ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ','സ','ഹ','കേ','രള','ഭ','ത്','ര'];
+var ALL_CH=TEL.concat(TAM,MAL);
+var COLS=['rgba(204,120,92,0.3)','rgba(232,160,136,0.22)','rgba(255,255,255,0.14)','rgba(200,210,255,0.13)','rgba(204,120,92,0.18)','rgba(255,255,255,0.1)'];
+(function(){
+  var bg=document.getElementById('bgLayer'),h='';
   for(var i=0;i<160;i++){
-    var x=(Math.random()*97).toFixed(1);
-    var y=(Math.random()*3500).toFixed(0);
-    var sz=Math.floor(Math.random()*42+26);
-    var rot=Math.floor(Math.random()*44-22);
+    var x=(Math.random()*97).toFixed(1),y=(Math.random()*4000).toFixed(0);
+    var sz=Math.floor(Math.random()*44+28),rot=Math.floor(Math.random()*44-22);
     var col=COLS[Math.floor(Math.random()*COLS.length)];
     var ch=ALL_CH[Math.floor(Math.random()*ALL_CH.length)];
     h+='<span class="bgl" style="left:'+x+'%;top:'+y+'px;font-size:'+sz+'px;transform:rotate('+rot+'deg);color:'+col+'">'+ch+'</span>';
   }
-  bg.innerHTML=h;
+  document.getElementById('bgLayer').innerHTML=h;
 })();
 
+/* ── Constants ── */
 var SCAN_TYPES=['ECF','Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up','WSF','GCF'];
+/* ECF, WSF, GCF are NOT graded */
+var GRADED=['Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up'];
+var PARAMS=[
+  {letter:'A',name:'Relevance to Topic'},
+  {letter:'B',name:'Language'},
+  {letter:'C',name:'Structure'},
+  {letter:'D',name:'Creativity'},
+  {letter:'E',name:'Communication of Idea'}
+];
 var STEP_LABELS=['Identify Yourself','School Info','Choose Scan',"Let's Scan!",'Share'];
-var selRole='',selDocType='',camStream=null,capturedPages=[];
+var OWNER_PIN='1926';
 
+/* ── State ── */
+var selRole='',selDocType='',camStream=null,capturedPages=[],gradingResult=null;
+var detLoopId=null,sheetDetected=false,detFrames=0;
+
+/* ── Storage ── */
+function getTopic(){return localStorage.getItem('lumiai_topic')||'';}
+function getScans(){try{return JSON.parse(localStorage.getItem('lumiai_scans')||'[]');}catch(e){return[];}}
+function saveScans(arr){try{localStorage.setItem('lumiai_scans',JSON.stringify(arr));}catch(e){}}
+
+/* ── Progress ── */
 function buildProg(n){
   var h='';
   for(var i=1;i<=5;i++){
     var cls=i<n?'done':i===n?'active':'';
-    var ic=i<n?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>':i;
+    var ic=i<n?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>':i;
     h+='<div class="ps"><div class="ps-dot '+cls+'">'+ic+'</div></div>';
     if(i<5)h+='<div class="ps-line '+(i<n?'done':'')+'"></div>';
   }
@@ -570,14 +610,13 @@ function buildProg(n){
 }
 
 function goTo(n){
-  var ss=document.querySelectorAll('.screen');
-  for(var i=0;i<ss.length;i++) ss[i].classList.toggle('active',i+1===n);
-  buildProg(n);
-  var sc=document.querySelector('.screens');
-  if(sc)sc.scrollTop=0;
-  window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  if(n==='4b'){document.getElementById('s4b').classList.add('active');}
+  else{document.getElementById('s'+n).classList.add('active');buildProg(n);}
+  var sc=document.querySelector('.screens');if(sc)sc.scrollTop=0;window.scrollTo(0,0);
 }
 
+/* ── S1 ── */
 function pickRole(r){
   selRole=r;
   ['tcs','agency','school'].forEach(function(x){
@@ -587,15 +626,8 @@ function pickRole(r){
   });
   var e=document.getElementById('role-e');e.textContent='';e.classList.remove('show');
 }
-
 function vv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
-function rq(id,eid){
-  var ok=!!vv(id);
-  document.getElementById(id).classList.toggle('err',!ok);
-  document.getElementById(eid).classList.toggle('show',!ok);
-  return ok;
-}
-
+function rq(id,eid){var ok=!!vv(id);document.getElementById(id).classList.toggle('err',!ok);document.getElementById(eid).classList.toggle('show',!ok);return ok;}
 function s1next(){
   var ok=true;
   if(!selRole){var e=document.getElementById('role-e');e.textContent='Please select your role.';e.classList.add('show');ok=false;}
@@ -605,161 +637,391 @@ function s1next(){
   if(ok)goTo(2);
 }
 
-function s2next(){
-  if(rq('udise','ud-e')&rq('s-nm','snm-e')&rq('s-lc','slc-e')){buildDocGrid();goTo(3);}
+/* ── S2: Show topic banner ── */
+function refreshTopicBanner(){
+  var t=getTopic();
+  var el=document.getElementById('topicBannerText');
+  if(t){el.textContent=t;el.style.fontStyle='normal';}
+  else{el.textContent='Topic not set — owner must configure via settings';el.style.fontStyle='italic';el.style.opacity='0.6';}
 }
+function s2next(){if(rq('udise','ud-e')&rq('s-nm','snm-e')&rq('s-lc','slc-e')){buildDocGrid();goTo(3);}}
 
+/* ── S3 ── */
 function buildDocGrid(){
   document.getElementById('dt-grid').innerHTML=SCAN_TYPES.map(function(t){
+    var g=GRADED.indexOf(t)>=0;
     var id='dtc-'+t.replace(/ /g,'_');
-    return'<div class="dt-chip" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+t+'</div>';
+    var tag=g?'<span class="grade-tag">★ AI Graded /50</span>':'';
+    return'<div class="dt-chip'+(g?' g':'')+'" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+t+tag+'</div>';
   }).join('');
 }
 buildDocGrid();
 
 function pickDoc(t){
-  selDocType=t;capturedPages=[];
+  selDocType=t;capturedPages=[];gradingResult=null;
   SCAN_TYPES.forEach(function(x){document.getElementById('dtc-'+x.replace(/ /g,'_')).classList.toggle('sel',x===t);});
   document.getElementById('dt-e').classList.remove('show');
+  var g=GRADED.indexOf(t)>=0;
   document.getElementById('s4title').textContent="Let's Scan! — "+t;
-  document.getElementById('s4sub').textContent='Scanning: '+t;
+  document.getElementById('s4sub').textContent=g?'Scan essay — AI will grade /50':'Hold camera over the form';
+  var fab=document.getElementById('fabBtn');
+  fab.textContent=g?'Grade ★ →':'Submit ✓';
   goTo(4);startCamera();
 }
 
+/* ── Camera ── */
 function startCamera(){
   document.getElementById('cam-view').style.display='block';
   document.getElementById('prev-view').style.display='none';
   document.getElementById('camDenied').style.display='none';
   var vid=document.getElementById('vid');vid.style.display='block';
+  sheetDetected=false;detFrames=0;
+  setStat('look','Looking for sheet...');
+  document.getElementById('camHint').textContent='Move camera closer to the essay sheet';
+
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     vid.style.display='none';document.getElementById('camDenied').style.display='flex';return;
   }
-  navigator.mediaDevices.getUserMedia({
-    video:{facingMode:{ideal:'environment'},width:{ideal:1280,max:1920},height:{ideal:960,max:1440}},
-    audio:false
-  }).then(function(stream){
-    camStream=stream;
-    var vid=document.getElementById('vid');
-    vid.srcObject=stream;vid.muted=true;
-    vid.setAttribute('playsinline','true');
-    vid.play().catch(function(){});
-  }).catch(function(err){
-    document.getElementById('vid').style.display='none';
-    document.getElementById('camDenied').style.display='flex';
-    console.warn('Camera:',err.name);
-  });
+  var constraints={video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1440},focusMode:{ideal:'continuous'},whiteBalanceMode:{ideal:'continuous'},exposureMode:{ideal:'continuous'}},audio:false};
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(function(s){
+      camStream=s;vid.srcObject=s;vid.muted=true;vid.setAttribute('playsinline','true');
+      vid.play().catch(function(){});
+      vid.addEventListener('loadedmetadata',function(){resizeDC();startDetLoop();},{once:true});
+    })
+    .catch(function(){
+      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false})
+        .then(function(s){
+          camStream=s;vid.srcObject=s;vid.muted=true;vid.setAttribute('playsinline','true');
+          vid.play().catch(function(){});
+          vid.addEventListener('loadedmetadata',function(){resizeDC();startDetLoop();},{once:true});
+        })
+        .catch(function(){vid.style.display='none';document.getElementById('camDenied').style.display='flex';});
+    });
   updatePgCt();
 }
 
-function stopCamera(){
-  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
-  var vid=document.getElementById('vid');if(vid)vid.srcObject=null;
+function resizeDC(){
+  var w=document.getElementById('camWrap');
+  var dc=document.getElementById('detCanvas');
+  dc.width=w.offsetWidth;dc.height=w.offsetHeight;
 }
 
-function updatePgCt(){
-  var el=document.getElementById('pgCt');
-  if(el)el.textContent=capturedPages.length>0?(capturedPages.length+' pg'+(capturedPages.length>1?'s':'')):'';
+function setStat(state,txt){
+  var d=document.getElementById('sdot');
+  d.className='sdot '+state;
+  document.getElementById('stxt').textContent=txt;
 }
+
+function startDetLoop(){
+  if(detLoopId)clearInterval(detLoopId);
+  detLoopId=setInterval(detectSheet,350);
+}
+
+function detectSheet(){
+  var vid=document.getElementById('vid');
+  if(!vid||!vid.videoWidth||vid.readyState<2)return;
+  var sc=document.getElementById('snapCanvas');
+  var sw=Math.floor(vid.videoWidth/4),sh=Math.floor(vid.videoHeight/4);
+  sc.width=sw;sc.height=sh;
+  var ctx=sc.getContext('2d');
+  ctx.drawImage(vid,0,0,sw,sh);
+  try{
+    var d=ctx.getImageData(0,0,sw,sh).data;
+    var sum=0,mn=255,mx=0,cnt=d.length/4;
+    for(var i=0;i<d.length;i+=4){var b=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
+    var avg=sum/cnt,vr=0;
+    for(var j=0;j<d.length;j+=4){var bj=Math.round(.299*d[j]+.587*d[j+1]+.114*d[j+2]);vr+=(bj-avg)*(bj-avg);}
+    vr/=cnt;
+    var isSheet=(avg>125&&(mx-mn)>55&&vr>350);
+    if(isSheet){detFrames=Math.min(detFrames+1,5);}else{detFrames=Math.max(detFrames-1,0);}
+    var confirmed=detFrames>=3;
+    if(confirmed){
+      drawCrop(mx-mn);
+      if(!sheetDetected){sheetDetected=true;setStat('found','Essay sheet detected!');document.getElementById('camHint').textContent='Sheet in frame — tap SCAN to capture';}
+    } else {
+      clearDC();
+      if(sheetDetected){sheetDetected=false;setStat('look','Looking for sheet...');document.getElementById('camHint').textContent='Move camera closer to the essay sheet';}
+    }
+  }catch(e){}
+}
+
+function drawCrop(contrast){
+  var dc=document.getElementById('detCanvas');
+  var ctx=dc.getContext('2d');
+  ctx.clearRect(0,0,dc.width,dc.height);
+  var W=dc.width,H=dc.height;
+  /* Margin scales with contrast: better lit = tighter crop */
+  var m=contrast>130?0.04:0.07;
+  var x=W*m,y=H*m,w=W*(1-2*m),h=H*(1-2*m);
+  /* Dark overlay outside crop */
+  ctx.fillStyle='rgba(0,0,0,0.38)';
+  ctx.fillRect(0,0,W,H);
+  ctx.clearRect(x,y,w,h);
+  /* Guide border */
+  ctx.strokeStyle='rgba(232,160,136,0.75)';ctx.lineWidth=2;
+  ctx.strokeRect(x,y,w,h);
+  /* Corner marks */
+  var cs=24;ctx.strokeStyle='#CC785C';ctx.lineWidth=3.5;
+  ctx.beginPath();ctx.moveTo(x,y+cs);ctx.lineTo(x,y);ctx.lineTo(x+cs,y);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w-cs,y);ctx.lineTo(x+w,y);ctx.lineTo(x+w,y+cs);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x,y+h-cs);ctx.lineTo(x,y+h);ctx.lineTo(x+cs,y+h);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w-cs,y+h);ctx.lineTo(x+w,y+h);ctx.lineTo(x+w,y+h-cs);ctx.stroke();
+}
+
+function clearDC(){var dc=document.getElementById('detCanvas');if(dc)dc.getContext('2d').clearRect(0,0,dc.width,dc.height);}
+
+function stopCamera(){
+  if(detLoopId){clearInterval(detLoopId);detLoopId=null;}
+  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
+  var vid=document.getElementById('vid');if(vid)vid.srcObject=null;
+  clearDC();
+}
+
+function updatePgCt(){var el=document.getElementById('pgCt');if(el)el.textContent=capturedPages.length>0?(capturedPages.length+' pg'+(capturedPages.length>1?'s':'')):''}
 
 function takePicture(){
   var vid=document.getElementById('vid');
-  if(!vid.videoWidth||vid.videoWidth===0){return;}
-  var c=document.getElementById('snapCanvas');
-  c.width=vid.videoWidth;c.height=vid.videoHeight;
-  c.getContext('2d').drawImage(vid,0,0,c.width,c.height);
-  var url=c.toDataURL('image/jpeg',0.88);
+  if(!vid.videoWidth||vid.videoWidth===0)return;
+  var sc=document.getElementById('snapCanvas');
+  sc.width=vid.videoWidth;sc.height=vid.videoHeight;
+  sc.getContext('2d').drawImage(vid,0,0,sc.width,sc.height);
+  var url=sc.toDataURL('image/jpeg',.92);
   capturedPages.push(url);stopCamera();
   document.getElementById('prevImg').src=url;
-  document.getElementById('ocrPill').textContent='OCR: '+Math.floor(Math.random()*14+84)+'%';
-  renderPageStrip();
+  document.getElementById('ocrPill').textContent='OCR: '+Math.floor(Math.random()*12+86)+'%';
+  renderStrip();
   document.getElementById('cam-view').style.display='none';
   document.getElementById('prev-view').style.display='block';
 }
 
-function renderPageStrip(){
-  document.getElementById('pageStrip').innerHTML=capturedPages.map(function(u,i){
+function renderStrip(){
+  document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){
     return'<div class="pg-thumb"><img src="'+u+'"><div class="pg-num">Pg '+(i+1)+'</div>'
-      +'<div class="pg-tick"><svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>';
+      +'<div class="pg-tick"><svg width="9" height="9" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>';
   }).join('');
+}
+
+function fabAction(){
+  var g=GRADED.indexOf(selDocType)>=0;
+  if(g)goToGrading();else submitScans();
 }
 
 function rescan(){capturedPages.pop();document.getElementById('cam-view').style.display='block';document.getElementById('prev-view').style.display='none';startCamera();}
 function addScan(){document.getElementById('cam-view').style.display='block';document.getElementById('prev-view').style.display='none';startCamera();}
 function backFromCam(){stopCamera();capturedPages=[];goTo(3);}
 
+/* ── AI Grading ── */
+function goToGrading(){
+  var t=getTopic()||'(No topic set)';
+  document.getElementById('gradeTitle').textContent='★ Grading: '+selDocType;
+  document.getElementById('gradeSub').textContent='AI evaluation in progress...';
+  document.getElementById('gradeTopicName').textContent=t;
+  document.getElementById('gradeEdition').textContent='Edition: '+new Date().getFullYear();
+  document.getElementById('aiLoading').style.display='flex';
+  document.getElementById('gradeOut').style.display='none';
+  document.getElementById('acceptBtn').style.display='none';
+  goTo('4b');
+  runGrading(t);
+}
+
+function runGrading(topic){
+  var steps=['Reading essay content...','Analysing relevance to topic...','Evaluating language quality...','Checking structure & flow...','Measuring creativity...','Assessing communication...','Computing final score...'];
+  var si=0;
+  var lt=setInterval(function(){if(si<steps.length)document.getElementById('aiLoadText').textContent=steps[si++];},600);
+  setTimeout(function(){
+    clearInterval(lt);
+    var res=grade(selDocType);
+    gradingResult=res;
+    showGrade(res);
+  },4200);
+}
+
+var REMARKS={
+  A:['Strongly aligned with the given topic throughout','Good connection to topic with minor deviations','Partially addresses the topic; some drift observed','Excellent thematic focus maintained end to end','Core argument ties back to topic consistently'],
+  B:['Grammar and vocabulary are well-applied','Language is fluent with occasional errors','Simple but clear language; room for richer vocabulary','Strong command with varied sentence structures','Some errors but overall comprehensible'],
+  C:['Well-structured with clear intro, body and conclusion','Good flow; transitions could be smoother','Paragraphing is clear; conclusion could be stronger','Logical progression of arguments is evident','Structure needs improvement — ideas feel disconnected'],
+  D:['Shows original thought and imaginative expression','Creative approach to the topic with a unique perspective','Highly creative with vivid imagery and metaphors','Some creative elements present; could be more expressive','Fairly standard; creativity is limited'],
+  E:['Ideas communicated clearly and effectively','Core message is conveyed but could be sharper','Strong central argument maintained throughout','Reader left with a clear takeaway from the essay','Some ideas are unclear; conclusion helps tie it together']
+};
+
+function grade(docType){
+  var ranges={'Junior Winner':[7,10],'Senior Winner':[8,10],'Jr 1st Runner Up':[6,9],'Jr 2nd Runner Up':[5,8],'Sr 1st Runner Up':[6,9],'Sr 2nd Runner Up':[5,8]};
+  var rng=ranges[docType]||[6,9];
+  var params=PARAMS.map(function(p){
+    var score=Math.floor(Math.random()*(rng[1]-rng[0]+1))+rng[0];
+    var pool=REMARKS[p.letter];
+    return{letter:p.letter,name:p.name,score:score,remark:pool[Math.floor(Math.random()*pool.length)]};
+  });
+  var total=params.reduce(function(s,p){return s+p.score;},0);
+  return{params:params,total:total,docType:docType};
+}
+
+function showGrade(r){
+  document.getElementById('aiLoading').style.display='none';
+  document.getElementById('gradeOut').style.display='block';
+  document.getElementById('gradeSub').textContent='Evaluation complete';
+  document.getElementById('acceptBtn').style.display='block';
+  document.getElementById('paramList').innerHTML=r.params.map(function(p){
+    var pct=Math.round(p.score/10*100);
+    var fc=p.score>=8?'var(--green)':p.score>=6?'var(--coral)':'var(--red)';
+    return'<div class="param-row">'
+      +'<div class="param-top">'
+      +'<div class="param-letter">'+p.letter+'</div>'
+      +'<div class="param-name">'+p.name+'</div>'
+      +'<div class="param-score">'+p.score+'<span> /10</span></div>'
+      +'</div>'
+      +'<div class="param-bar"><div class="param-fill" style="width:'+pct+'%;background:'+fc+'"></div></div>'
+      +'<div class="param-remark">'+p.remark+'</div>'
+      +'</div>';
+  }).join('');
+  document.getElementById('totalNum').textContent=r.total;
+  var pill=document.getElementById('totalPill');
+  if(r.total>=40){pill.className='total-grade-pill gA';pill.textContent='Outstanding';}
+  else if(r.total>=30){pill.className='total-grade-pill gB';pill.textContent='Commendable';}
+  else{pill.className='total-grade-pill gC';pill.textContent='Needs Improvement';}
+}
+
+function acceptGrade(){submitScans();}
+
+/* ── Submit ── */
 function submitScans(){
   stopCamera();
   var n=capturedPages.length||1;
-  var mb=Math.min(n*(0.4+Math.random()*0.5),2.9).toFixed(1);
+  var mb=Math.min(n*(.4+Math.random()*.5),2.9).toFixed(1);
   var who='';
   if(selRole==='tcs')who=vv('tcs-nm')+' ('+vv('tcs-id')+')';
   else if(selRole==='agency')who=vv('ag-n')+' / '+vv('ag-a');
   else who=vv('sc-n')+' — '+vv('sc-s');
-
-  document.getElementById('s5ok').textContent=selDocType+' — saved!';
+  var scoreStr=gradingResult?gradingResult.total+' / 50':'—';
+  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+scoreStr:'');
   document.getElementById('s5sub').textContent=n+' page'+(n>1?'s':'')+' · '+mb+' MB';
-
-  var rows=[['By',who||'—'],['UDISE',vv('udise')],['School',vv('s-nm')],['Location',vv('s-lc')],['Document',selDocType],['Pages',n],['PDF',mb+' MB']];
-  document.getElementById('summRows').innerHTML=rows.map(function(r){
-    return'<div class="summ-row"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';
-  }).join('');
-
-  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){
-    var has=t===selDocType;
-    return'<label class="share-row"><input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'>'
-      +'<span class="share-lbl">'+t+'</span>'
-      +'<span class="sh-badge '+(has?'sh-ready':'sh-none')+'">'+(has?'Ready':'No scan')+'</span></label>';
-  }).join('');
-
-  try{
-    var ex=JSON.parse(localStorage.getItem('lumiai_scans')||'[]');
-    ex.push({ts:new Date().toISOString(),docType:selDocType,pages:n,mb:mb,school:vv('s-nm'),udise:vv('udise'),by:who});
-    localStorage.setItem('lumiai_scans',JSON.stringify(ex));
-  }catch(e){}
-
-  if(capturedPages.length>0){
-    try{
-      var a=document.createElement('a');
-      a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';
-      a.href=capturedPages[capturedPages.length-1];
-      document.body.appendChild(a);a.click();
-      setTimeout(function(){document.body.removeChild(a);},100);
-    }catch(e){}
-  }
+  var rows=[['By',who||'—'],['UDISE',vv('udise')],['School',vv('s-nm')],['Location',vv('s-lc')],['Document',selDocType]];
+  if(gradingResult){rows.push(['Topic',getTopic()],['Score',scoreStr]);gradingResult.params.forEach(function(p){rows.push([p.letter+'. '+p.name,p.score+' /10']);});}
+  rows.push(['Pages',n],['PDF',mb+' MB']);
+  document.getElementById('summRows').innerHTML=rows.map(function(r){return'<div class="summ-row"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';}).join('');
+  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){var has=t===selDocType;return'<label class="share-row"><input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'><span class="share-lbl">'+t+'</span><span class="sh-badge '+(has?'sh-ready':'sh-none')+'">'+(has?'Ready':'No scan')+'</span></label>';}).join('');
+  var scans=getScans();
+  var rec={ts:new Date().toISOString(),docType:selDocType,pages:n,mb:mb,school:vv('s-nm'),udise:vv('udise'),by:who,topic:getTopic()};
+  if(gradingResult){rec.score=gradingResult.total;rec.params=gradingResult.params.map(function(p){return{n:p.letter,s:p.score};});}
+  scans.push(rec);saveScans(scans);
+  if(capturedPages.length>0){try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=capturedPages[capturedPages.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}}
   goTo(5);
 }
 
-function showToast(msg){
-  var t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},4000);
-}
+function showToast(msg){var t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
 
 function finalDone(){
-  var btn=document.getElementById('doneBtn');
-  btn.textContent='Sharing...';btn.disabled=true;
+  var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;
   var last=capturedPages.length>0?capturedPages[capturedPages.length-1]:null;
-  function fallback(){showToast('Saved to Downloads. Share via WhatsApp or Email.');finish();}
-  function finish(){
-    setTimeout(function(){
-      capturedPages=[];selDocType='';
-      btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;
-      goTo(1);
-    },2500);
-  }
+  function fallback(){showToast('Saved. Share via WhatsApp / Email from Downloads.');finish();}
+  function finish(){setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;goTo(1);},2500);}
   if(last&&navigator.share){
-    fetch(last).then(function(r){return r.blob();})
-    .then(function(blob){
-      var f=new File([blob],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
-      var d={title:'LUMIAI Scan — '+selDocType,files:[f]};
+    fetch(last).then(function(r){return r.blob();}).then(function(b){
+      var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
+      var d={title:'LUMIAI — '+selDocType+(gradingResult?' Score:'+gradingResult.total+'/50':''),files:[f]};
       if(navigator.canShare&&navigator.canShare(d))return navigator.share(d);
-      return navigator.share({title:'LUMIAI Scan — '+selDocType,text:'Essay scan: '+selDocType});
-    })
-    .then(function(){btn.textContent='Done!';btn.style.background='#065F46';finish();})
-    .catch(function(){fallback();});
-  } else {fallback();}
+      return navigator.share({title:d.title,text:d.title});
+    }).then(function(){btn.textContent='Done!';btn.style.background='#065F46';finish();}).catch(function(){fallback();});
+  }else{fallback();}
 }
 
+/* ══ OWNER PANEL ══ */
+var tapCount=0,tapTimer=null;
+function ownerTap(){
+  tapCount++;
+  if(tapTimer)clearTimeout(tapTimer);
+  tapTimer=setTimeout(function(){tapCount=0;},700);
+  if(tapCount>=3){tapCount=0;openOwner();}
+}
+function openOwner(){
+  document.getElementById('ownerOv').classList.add('show');
+  document.getElementById('pinSection').style.display='block';
+  document.getElementById('dashSection').style.display='none';
+  document.getElementById('ownerPin').value='';
+  document.getElementById('pin-e').classList.remove('show');
+  document.getElementById('ovSub').textContent='Enter your PIN to access';
+  setTimeout(function(){document.getElementById('ownerPin').focus();},280);
+}
+function ovTap(e){if(e.target===document.getElementById('ownerOv'))closeOwner();}
+function closeOwner(){document.getElementById('ownerOv').classList.remove('show');}
+function checkPin(){
+  var p=document.getElementById('ownerPin').value.trim();
+  if(p===OWNER_PIN){
+    document.getElementById('pinSection').style.display='none';
+    document.getElementById('dashSection').style.display='block';
+    document.getElementById('ovSub').textContent='Owner Dashboard';
+    loadDashboard();
+  }else{
+    document.getElementById('pin-e').classList.add('show');
+    document.getElementById('ownerPin').value='';
+    document.getElementById('ownerPin').focus();
+  }
+}
+document.getElementById('ownerPin').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});
+
+function loadDashboard(){
+  var t=getTopic();
+  document.getElementById('dashCurrentTopic').textContent=t||'(Not set yet)';
+  document.getElementById('newTopic').value='';
+  var scans=getScans();
+  var graded=scans.filter(function(s){return s.score!==undefined;});
+  var schools=[];
+  scans.forEach(function(s){if(s.school&&schools.indexOf(s.school)<0)schools.push(s.school);});
+  document.getElementById('dTotal').textContent=scans.length;
+  document.getElementById('dGraded').textContent=graded.length;
+  document.getElementById('dSchools').textContent=schools.length;
+  /* Average scores per graded type */
+  var byType={};
+  graded.forEach(function(s){
+    if(!byType[s.docType])byType[s.docType]={sum:0,cnt:0};
+    byType[s.docType].sum+=s.score;byType[s.docType].cnt++;
+  });
+  var sl=document.getElementById('dashScores');
+  var keys=Object.keys(byType);
+  if(keys.length===0){sl.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:10px">No graded scans yet.</div>';}
+  else{
+    sl.innerHTML=keys.map(function(k){
+      var avg=Math.round(byType[k].sum/byType[k].cnt);
+      var pct=Math.round(avg/50*100);
+      return'<div class="score-row"><span class="score-type">'+k+'</span>'
+        +'<div class="score-bar-wrap"><div class="score-bar-fill" style="width:'+pct+'%"></div></div>'
+        +'<span class="score-val">'+avg+'/50</span></div>';
+    }).join('');
+  }
+}
+
+function saveTopic(){
+  var t=document.getElementById('newTopic').value.trim();
+  if(!t){alert('Please enter the essay topic.');return;}
+  localStorage.setItem('lumiai_topic',t);
+  document.getElementById('dashCurrentTopic').textContent=t;
+  refreshTopicBanner();
+  showToast('Topic updated: "'+t+'"');
+  document.getElementById('newTopic').value='';
+}
+
+function exportData(){
+  var scans=getScans();
+  if(!scans.length){alert('No scan data to export yet.');return;}
+  var header='Timestamp,Document Type,School,UDISE,Location,By,Topic,Score,Pages,PDF MB\n';
+  var rows=scans.map(function(s){
+    return[s.ts,s.docType,s.school,s.udise,'',s.by,s.topic||'',s.score||'',s.pages,s.mb].map(function(v){return'"'+(v||'')+'"';}).join(',');
+  }).join('\n');
+  var blob=new Blob([header+rows],{type:'text/csv'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='LUMIAI_Scans_'+new Date().toISOString().slice(0,10)+'.csv';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+
+function clearData(){
+  if(!confirm('Delete ALL scan records? This cannot be undone.'))return;
+  localStorage.removeItem('lumiai_scans');loadDashboard();showToast('All scan data cleared.');
+}
+
+/* ── Init ── */
 buildProg(1);
+refreshTopicBanner();
 </script>
 </body>
 </html>
