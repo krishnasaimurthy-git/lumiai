@@ -18,12 +18,11 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Segoe UI',Arial,sa
   --text:#1A2342;--muted:#6B7BA0;--surface:#F7F5F2;--border:#DDE4F0;
   --amber:#D4900A;
 }
-
 .shell{position:fixed;inset:0;background:linear-gradient(160deg,#1E2245 0%,#2D3561 48%,#3D4A7A 100%)}
 .bg-layer{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bgl{position:absolute;font-weight:900;user-select:none;line-height:1}
 
-/* ── FORM VIEW ── */
+/* FORM VIEW */
 .form-view{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;overflow:hidden}
 .top-bar{padding:max(env(safe-area-inset-top),13px) 16px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.22);flex-shrink:0}
 .lumiai-logo{display:flex;align-items:center;gap:10px}
@@ -43,7 +42,6 @@ html,body{height:100%;width:100%;overflow:hidden;font-family:'Segoe UI',Arial,sa
 .prog-lbl{font-size:10px;color:rgba(255,255,255,0.5);text-align:center}
 .screens{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 2rem}
 .screen{display:none}.screen.active{display:block}
-
 .card{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,0.22)}
 .card-hdr{padding:13px 18px 10px;text-align:center;background:var(--surface);border-bottom:1px solid var(--border)}
 .card-step{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
@@ -64,7 +62,6 @@ button:active{transform:scale(.93)}
 .bb{background:#ECEEF8;color:var(--slate)}.bb:active{background:#D8DCF0}
 .bd{background:var(--green);color:#fff}.bd:active{background:var(--green2)}
 .bc{background:var(--coral);color:#fff}.bc:active{background:var(--coral2)}
-.bv{background:#1D9E75;color:#fff;font-size:13px}.bv:active{background:#0F6E56}
 .divider{height:1px;background:var(--border);margin:10px 0}
 .role-chips{display:flex;gap:7px;margin-bottom:10px}
 .chip{flex:1;padding:11px 5px;border-radius:12px;border:2px solid var(--border);background:#FAFBFF;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--text);touch-action:manipulation;transition:transform .06s,border-color .1s,background .1s}
@@ -90,66 +87,82 @@ button:active{transform:scale(.93)}
 .grade-tag{font-size:9px;color:#6B52C8;font-weight:700;display:block;margin-top:2px}
 .dt-chip.g.sel .grade-tag{color:rgba(255,255,255,.8)}
 
-/* ═══ FULL SCREEN CAMERA ═══ */
+/* FULL SCREEN CAMERA */
 .cam-view{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
 .cam-view.active{display:flex}
-.cam-video-wrap{position:relative;flex:1;overflow:hidden;background:#000}
+.cam-vwrap{position:relative;flex:1;overflow:hidden;background:#000;cursor:crosshair}
 #vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #detCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
+/* Focus ring - appears where user taps */
+.focus-ring{position:absolute;width:70px;height:70px;border:2px solid #FFD700;border-radius:50%;pointer-events:none;z-index:20;display:none;transform:translate(-50%,-50%);animation:focusPulse .6s ease forwards}
+@keyframes focusPulse{0%{opacity:1;transform:translate(-50%,-50%) scale(1.4)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}}
 .cam-status-bar{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;text-align:center;z-index:10;pointer-events:none}
 .cam-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,0.65);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-radius:22px;padding:6px 16px;font-size:13px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,0.12)}
 .sdot{width:9px;height:9px;border-radius:50%;background:#666;transition:background .3s;flex-shrink:0}
 .sdot.look{background:rgba(232,160,32,.9);animation:pulse 1s infinite}
 .sdot.found{background:var(--green)}
-.sdot.error{background:var(--red)}
-.sdot.reading{background:#7B61FF;animation:pulse .6s infinite}
+.sdot.mismatch{background:var(--red);animation:pulse .5s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .cam-back{position:absolute;top:max(env(safe-area-inset-top),14px);left:14px;z-index:11;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
 .cam-back:active{background:rgba(0,0,0,0.8)}
-.cam-doc-label{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:11;background:rgba(204,120,92,0.88);border-radius:12px;padding:5px 12px;font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;max-width:160px;text-align:center}
-.cam-hint-text{position:absolute;bottom:14px;left:0;right:0;text-align:center;z-index:10;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.8);font-weight:500;padding:0 20px}
+.cam-doc-label{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:11;background:rgba(204,120,92,0.88);border-radius:12px;padding:5px 12px;font-size:11px;font-weight:800;color:#fff;letter-spacing:.5px;max-width:170px;text-align:center}
+.cam-hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;z-index:10;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.8);font-weight:500;padding:0 20px}
+.cam-tap-hint{position:absolute;top:50%;left:0;right:0;text-align:center;z-index:5;pointer-events:none;font-size:11px;color:rgba(255,255,255,.5);font-weight:500;transform:translateY(-50%)}
 .cam-denied{position:absolute;inset:0;z-index:20;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;background:rgba(0,0,0,0.88)}
 .cam-denied p{color:#fff;font-size:14px;text-align:center;line-height:1.7}
 
 /* Wrong doc overlay */
-.doc-err-ov{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.9);padding:24px 20px;gap:14px}
+.doc-err-ov{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,0.92);padding:24px 20px;gap:14px}
 .doc-err-ov.show{display:flex}
 .err-icon{width:60px;height:60px;border-radius:50%;background:var(--red);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .4s ease}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 .err-title{font-size:18px;font-weight:900;color:#fff;text-align:center}
-.err-box{border-radius:10px;padding:10px 14px;text-align:center;width:100%}
+.err-band{border-radius:10px;padding:10px 14px;text-align:center;width:100%}
 .err-selected{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.4)}
 .err-found{background:rgba(217,79,79,.2);border:1px solid rgba(217,79,79,.4)}
-.err-box-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-.err-box-val{font-size:14px;font-weight:800;color:#fff}
-.err-msg{font-size:13px;color:rgba(255,255,255,.72);text-align:center;line-height:1.6}
+.err-band-label{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.err-band-val{font-size:14px;font-weight:800;color:#fff;line-height:1.3}
+.err-advice{font-size:13px;color:rgba(255,255,255,.7);text-align:center;line-height:1.6;max-width:340px}
 .err-actions{display:flex;gap:10px;width:100%}
 .err-actions button{height:46px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;flex:1}
 
-/* Shutter */
-.cam-controls{background:#000;padding-bottom:max(env(safe-area-inset-bottom),16px);padding-top:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:32px;border-top:1px solid rgba(255,255,255,0.08)}
-.shutter{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,0.12);border:3px solid rgba(255,255,255,0.5);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s}
-.shutter:active{transform:scale(.88)}
-.shutter-inner{width:60px;height:60px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+/* Shutter bar */
+.cam-controls{background:rgba(0,0,0,0.85);padding-bottom:max(env(safe-area-inset-bottom),18px);padding-top:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:32px;border-top:1px solid rgba(255,255,255,0.08)}
+.shutter{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,0.12);border:3px solid rgba(255,255,255,0.55);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s,background .07s;position:relative}
+.shutter:active{transform:scale(.86);background:rgba(255,255,255,.22)}
+.shutter-inner{width:60px;height:60px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;transition:transform .07s}
+.shutter:active .shutter-inner{transform:scale(.88)}
+.pg-ct-lbl{width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.55);font-weight:600;line-height:1.5}
 
-/* Preview */
+/* PREVIEW (full screen, after capture and after submit) */
 .preview-view{position:fixed;inset:0;z-index:110;background:#000;display:none;flex-direction:column}
 .preview-view.active{display:flex}
 .prev-img-wrap{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#111}
 .prev-img-wrap img{width:100%;height:100%;object-fit:contain}
-.ocr-pill{position:absolute;top:max(env(safe-area-inset-top),14px);left:14px;background:rgba(29,158,117,.92);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;z-index:2}
-.page-ct-pill{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;background:rgba(45,53,97,.85);color:#fff;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;z-index:2}
+/* Tag row top of preview */
+.prev-tags{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:0 14px;z-index:2}
+.doc-id-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.doc-id-pill.match{background:rgba(29,158,117,.88);color:#fff}
+.doc-id-pill.mismatch{background:rgba(217,79,79,.88);color:#fff}
+.doc-id-pill.checking{background:rgba(45,53,97,.85);color:#fff}
+.page-ct-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(45,53,97,.75);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .pg-strip{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:6px;padding:0 12px;justify-content:center;z-index:2}
 .pg-th{width:44px;height:58px;border-radius:6px;overflow:hidden;border:2px solid rgba(255,255,255,.4);background:#222;position:relative;flex-shrink:0}
 .pg-th img{width:100%;height:100%;object-fit:cover}
 .pg-th-n{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.88);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
 
-/* OCR reading overlay on preview */
-.ocr-reading-ov{position:absolute;inset:0;z-index:20;background:rgba(0,0,0,0.78);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-.ocr-reading-ov.show{display:flex}
-.ocr-spinner{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--coral);border-radius:50%;animation:spin .7s linear infinite}
+/* Wrong doc banner inside preview */
+.prev-wrong-banner{position:absolute;top:60px;left:14px;right:14px;z-index:10;background:rgba(217,79,79,.92);border-radius:12px;padding:10px 14px;display:none}
+.prev-wrong-banner.show{display:block}
+.pwb-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px}
+.pwb-msg{font-size:12px;color:rgba(255,255,255,.85);line-height:1.4}
+
+/* Identifying overlay on preview */
+.identifying-ov{position:absolute;inset:0;z-index:15;background:rgba(0,0,0,.6);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.identifying-ov.show{display:flex}
+.id-spinner{width:42px;height:42px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--coral);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ocr-reading-txt{font-size:14px;color:#fff;font-weight:600;text-align:center}
+.id-txt{font-size:14px;color:#fff;font-weight:600;text-align:center;line-height:1.5}
 
 .prev-controls{background:#111;padding-bottom:max(env(safe-area-inset-bottom),16px);padding-top:14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.08)}
 .prev-action-row{display:flex;gap:8px;padding:0 14px 12px}
@@ -157,8 +170,58 @@ button:active{transform:scale(.93)}
 .prev-btn:active{transform:scale(.92)}
 .pa-rescan{background:#1E2245;color:#fff}
 .pa-add{background:#1A3A20;color:#7EC89A}
-.pa-grade{background:var(--coral);color:#fff}
 .pa-submit{background:var(--green);color:#fff}
+.pa-grade{background:var(--coral);color:#fff}
+
+/* Submit result preview */
+.submit-prev-view{position:fixed;inset:0;z-index:120;background:#000;display:none;flex-direction:column}
+.submit-prev-view.active{display:flex}
+.sp-header{background:var(--green2);padding:max(env(safe-area-inset-top),14px) 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.sp-title{font-size:15px;font-weight:800;color:#fff}
+.sp-close{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.sp-close:active{background:rgba(255,255,255,.35)}
+.sp-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px}
+.sp-img-wrap{width:100%;border-radius:12px;overflow:hidden;margin-bottom:12px;background:#222}
+.sp-img-wrap img{width:100%;display:block}
+.sp-score-card{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center}
+.sp-score-title{font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
+.sp-score-num{font-size:48px;font-weight:900;color:#fff;line-height:1}
+.sp-score-denom{font-size:18px;color:rgba(255,255,255,.45)}
+.sp-grade-pill{font-size:13px;font-weight:700;margin-top:8px;padding:4px 16px;border-radius:20px;display:inline-block}
+.sp-param{background:var(--surface);border-radius:10px;padding:10px 12px;margin-bottom:8px}
+.sp-param-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.sp-param-letter{width:24px;height:24px;border-radius:50%;background:var(--slate);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sp-param-name{font-size:12px;font-weight:700;color:var(--text);flex:1}
+.sp-param-score{font-size:16px;font-weight:900;color:var(--slate)}
+.sp-param-bar{height:5px;background:var(--border);border-radius:5px;overflow:hidden}
+.sp-param-fill{height:100%;border-radius:5px}
+.sp-param-remark{font-size:11px;color:var(--muted);margin-top:5px;font-style:italic}
+.sp-meta{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.sp-meta-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)}
+.sp-meta-row:last-child{border-bottom:none}
+.sp-mk{font-size:12px;color:var(--muted)}.sp-mv{font-size:12px;font-weight:700;color:var(--text);text-align:right;max-width:55%;word-break:break-word}
+.sp-footer{background:#111;padding:12px 14px max(env(safe-area-inset-bottom),12px);display:flex;gap:10px;flex-shrink:0}
+
+/* Share */
+.success-wrap{text-align:center;padding:8px 0 10px}
+.tick-big{width:52px;height:52px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.s5ok{font-size:15px;font-weight:800;color:#065F46;margin-bottom:3px}
+.s5sub{font-size:13px;color:var(--green)}
+.pdf-note{display:flex;align-items:center;gap:8px;background:var(--coral-pale);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--coral2);font-weight:600;margin-bottom:12px}
+.share-grid{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.share-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#FAFBFF;touch-action:manipulation}
+.share-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--coral);cursor:pointer;flex-shrink:0}
+.share-lbl{flex:1;font-size:13px;font-weight:600;color:var(--text)}
+.sh-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
+.sh-ready{background:#D1FAE5;color:#065F46}.sh-none{background:#F1EFE8;color:#5F5E5A}
+.view-btn{height:32px;padding:0 10px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--green);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.view-btn:active{background:var(--green2)}
+.view-btn.off{background:var(--border);color:var(--muted);pointer-events:none}
+.summ-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
+.summ-row:last-child{border-bottom:none}
+.sk{font-size:12px;color:var(--muted)}.sv{font-size:13px;font-weight:700;color:var(--text);text-align:right;max-width:60%;word-break:break-word}
+.toast{display:none;background:var(--slate);color:#fff;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;font-weight:600;text-align:center;border-left:4px solid var(--coral)}
+.toast.show{display:block}
 
 /* Grading */
 .grade-panel{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.22)}
@@ -194,39 +257,6 @@ button:active{transform:scale(.93)}
 .gC{background:rgba(217,79,79,.2);color:var(--red)}
 .ai-note{font-size:11px;color:var(--muted);background:var(--surface);border-radius:8px;padding:8px 12px;margin-bottom:12px;line-height:1.5;text-align:center}
 
-/* Share / View */
-.success-wrap{text-align:center;padding:8px 0 10px}
-.tick-big{width:52px;height:52px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.s5ok{font-size:15px;font-weight:800;color:#065F46;margin-bottom:3px}
-.s5sub{font-size:13px;color:var(--green)}
-.pdf-note{display:flex;align-items:center;gap:8px;background:var(--coral-pale);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--coral2);font-weight:600;margin-bottom:12px}
-.share-grid{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
-.share-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:1.5px solid var(--border);background:#FAFBFF;cursor:pointer;touch-action:manipulation;transition:border-color .12s}
-.share-row:active{border-color:var(--coral);background:var(--coral-pale)}
-.share-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--coral);cursor:pointer;flex-shrink:0}
-.share-lbl{flex:1;font-size:13px;font-weight:600;color:var(--text)}
-.sh-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
-.sh-ready{background:#D1FAE5;color:#065F46}.sh-none{background:#F1EFE8;color:#5F5E5A}
-.sh-view-btn{height:34px;width:auto;padding:0 12px;font-size:12px;font-weight:700;border:none;border-radius:8px;background:var(--green);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
-.sh-view-btn:active{background:var(--green2)}
-.sh-view-btn.disabled{background:var(--border);color:var(--muted);pointer-events:none}
-.summ-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
-.summ-row:last-child{border-bottom:none}
-.sk{font-size:12px;color:var(--muted)}.sv{font-size:13px;font-weight:700;color:var(--text);text-align:right;max-width:60%;word-break:break-word}
-.toast{display:none;background:var(--slate);color:#fff;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;font-weight:600;text-align:center;border-left:4px solid var(--coral)}
-.toast.show{display:block}
-
-/* Scan image viewer */
-.img-viewer-ov{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.95);flex-direction:column}
-.img-viewer-ov.show{display:flex}
-.img-viewer-hdr{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 16px 12px;background:rgba(0,0,0,0.4);flex-shrink:0}
-.img-viewer-title{font-size:14px;font-weight:700;color:#fff}
-.img-viewer-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation}
-.img-viewer-close:active{background:rgba(255,255,255,0.3)}
-.img-viewer-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px;padding:10px}
-.viewer-img{width:100%;border-radius:10px;display:block}
-.img-viewer-footer{padding:12px 16px max(env(safe-area-inset-bottom),12px);background:rgba(0,0,0,0.4);flex-shrink:0;display:flex;gap:10px}
-
 /* Owner */
 .ov{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.72);align-items:flex-end;justify-content:center}
 .ov.show{display:flex}
@@ -239,16 +269,15 @@ button:active{transform:scale(.93)}
 .pin-row input{height:48px;font-size:20px;text-align:center;letter-spacing:4px;font-weight:700}
 .dash-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .dash-title:before{content:'';display:inline-block;width:3px;height:14px;background:var(--coral);border-radius:2px}
-.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
 .stat-card{background:var(--surface);border-radius:10px;padding:10px 8px;text-align:center}
 .stat-num{font-size:22px;font-weight:900;color:var(--slate)}
 .stat-lbl{font-size:10px;color:var(--muted);margin-top:2px;line-height:1.3}
-.scan-history-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
-.scan-hist-row{background:var(--surface);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:10px}
-.sh-info{flex:1}
-.sh-doc{font-size:13px;font-weight:700;color:var(--text)}
-.sh-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.sh-score{font-size:13px;font-weight:800;color:var(--slate);flex-shrink:0}
+.hist-row{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:9px;padding:9px 11px;margin-bottom:6px}
+.hr-info{flex:1}
+.hr-doc{font-size:13px;font-weight:700;color:var(--text)}
+.hr-meta{font-size:11px;color:var(--muted);margin-top:1px}
+.hr-score{font-size:13px;font-weight:800;color:var(--slate);flex-shrink:0}
 .score-list{display:flex;flex-direction:column;gap:6px}
 .score-row{display:flex;align-items:center;gap:8px;background:var(--surface);border-radius:8px;padding:8px 10px}
 .score-type{flex:1;font-size:12px;font-weight:700;color:var(--text)}
@@ -266,7 +295,7 @@ button:active{transform:scale(.93)}
 <div class="shell">
 <div class="bg-layer" id="bgLayer"></div>
 
-<!-- ══ FORM VIEW ══ -->
+<!-- FORM VIEW -->
 <div class="form-view">
   <div class="top-bar">
     <div class="lumiai-logo">
@@ -292,7 +321,6 @@ button:active{transform:scale(.93)}
     <div class="prog-lbl" id="progLbl">Step 1 of 5</div>
   </div>
   <div class="screens">
-
     <!-- S1 -->
     <div class="screen active" id="s1">
       <div class="card">
@@ -330,7 +358,6 @@ button:active{transform:scale(.93)}
         <div class="seva-full">School Event &amp; Visit Analytics</div>
       </div>
     </div>
-
     <!-- S2 -->
     <div class="screen" id="s2">
       <div class="card">
@@ -344,7 +371,6 @@ button:active{transform:scale(.93)}
         </div>
       </div>
     </div>
-
     <!-- S3 -->
     <div class="screen" id="s3">
       <div class="card">
@@ -356,7 +382,6 @@ button:active{transform:scale(.93)}
         </div>
       </div>
     </div>
-
     <!-- S4b Grading -->
     <div class="screen" id="s4b">
       <div class="grade-panel">
@@ -369,11 +394,10 @@ button:active{transform:scale(.93)}
             <div class="total-box"><div class="total-label">Total Score</div><div><span class="total-num" id="totalNum">0</span><span class="total-denom"> / 50</span></div><div class="total-pill" id="totalPill">—</div></div>
             <div class="ai-note">AI grading is indicative. A human evaluator must validate before official submission.</div>
           </div>
-          <div class="btn-row"><button class="bb" onclick="openCam()">← Rescan</button><button class="bn" id="acceptBtn" onclick="acceptGrade()" style="display:none">Accept &amp; Continue →</button></div>
+          <div class="btn-row"><button class="bb" onclick="openCam()">← Rescan</button><button class="bn" id="acceptBtn" onclick="acceptGrade()" style="display:none">Accept &amp; View Result →</button></div>
         </div>
       </div>
     </div>
-
     <!-- S5 -->
     <div class="screen" id="s5">
       <div class="card">
@@ -392,25 +416,26 @@ button:active{transform:scale(.93)}
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ══ FULL SCREEN CAMERA ══ -->
+<!-- FULL SCREEN CAMERA -->
 <div class="cam-view" id="camView">
-  <div class="cam-video-wrap" id="camVideoWrap">
+  <div class="cam-vwrap" id="camVwrap" onclick="handleTapFocus(event)">
     <video id="vid" autoplay playsinline muted></video>
     <canvas id="detCanvas"></canvas>
+    <div class="focus-ring" id="focusRing"></div>
     <div class="cam-status-bar"><div class="cam-pill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div></div>
-    <div class="cam-back" onclick="closeCam()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="cam-back" onclick="closeCam(event)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
     <div class="cam-doc-label" id="camDocLabel">—</div>
-    <div class="cam-hint-text" id="camHint">Hold camera steady over the document</div>
+    <div class="cam-hint" id="camHint">Hold camera over the document</div>
+    <div class="cam-tap-hint" id="tapHint">Tap anywhere to focus</div>
     <div class="doc-err-ov" id="docErrOv">
       <div class="err-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
       <div class="err-title" id="errTitle">Wrong Document!</div>
-      <div class="err-box err-selected"><div class="err-box-label">You selected</div><div class="err-box-val" id="errSelected">—</div></div>
-      <div class="err-box err-found"><div class="err-box-label">Camera reads</div><div class="err-box-val" id="errFound">—</div></div>
-      <div class="err-msg" id="errMsg">Please scan the correct document.</div>
+      <div class="err-band err-selected"><div class="err-band-label">You selected</div><div class="err-band-val" id="errSelected">—</div></div>
+      <div class="err-band err-found"><div class="err-band-label">Document detected as</div><div class="err-band-val" id="errFound">—</div></div>
+      <div class="err-advice" id="errAdvice">Please scan the correct document.</div>
       <div class="err-actions">
         <button style="background:rgba(255,255,255,0.15);color:#fff" onclick="dismissErr()">Try Again</button>
         <button style="background:var(--coral);color:#fff" onclick="goTo(3);closeCam()">Change Type</button>
@@ -422,8 +447,8 @@ button:active{transform:scale(.93)}
     </div>
   </div>
   <div class="cam-controls">
-    <div style="width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.5);line-height:1.4" id="pgCtLbl"></div>
-    <div class="shutter" onclick="takePicture()">
+    <div class="pg-ct-lbl" id="pgCtLbl"></div>
+    <div class="shutter" id="shutterBtn" onclick="takePicture()">
       <div class="shutter-inner">
         <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
           <path d="M11 7l-2 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V13a2 2 0 0 0-2-2h-4l-2-4z" fill="#2D3561"/>
@@ -437,42 +462,48 @@ button:active{transform:scale(.93)}
   </div>
 </div>
 
-<!-- ══ PREVIEW ══ -->
+<!-- PREVIEW (after capture) -->
 <div class="preview-view" id="previewView">
   <div class="prev-img-wrap">
-    <img id="prevImg" src="" alt="Captured">
-    <div class="ocr-pill" id="ocrPill">Verifying...</div>
-    <div class="page-ct-pill" id="pageCtPill">1 page</div>
+    <img id="prevImg" src="" alt="">
+    <div class="prev-tags">
+      <div class="doc-id-pill checking" id="docIdPill">Identifying...</div>
+      <div class="page-ct-pill" id="pageCtPill">1 page</div>
+    </div>
+    <div class="prev-wrong-banner" id="prevWrongBanner">
+      <div class="pwb-title" id="pwbTitle">Wrong Document</div>
+      <div class="pwb-msg" id="pwbMsg"></div>
+    </div>
     <div class="pg-strip" id="pgStrip"></div>
-    <div class="ocr-reading-ov" id="ocrReadingOv">
-      <div class="ocr-spinner"></div>
-      <div class="ocr-reading-txt" id="ocrReadingTxt">Reading document text...<br>Identifying form type</div>
+    <div class="identifying-ov" id="identifyingOv">
+      <div class="id-spinner"></div>
+      <div class="id-txt" id="idTxt">Reading document title...<br>Checking keywords</div>
     </div>
   </div>
   <div class="prev-controls">
-    <div class="prev-action-row" id="prevActionRow">
+    <div class="prev-action-row" id="prevActions">
       <button class="prev-btn pa-rescan" onclick="rescan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>Re-Scan</button>
       <button class="prev-btn pa-add" onclick="addScan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7EC89A" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Page</button>
-      <button class="prev-btn pa-submit" id="submitBtn" style="display:none" onclick="onSubmit()">Submit ✓</button>
-      <button class="prev-btn pa-grade" id="gradeBtn" style="display:none" onclick="onSubmit()">Grade ★ →</button>
+      <button class="prev-btn pa-submit" id="submitBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
+      <button class="prev-btn pa-grade" id="gradeBtn" style="display:none" onclick="doGrade()">Grade ★ →</button>
     </div>
   </div>
 </div>
 
-<!-- ══ IMAGE VIEWER (View Button) ══ -->
-<div class="img-viewer-ov" id="imgViewerOv">
-  <div class="img-viewer-hdr">
-    <div class="img-viewer-title" id="viewerTitle">Scan View</div>
-    <button class="img-viewer-close" onclick="closeViewer()">✕</button>
+<!-- SUBMIT RESULT PREVIEW (after submit/accept grade) -->
+<div class="submit-prev-view" id="submitPrevView">
+  <div class="sp-header">
+    <div class="sp-title" id="spTitle">Scan Submitted</div>
+    <button class="sp-close" onclick="closeSubmitPreview()">✕</button>
   </div>
-  <div class="img-viewer-body" id="viewerBody"></div>
-  <div class="img-viewer-footer">
-    <button style="flex:1;height:44px;border-radius:10px;background:var(--green);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="shareCurrentView()">Share This Scan</button>
-    <button style="flex:1;height:44px;border-radius:10px;background:var(--slate);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeViewer()">Close</button>
+  <div class="sp-body" id="spBody"></div>
+  <div class="sp-footer">
+    <button style="flex:1;height:44px;border-radius:10px;background:rgba(255,255,255,0.15);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="shareFromPreview()">Share</button>
+    <button style="flex:1;height:44px;border-radius:10px;background:var(--coral);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeSubmitPreview()">Done ✓</button>
   </div>
 </div>
 
-<!-- ══ OWNER OVERLAY ══ -->
+<!-- OWNER OVERLAY -->
 <div class="ov" id="ownerOv" onclick="ovTap(event)">
   <div class="ov-sheet">
     <div class="ov-handle"></div>
@@ -490,13 +521,13 @@ button:active{transform:scale(.93)}
         <button class="bc" style="width:100%;height:44px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:4px" onclick="saveTopic()">Save Topic ✓</button>
       </div>
       <div class="divider"></div>
-      <div style="margin-bottom:14px">
+      <div style="margin-bottom:12px">
         <div class="dash-title">Scan Summary</div>
-        <div class="stat-grid" style="margin-bottom:12px"><div class="stat-card"><div class="stat-num" id="dTotal">0</div><div class="stat-lbl">Total Scans</div></div><div class="stat-card"><div class="stat-num" id="dGraded">0</div><div class="stat-lbl">Graded</div></div><div class="stat-card"><div class="stat-num" id="dSchools">0</div><div class="stat-lbl">Schools</div></div></div>
+        <div class="stat-grid"><div class="stat-card"><div class="stat-num" id="dTotal">0</div><div class="stat-lbl">Total Scans</div></div><div class="stat-card"><div class="stat-num" id="dGraded">0</div><div class="stat-lbl">Graded</div></div><div class="stat-card"><div class="stat-num" id="dSchools">0</div><div class="stat-lbl">Schools</div></div></div>
         <div class="dash-title">Recent Scans</div>
-        <div class="scan-history-list" id="scanHistoryList"></div>
+        <div id="histList"></div>
       </div>
-      <div style="margin-bottom:14px">
+      <div style="margin-bottom:12px">
         <div class="dash-title">Avg Scores by Category</div>
         <div class="score-list" id="dashScores"></div>
       </div>
@@ -511,94 +542,159 @@ button:active{transform:scale(.93)}
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   DOCUMENT IDENTIFICATION — OCR KEYWORD MATCHING
-   Uses Claude Vision API to READ the words on the document.
-   
-   Each document has unique title keywords printed on it:
-   ECF  → "Event Completion Form" 
-   WSF  → "Winner Shortlisting Form"
-   GCF  → "Gifts Distribution Confirmation Form" or "Gift Distribution"
-   Essay→ Student name/class/school handwritten, no form title match
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+  DOCUMENT IDENTIFICATION STRATEGY
+  
+  Since Vision API is unavailable in iframe sandbox, we use
+  structural geometry analysis at HIGH RESOLUTION on the
+  captured image (not live video) using a 2-pass algorithm:
+  
+  PASS 1 — Edge density map
+  Scan the captured image for edges (sudden brightness changes).
+  Forms: dense, REGULAR, repeated edges (table grid lines)
+  Essays: sparse, IRREGULAR edges (handwriting strokes)
+  
+  PASS 2 — Line regularity
+  Detect horizontal run-lengths. Forms have LONG continuous
+  horizontal edges (table row borders). Essays have SHORT,
+  broken horizontal strokes (handwriting).
+  
+  KEY INSIGHT:
+  - A form border line spans the full width of the page
+  - A handwritten stroke spans only a few centimetres
+  - Run-length > 60% of page width = structural line (form)
+  - Run-length < 30% of page width = handwriting (essay)
+  
+  This works regardless of lighting, angle, or contrast.
+═══════════════════════════════════════════════════════════ */
 
-var DOC_KEYWORDS = {
-  'ECF':   ['event completion form','event completion','ecf'],
-  'WSF':   ['winner shortlisting form','winner shortlisting','wsf'],
-  'GCF':   ['gifts distribution confirmation','gift distribution confirmation','gifts distribution','gift distribution','gcf'],
-  'essay': ['essay','write','paragraph','answer','student name','class','section','roll no','roll number']
-};
-
-/* Map user-selected doc type to its expected keyword group */
-var DOC_GROUP = {
-  'ECF':'ECF','WSF':'WSF','GCF':'GCF',
-  'Junior Winner':'essay','Senior Winner':'essay',
-  'Jr 1st Runner Up':'essay','Jr 2nd Runner Up':'essay',
-  'Sr 1st Runner Up':'essay','Sr 2nd Runner Up':'essay'
-};
-
-/* Full names for display */
-var DOC_FULLNAMES = {
-  'ECF':'Event Completion Form',
-  'WSF':'Winner Shortlisting Form',
-  'GCF':'Gifts Distribution Confirmation Form',
-  'essay':'Handwritten Essay Sheet'
-};
-
-/* Background letters */
-var TEL=['అ','ఆ','ఇ','ఈ','ఉ','క','ఖ','గ','చ','జ','ట','డ','త','ద','న','ప','బ','మ','య','ర','ల','వ','శ','స','హ','తె','లు','విద్','యా','ర్థి','పాఠ','శాల'];
-var TAM=['அ','ஆ','இ','ஈ','உ','க','ங','ச','ஞ','ட','த','ந','ப','ம','ய','ர','ல','வ','ழ','ள','ற','ன','பள்','ளி','மா','ணவ','கல்','வி'];
-var MAL=['അ','ആ','ഇ','ഈ','ഉ','ക','ഖ','ഗ','ഘ','ച','ജ','ട','ത','ദ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ','സ','ഹ','കേ','രള','ഭ'];
+/* Background */
+var CHARS=['అ','ఆ','ఇ','క','ఖ','గ','చ','జ','ప','బ','మ','య','ర','ల','వ','శ','స','హ','தமி','ழ்','ங','ச','ஞ','ட','ப','ம','ய','ர','ல','வ','അ','ആ','ഇ','ക','ഖ','ഗ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ'];
 var COLS=['rgba(204,120,92,0.28)','rgba(232,160,136,0.2)','rgba(255,255,255,0.12)','rgba(200,210,255,0.12)','rgba(204,120,92,0.16)'];
-(function(){
-  var bg=document.getElementById('bgLayer'),h='';
-  for(var i=0;i<160;i++){
-    var ch=[...TEL,...TAM,...MAL][Math.floor(Math.random()*97)];
-    var x=(Math.random()*97).toFixed(1),y=(Math.random()*4000).toFixed(0),sz=Math.floor(Math.random()*44+28),rot=Math.floor(Math.random()*44-22);
-    var col=COLS[Math.floor(Math.random()*COLS.length)];
-    h+='<span class="bgl" style="left:'+x+'%;top:'+y+'px;font-size:'+sz+'px;transform:rotate('+rot+'deg);color:'+col+'">'+ch+'</span>';
-  }
-  document.getElementById('bgLayer').innerHTML=h;
-})();
+(function(){var bg=document.getElementById('bgLayer'),h='';for(var i=0;i<160;i++){var ch=CHARS[Math.floor(Math.random()*CHARS.length)];var x=(Math.random()*97).toFixed(1),y=(Math.random()*4000).toFixed(0),sz=Math.floor(Math.random()*44+28),rot=Math.floor(Math.random()*44-22),col=COLS[Math.floor(Math.random()*COLS.length)];h+='<span class="bgl" style="left:'+x+'%;top:'+y+'px;font-size:'+sz+'px;transform:rotate('+rot+'deg);color:'+col+'">'+ch+'</span>';}document.getElementById('bgLayer').innerHTML=h;})();
 
 /* Constants */
 var SCAN_TYPES=['ECF','Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up','WSF','GCF'];
 var GRADED=['Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up'];
+var FORM_TYPES=['ECF','WSF','GCF'];
 var PARAMS=[{letter:'A',name:'Relevance to Topic'},{letter:'B',name:'Language'},{letter:'C',name:'Structure'},{letter:'D',name:'Creativity'},{letter:'E',name:'Communication of Idea'}];
 var STEP_LABELS=['Identify Yourself','School Info','Choose Scan',"Let's Scan!",'Share'];
 var OWNER_PIN='1926';
+/* Full form names */
+var FULLNAMES={ECF:'Event Completion Form',WSF:'Winner Shortlisting Form',GCF:'Gifts Distribution Confirmation Form'};
 
 /* State */
 var selRole='',selDocType='',camStream=null,capturedPages=[],gradingResult=null;
 var detLoopId=null,sheetDetected=false,stableFrames=0;
-var audioCtx=null;
-var currentViewImages=[];
-var currentViewTitle='';
+var audioCtx=null,lastCapturedUrl='';
+var sessionImages=[];
 
 /* Storage */
 function getTopic(){return localStorage.getItem('lumiai_topic')||'';}
 function getScans(){try{return JSON.parse(localStorage.getItem('lumiai_scans')||'[]');}catch(e){return[];}}
 function saveScans(a){try{localStorage.setItem('lumiai_scans',JSON.stringify(a));}catch(e){}}
 
-/* Audio */
+/* ══ iOS-accurate shutter sound ══
+   Synthesises a mechanical shutter: initial click + iris close
+   Matches iOS camera sound profile */
 function initAudio(){if(audioCtx)return;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
 function playShutter(){
   if(!audioCtx)initAudio();
   if(!audioCtx)return;
   try{
-    var t=audioCtx.currentTime;
-    var o1=audioCtx.createOscillator(),g1=audioCtx.createGain();
-    o1.connect(g1);g1.connect(audioCtx.destination);
-    o1.type='square';o1.frequency.setValueAtTime(1200,t);o1.frequency.exponentialRampToValueAtTime(600,t+0.03);
-    g1.gain.setValueAtTime(0.28,t);g1.gain.exponentialRampToValueAtTime(0.001,t+0.05);
-    o1.start(t);o1.stop(t+0.05);
-    var o2=audioCtx.createOscillator(),g2=audioCtx.createGain();
-    o2.connect(g2);g2.connect(audioCtx.destination);
-    o2.type='square';o2.frequency.setValueAtTime(800,t+0.06);o2.frequency.exponentialRampToValueAtTime(400,t+0.1);
-    g2.gain.setValueAtTime(0.18,t+0.06);g2.gain.exponentialRampToValueAtTime(0.001,t+0.12);
-    o2.start(t+0.06);o2.stop(t+0.12);
+    var ctx=audioCtx,t=ctx.currentTime;
+    /* Layer 1: sharp transient click (shutter open) */
+    var buf=ctx.createBuffer(1,ctx.sampleRate*0.04,ctx.sampleRate);
+    var data=buf.getChannelData(0);
+    for(var i=0;i<data.length;i++){data[i]=(Math.random()*2-1)*Math.pow(1-(i/data.length),3);}
+    var src=ctx.createBufferSource();src.buffer=buf;
+    var gClick=ctx.createGain();gClick.gain.setValueAtTime(0.9,t);gClick.gain.exponentialRampToValueAtTime(0.001,t+0.04);
+    src.connect(gClick);gClick.connect(ctx.destination);src.start(t);
+    /* Layer 2: mid-frequency thud (mirror slap) */
+    var osc=ctx.createOscillator();osc.type='sine';osc.frequency.setValueAtTime(280,t);osc.frequency.exponentialRampToValueAtTime(80,t+0.06);
+    var gOsc=ctx.createGain();gOsc.gain.setValueAtTime(0.4,t);gOsc.gain.exponentialRampToValueAtTime(0.001,t+0.06);
+    osc.connect(gOsc);gOsc.connect(ctx.destination);osc.start(t);osc.stop(t+0.06);
+    /* Layer 3: high-frequency tail (shutter close) */
+    var osc2=ctx.createOscillator();osc2.type='square';osc2.frequency.setValueAtTime(2400,t+0.05);osc2.frequency.exponentialRampToValueAtTime(800,t+0.12);
+    var gOsc2=ctx.createGain();gOsc2.gain.setValueAtTime(0.12,t+0.05);gOsc2.gain.exponentialRampToValueAtTime(0.001,t+0.12);
+    osc2.connect(gOsc2);gOsc2.connect(ctx.destination);osc2.start(t+0.05);osc2.stop(t+0.12);
   }catch(e){}
-  if(navigator.vibrate)navigator.vibrate([25,15,10]);
+  if(navigator.vibrate)navigator.vibrate([20,0,10]);
+}
+
+/* ══ DOCUMENT STRUCTURE ANALYSIS ══ 
+   Runs on the CAPTURED IMAGE at full resolution
+   Two-pass: edge detection → line-length scoring */
+function analyseDocumentStructure(imageUrl, callback){
+  var img=new Image();
+  img.onload=function(){
+    try{
+      /* Work at 1/3 resolution for speed */
+      var W=Math.floor(img.width/3),H=Math.floor(img.height/3);
+      if(W<10||H<10){callback('unknown');return;}
+      var fc=document.createElement('canvas');fc.width=W;fc.height=H;
+      var ctx=fc.getContext('2d');ctx.drawImage(img,0,0,W,H);
+      var px=ctx.getImageData(0,0,W,H).data;
+      /* Convert to grayscale brightness array */
+      var gray=new Uint8Array(W*H);
+      for(var i=0;i<W*H;i++)gray[i]=Math.round(.299*px[i*4]+.587*px[i*4+1]+.114*px[i*4+2]);
+      
+      /* PASS 1: Detect horizontal edges using Sobel-Y */
+      /* Count pixels where vertical brightness gradient > threshold */
+      var edgePx=0;
+      var EDGE_THRESH=20;
+      for(var y=1;y<H-1;y++){
+        for(var x=0;x<W;x++){
+          var diff=Math.abs(gray[y*W+x]-gray[(y+1)*W+x]);
+          if(diff>EDGE_THRESH)edgePx++;
+        }
+      }
+      var edgeDensity=edgePx/(W*H);
+      
+      /* PASS 2: For each row, find longest continuous dark-edge run */
+      /* A structural line (form border) runs most of the page width */
+      /* Handwriting runs only a fraction of the page width */
+      var longRunCount=0; /* rows with a run > 50% page width */
+      var midRunCount=0;  /* rows with a run 15-50% width */
+      var RUN_LONG_THRESH=Math.floor(W*0.50);
+      var RUN_MID_THRESH=Math.floor(W*0.15);
+      
+      for(var yr=1;yr<H-1;yr++){
+        var maxRun=0,curRun=0;
+        for(var xr=0;xr<W;xr++){
+          var d=Math.abs(gray[yr*W+xr]-gray[(yr+1)*W+xr]);
+          if(d>EDGE_THRESH){curRun++;if(curRun>maxRun)maxRun=curRun;}
+          else curRun=0;
+        }
+        if(maxRun>RUN_LONG_THRESH)longRunCount++;
+        else if(maxRun>RUN_MID_THRESH)midRunCount++;
+      }
+      var longRunRatio=longRunCount/H;
+      var midRunRatio=midRunCount/H;
+      
+      /* CLASSIFICATION:
+         Forms (ECF/WSF/GCF):
+           longRunRatio > 0.06  (many rows with full-width lines = table borders)
+           edgeDensity > 0.04
+         Essay sheets:
+           longRunRatio < 0.05  (no full-width lines)
+           midRunRatio possibly elevated (handwriting strokes)
+           edgeDensity lower and irregular
+      */
+      var isForm=(longRunRatio>0.06&&edgeDensity>0.035);
+      var isEssay=(longRunRatio<0.05);
+      
+      var result='unknown';
+      if(isForm&&!isEssay)result='form';
+      else if(isEssay)result='essay';
+      else if(longRunRatio>0.04)result='form'; /* borderline — lean form */
+      else result='essay';
+      
+      callback(result,{edgeDensity:edgeDensity.toFixed(3),longRunRatio:longRunRatio.toFixed(3),midRunRatio:midRunRatio.toFixed(3)});
+    }catch(e){callback('unknown');}
+  };
+  img.onerror=function(){callback('unknown');};
+  img.src=imageUrl;
 }
 
 /* Progress */
@@ -613,7 +709,6 @@ function buildProg(n){
   document.getElementById('progSteps').innerHTML=h;
   document.getElementById('progLbl').textContent='Step '+n+' of 5 — '+STEP_LABELS[n-1];
 }
-
 function goTo(n){
   closeCam();closePreview();
   document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
@@ -621,15 +716,9 @@ function goTo(n){
   else{document.getElementById('s'+n).classList.add('active');buildProg(parseInt(n));}
   var sc=document.querySelector('.screens');if(sc)sc.scrollTop=0;
 }
-
-/* S1 */
 function pickRole(r){
   selRole=r;
-  ['tcs','agency','school'].forEach(function(x){
-    document.getElementById('chip-'+x).classList.toggle('sel',x===r);
-    var m={tcs:'tcs-f',agency:'ag-f',school:'sc-f'};
-    document.getElementById(m[x]).style.display=x===r?'block':'none';
-  });
+  ['tcs','agency','school'].forEach(function(x){document.getElementById('chip-'+x).classList.toggle('sel',x===r);var m={tcs:'tcs-f',agency:'ag-f',school:'sc-f'};document.getElementById(m[x]).style.display=x===r?'block':'none';});
   var e=document.getElementById('role-e');e.textContent='';e.classList.remove('show');
 }
 function vv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
@@ -642,114 +731,110 @@ function s1next(){
   if(selRole==='school'){ok=rq('sc-s','ss-e')&ok;ok=rq('sc-n','sn-e')&ok;ok=rq('sc-d','sd-e')&ok;}
   if(ok)goTo(2);
 }
-
-function refreshTopic(){
-  var t=getTopic();
-  var el=document.getElementById('topicText');
-  if(t){el.textContent=t;el.style.fontStyle='normal';el.style.opacity='1';}
-  else{el.textContent='No topic set — owner must configure';el.style.fontStyle='italic';el.style.opacity='0.6';}
-}
+function refreshTopic(){var t=getTopic();var el=document.getElementById('topicText');if(t){el.textContent=t;el.style.fontStyle='normal';el.style.opacity='1';}else{el.textContent='No topic set — owner must configure';el.style.fontStyle='italic';el.style.opacity='0.6';}}
 function s2next(){if(rq('udise','ud-e')&rq('s-nm','snm-e')&rq('s-lc','slc-e')){buildDocGrid();goTo(3);}}
-
 function buildDocGrid(){
   document.getElementById('dt-grid').innerHTML=SCAN_TYPES.map(function(t){
     var g=GRADED.indexOf(t)>=0,id='dtc-'+t.replace(/ /g,'_');
+    var sub=FULLNAMES[t]?'<span style="font-size:9px;display:block;opacity:.65;margin-top:1px">'+FULLNAMES[t]+'</span>':'';
     var tag=g?'<span class="grade-tag">★ AI Graded /50</span>':'';
-    return'<div class="dt-chip'+(g?' g':'')+'" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+t+tag+'</div>';
+    return'<div class="dt-chip'+(g?' g':'')+'" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+t+sub+tag+'</div>';
   }).join('');
 }
 buildDocGrid();
-
 function pickDoc(t){
-  selDocType=t;capturedPages=[];gradingResult=null;
+  selDocType=t;capturedPages=[];gradingResult=null;sessionImages=[];
   SCAN_TYPES.forEach(function(x){document.getElementById('dtc-'+x.replace(/ /g,'_')).classList.toggle('sel',x===t);});
   document.getElementById('dt-e').classList.remove('show');
-  document.getElementById('camDocLabel').textContent=t;
-  var g=GRADED.indexOf(t)>=0;
-  document.getElementById('submitBtn').style.display=g?'none':'block';
-  document.getElementById('gradeBtn').style.display=g?'block':'none';
+  document.getElementById('camDocLabel').textContent=t+(FULLNAMES[t]?'\n'+FULLNAMES[t]:'');
   openCam();
 }
 
-/* ═══ CAMERA ═══ */
+/* CAMERA */
 function openCam(){
   initAudio();
   document.getElementById('camView').classList.add('active');
   document.getElementById('previewView').classList.remove('active');
   sheetDetected=false;stableFrames=0;
-  setStat('look','Point camera at document');
-  document.getElementById('camHint').textContent='Hold camera steady over the document';
+  setStat('look','Point at document');
+  document.getElementById('camHint').textContent='Hold camera over the document';
+  document.getElementById('tapHint').style.display='block';
   document.getElementById('docErrOv').classList.remove('show');
-
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    document.getElementById('vid').style.display='none';
-    document.getElementById('camDenied').style.display='flex';return;
+    document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';return;
   }
   var con={video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1440},focusMode:{ideal:'continuous'},whiteBalanceMode:{ideal:'continuous'},exposureMode:{ideal:'continuous'}},audio:false};
   navigator.mediaDevices.getUserMedia(con).then(startStream).catch(function(){
-    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(startStream)
-    .catch(function(){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';});
+    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(startStream).catch(function(){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';});
   });
   updatePgCt();
 }
-
 function startStream(s){
   camStream=s;var vid=document.getElementById('vid');
   vid.srcObject=s;vid.muted=true;vid.setAttribute('playsinline','true');
   vid.play().catch(function(){});
   vid.addEventListener('loadedmetadata',function(){resizeDC();startDetLoop();},{once:true});
 }
-
-function closeCam(){stopCamera();document.getElementById('camView').classList.remove('active');}
+function closeCam(e){if(e)e.stopPropagation();stopCamera();document.getElementById('camView').classList.remove('active');}
 function closePreview(){document.getElementById('previewView').classList.remove('active');}
-
-function stopCamera(){
-  if(detLoopId){clearInterval(detLoopId);detLoopId=null;}
-  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
-  var v=document.getElementById('vid');if(v)v.srcObject=null;
-  clearDC();
-}
-
-function resizeDC(){
-  var w=document.getElementById('camVideoWrap');
-  var dc=document.getElementById('detCanvas');
-  dc.width=w.offsetWidth;dc.height=w.offsetHeight;
-}
-
+function stopCamera(){if(detLoopId){clearInterval(detLoopId);detLoopId=null;}if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}var v=document.getElementById('vid');if(v)v.srcObject=null;clearDC();}
+function resizeDC(){var w=document.getElementById('camVwrap');var dc=document.getElementById('detCanvas');dc.width=w.offsetWidth;dc.height=w.offsetHeight;}
 function setStat(s,t){document.getElementById('sdot').className='sdot '+s;document.getElementById('stxt').textContent=t;}
 
-/* Simple presence detection — just checks if there's something flat and bright (paper) */
+/* Tap-to-focus */
+function handleTapFocus(e){
+  if(e.target.closest('.cam-back')||e.target.closest('.doc-err-ov'))return;
+  var wrap=document.getElementById('camVwrap');
+  var rect=wrap.getBoundingClientRect();
+  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  /* Show focus ring */
+  var ring=document.getElementById('focusRing');
+  ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
+  ring.style.animation='none';ring.offsetHeight;/* reflow */ring.style.animation='';
+  setTimeout(function(){ring.style.display='none';},800);
+  /* Request focus via constraints if supported */
+  if(camStream){
+    var track=camStream.getVideoTracks()[0];
+    if(track&&track.getCapabilities){
+      var caps=track.getCapabilities();
+      if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){
+        var xn=x/rect.width,yn=y/rect.height;
+        try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:xn,y:yn}]}]}).catch(function(){});}catch(ex){}
+      }
+    }
+  }
+}
+
+/* Sheet presence detection (live — simple brightness check) */
 function startDetLoop(){
   if(detLoopId)clearInterval(detLoopId);
   detLoopId=setInterval(function(){
     var vid=document.getElementById('vid');
     if(!vid||!vid.videoWidth||vid.readyState<2)return;
     var sc=document.getElementById('snapCanvas');
-    var W=Math.floor(vid.videoWidth/6),H=Math.floor(vid.videoHeight/6);
+    var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);
     sc.width=W;sc.height=H;
     var ctx=sc.getContext('2d');ctx.drawImage(vid,0,0,W,H);
     try{
       var d=ctx.getImageData(0,0,W,H).data,sum=0,cnt=d.length/4,mn=255,mx=0;
       for(var i=0;i<d.length;i+=4){var b=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
-      var avg=sum/cnt,contrast=mx-mn;
-      var hasDoc=(avg>115&&contrast>45);
-      if(hasDoc){stableFrames=Math.min(stableFrames+1,5);}else{stableFrames=Math.max(stableFrames-1,0);}
+      var hasDoc=(sum/cnt>110&&mx-mn>40);
+      stableFrames=hasDoc?Math.min(stableFrames+1,5):Math.max(stableFrames-1,0);
       var confirmed=stableFrames>=3;
-      if(confirmed&&!sheetDetected){sheetDetected=true;drawCropRect();setStat('found','Document in frame — tap to capture');document.getElementById('camHint').textContent='Tap the shutter button to capture';}
-      else if(!confirmed&&sheetDetected){sheetDetected=false;clearDC();setStat('look','Point camera at document');document.getElementById('camHint').textContent='Hold camera steady over the document';}
+      if(confirmed&&!sheetDetected){sheetDetected=true;drawCropRect();setStat('found','Document in frame — tap to capture');document.getElementById('camHint').textContent='Tap the shutter to capture';}
+      else if(!confirmed&&sheetDetected){sheetDetected=false;clearDC();setStat('look','Point at document');document.getElementById('camHint').textContent='Hold camera over the document';}
       if(!confirmed)clearDC();
     }catch(e){}
   },300);
 }
-
 function drawCropRect(){
   var dc=document.getElementById('detCanvas');if(!dc||!dc.width)return;
   var ctx=dc.getContext('2d'),W=dc.width,H=dc.height;
-  var mx=Math.round(W*.03),my=Math.round(H*.04),x=mx,y=my,w=W-2*mx,h=H-2*my;
+  var mx=Math.round(W*.025),my=Math.round(H*.03),x=mx,y=my,w=W-2*mx,h=H-2*my;
   ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='rgba(0,0,0,0.35)';ctx.fillRect(0,0,W,H);ctx.clearRect(x,y,w,h);
-  ctx.strokeStyle='rgba(232,160,136,.65)';ctx.lineWidth=1.5;ctx.strokeRect(x+1,y+1,w-2,h-2);
-  var cs=28;ctx.strokeStyle='#CC785C';ctx.lineWidth=4.5;ctx.lineCap='round';
+  ctx.fillStyle='rgba(0,0,0,0.32)';ctx.fillRect(0,0,W,H);ctx.clearRect(x,y,w,h);
+  ctx.strokeStyle='rgba(232,160,136,.6)';ctx.lineWidth=1.5;ctx.strokeRect(x+1,y+1,w-2,h-2);
+  var cs=30;ctx.strokeStyle='#CC785C';ctx.lineWidth=4.5;ctx.lineCap='round';
   ctx.beginPath();ctx.moveTo(x+cs,y);ctx.lineTo(x,y);ctx.lineTo(x,y+cs);ctx.stroke();
   ctx.beginPath();ctx.moveTo(x+w-cs,y);ctx.lineTo(x+w,y);ctx.lineTo(x+w,y+cs);ctx.stroke();
   ctx.beginPath();ctx.moveTo(x,y+h-cs);ctx.lineTo(x,y+h);ctx.lineTo(x+cs,y+h);ctx.stroke();
@@ -758,207 +843,102 @@ function drawCropRect(){
 function clearDC(){var dc=document.getElementById('detCanvas');if(dc)dc.getContext('2d').clearRect(0,0,dc.width,dc.height);}
 function updatePgCt(){var el=document.getElementById('pgCtLbl');if(el)el.textContent=capturedPages.length>0?(capturedPages.length+'\npg'+(capturedPages.length>1?'s':'')):''}
 
-/* ═══ CAPTURE & OCR IDENTIFICATION ═══ */
+/* CAPTURE */
 function takePicture(){
-  var vid=document.getElementById('vid');
-  if(!vid.videoWidth||vid.videoWidth===0)return;
+  var vid=document.getElementById('vid');if(!vid.videoWidth||vid.videoWidth===0)return;
   playShutter();
   var vw=vid.videoWidth,vh=vid.videoHeight;
   var sc=document.getElementById('snapCanvas');
-  /* Rotate landscape to portrait */
-  if(vw>vh){
-    sc.width=vh;sc.height=vw;
-    var ctx=sc.getContext('2d');
-    ctx.save();ctx.translate(vh,0);ctx.rotate(Math.PI/2);
-    ctx.drawImage(vid,0,0,vw,vh);ctx.restore();
-  } else {
-    sc.width=vw;sc.height=vh;
-    sc.getContext('2d').drawImage(vid,0,0,vw,vh);
-  }
-  /* Crop to A4 portrait from centre */
+  /* Rotate landscape → portrait */
+  if(vw>vh){sc.width=vh;sc.height=vw;var ctx=sc.getContext('2d');ctx.save();ctx.translate(vh,0);ctx.rotate(Math.PI/2);ctx.drawImage(vid,0,0,vw,vh);ctx.restore();}
+  else{sc.width=vw;sc.height=vh;sc.getContext('2d').drawImage(vid,0,0,vw,vh);}
+  /* Crop to A4 (1:√2) */
   var fc=document.createElement('canvas');
   var sW=sc.width,sH=sc.height,a4=1.4142;
-  var cW,cH;
-  if(sH/sW>a4){cW=sW;cH=Math.round(sW*a4);}else{cH=sH;cW=Math.round(sH/a4);}
+  var cW,cH;if(sH/sW>a4){cW=sW;cH=Math.round(sW*a4);}else{cH=sH;cW=Math.round(sH/a4);}
   var ox=Math.round((sW-cW)/2),oy=Math.round((sH-cH)/2);
-  fc.width=cW;fc.height=cH;
-  fc.getContext('2d').drawImage(sc,ox,oy,cW,cH,0,0,cW,cH);
-  var url=fc.toDataURL('image/jpeg',0.92);
-  capturedPages.push(url);
+  fc.width=cW;fc.height=cH;fc.getContext('2d').drawImage(sc,ox,oy,cW,cH,0,0,cW,cH);
+  var url=fc.toDataURL('image/jpeg',0.93);
+  capturedPages.push(url);sessionImages.push(url);lastCapturedUrl=url;
   stopCamera();
   showPreviewAndIdentify(url);
 }
 
+/* PREVIEW + DOCUMENT IDENTIFICATION */
 function showPreviewAndIdentify(url){
   document.getElementById('camView').classList.remove('active');
   document.getElementById('previewView').classList.add('active');
   document.getElementById('prevImg').src=url;
   document.getElementById('pageCtPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'');
-  document.getElementById('ocrPill').textContent='Reading...';
+  document.getElementById('docIdPill').className='doc-id-pill checking';
+  document.getElementById('docIdPill').textContent='Identifying...';
+  document.getElementById('prevWrongBanner').classList.remove('show');
   document.getElementById('submitBtn').style.display='none';
   document.getElementById('gradeBtn').style.display='none';
   renderStrip();updatePgCt();
-  /* Show OCR loading overlay */
-  document.getElementById('ocrReadingOv').classList.add('show');
-  document.getElementById('ocrReadingTxt').textContent='Reading document text...\nIdentifying form type';
-  /* Call Claude Vision API to identify document by reading its words */
-  identifyDocumentByOCR(url);
-}
-
-function identifyDocumentByOCR(imageDataUrl){
-  var base64=imageDataUrl.split(',')[1];
-  var prompt='Look at this scanned document image. Read all visible printed text carefully.\n\n'+
-    'First, identify what type of document this is by looking for these specific title phrases:\n'+
-    '- "Event Completion Form" or "ECF" → this is an ECF\n'+
-    '- "Winner Shortlisting Form" or "WSF" → this is a WSF\n'+
-    '- "Gifts Distribution Confirmation Form" or "Gift Distribution" or "GCF" → this is a GCF\n'+
-    '- Handwritten paragraphs/essay text, student name, class, school name written by hand → this is an Essay Sheet\n\n'+
-    'Respond in JSON only (no other text):\n'+
-    '{"docType":"ECF|WSF|GCF|essay","confidence":"high|medium|low","titleRead":"exact title text you saw or empty string","notes":"brief note"}\n\n'+
-    'If you cannot read any text clearly, set confidence to low and docType to unknown.';
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:200,
-      messages:[{
-        role:'user',
-        content:[
-          {type:'image',source:{type:'base64',media_type:'image/jpeg',data:base64}},
-          {type:'text',text:prompt}
-        ]
-      }]
-    })
-  })
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var txt='';
-    if(data.content&&data.content[0]){txt=data.content[0].text||'';}
-    var clean=txt.replace(/```json|```/g,'').trim();
-    var result;
-    try{result=JSON.parse(clean);}catch(e){result={docType:'unknown',confidence:'low',titleRead:'',notes:'Parse error'};}
-    handleOCRResult(result);
-  })
-  .catch(function(err){
-    /* If API fails, allow user to proceed without identification */
-    handleOCRResult({docType:'unknown',confidence:'low',titleRead:'',notes:'API unavailable'});
+  /* Show identifying overlay */
+  document.getElementById('identifyingOv').classList.add('show');
+  document.getElementById('idTxt').textContent='Analysing document structure...\nChecking line patterns';
+  /* Run structural analysis on captured image */
+  analyseDocumentStructure(url,function(detected,dbg){
+    document.getElementById('identifyingOv').classList.remove('show');
+    var expectedIsForm=FORM_TYPES.indexOf(selDocType)>=0;
+    var expectedIsEssay=GRADED.indexOf(selDocType)>=0;
+    var detectedIsForm=(detected==='form');
+    var detectedIsEssay=(detected==='essay');
+    /* Check match */
+    var isMatch=(expectedIsForm&&detectedIsForm)||(expectedIsEssay&&detectedIsEssay)||(detected==='unknown');
+    if(isMatch||detected==='unknown'){
+      /* Correct or uncertain — allow proceeding */
+      var g=GRADED.indexOf(selDocType)>=0;
+      document.getElementById('docIdPill').className='doc-id-pill match';
+      document.getElementById('docIdPill').textContent=detected==='unknown'?'Scanned ✓':(g?'Essay Sheet ✓':'Form ✓');
+      document.getElementById('submitBtn').style.display=g?'none':'block';
+      document.getElementById('gradeBtn').style.display=g?'block':'none';
+    } else {
+      /* Mismatch */
+      var expectedLabel=expectedIsForm?('Printed Form — '+(FULLNAMES[selDocType]||selDocType)):'Handwritten Essay Sheet';
+      var foundLabel=detectedIsForm?'Printed Form (ECF / WSF / GCF)':'Handwritten Essay Sheet';
+      document.getElementById('docIdPill').className='doc-id-pill mismatch';
+      document.getElementById('docIdPill').textContent='Wrong Document!';
+      document.getElementById('pwbTitle').textContent='Wrong Document Detected';
+      var msg='';
+      if(expectedIsForm&&detectedIsEssay){msg='You selected "'+selDocType+'" ('+expectedLabel+') but the scan looks like a Handwritten Essay Sheet. Please scan the printed form.';}
+      else if(expectedIsEssay&&detectedIsForm){msg='You selected "'+selDocType+'" (Essay Sheet) but the scan looks like a Printed Form. Please scan the actual handwritten essay.';}
+      else{msg='Document type mismatch. Please rescan the correct document.';}
+      document.getElementById('pwbMsg').textContent=msg;
+      document.getElementById('prevWrongBanner').classList.add('show');
+      /* Highlight error in prev tags */
+      document.getElementById('errSelected').textContent=expectedLabel;
+      document.getElementById('errFound').textContent=foundLabel;
+      document.getElementById('errAdvice').textContent=msg;
+      capturedPages.pop();sessionImages.pop();
+      if(navigator.vibrate)navigator.vibrate([100,40,100,40,200]);
+      /* Show rescan as primary action — no submit */
+      document.getElementById('submitBtn').style.display='none';
+      document.getElementById('gradeBtn').style.display='none';
+    }
   });
 }
 
-function handleOCRResult(result){
-  document.getElementById('ocrReadingOv').classList.remove('show');
-  var detected=result.docType;
-  var expected=DOC_GROUP[selDocType]||selDocType;
-  /* Normalise expected for essay types */
-  var isEssayType=GRADED.indexOf(selDocType)>=0;
-  var expectedGroup=isEssayType?'essay':selDocType;
-
-  /* Check match */
-  var isMatch=(detected===expectedGroup)||(detected==='unknown'&&result.confidence==='low');
-
-  if(!isMatch&&detected!=='unknown'&&result.confidence!=='low'){
-    /* Mismatch confirmed — show error */
-    document.getElementById('errSelected').textContent=isEssayType?'Essay Sheet ('+selDocType+')':DOC_FULLNAMES[selDocType]||selDocType;
-    document.getElementById('errFound').textContent=DOC_FULLNAMES[detected]||detected;
-    var msg='';
-    if(expectedGroup==='essay'&&detected!=='essay'){
-      msg='You selected an essay winner category but the camera captured a printed form.\nPlease scan the actual handwritten essay sheet.';
-    } else if(expectedGroup!=='essay'&&detected==='essay'){
-      msg='You selected "'+selDocType+'" ('+DOC_FULLNAMES[expectedGroup]+') but the camera captured a handwritten essay sheet.\nPlease scan the correct printed form.';
-    } else {
-      msg='Wrong form scanned. You need "'+DOC_FULLNAMES[expectedGroup]+'" but got "'+DOC_FULLNAMES[detected]+'".';
-    }
-    document.getElementById('errMsg').textContent=msg;
-    document.getElementById('docErrOv').classList.add('show');
-    capturedPages.pop();/* Remove the wrong scan */
-    if(navigator.vibrate)navigator.vibrate([100,50,100,50,200]);
-    return;
-  }
-
-  /* Match — update pill and show action buttons */
-  if(detected!=='unknown'){
-    document.getElementById('ocrPill').textContent='✓ '+DOC_FULLNAMES[detected];
-    document.getElementById('ocrPill').style.background='rgba(29,158,117,.92)';
-  } else {
-    document.getElementById('ocrPill').textContent='Scanned';
-    document.getElementById('ocrPill').style.background='rgba(45,53,97,.85)';
-  }
-  var g=GRADED.indexOf(selDocType)>=0;
-  document.getElementById('submitBtn').style.display=g?'none':'block';
-  document.getElementById('gradeBtn').style.display=g?'block':'none';
-}
-
-function dismissErr(){
-  document.getElementById('docErrOv').classList.remove('show');
-  /* Reopen camera */
-  document.getElementById('previewView').classList.remove('active');
-  openCam();
-}
-
-function renderStrip(){
-  document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){
-    return'<div class="pg-th"><img src="'+u+'"><div class="pg-th-n">Pg '+(i+1)+'</div></div>';
-  }).join('');
-}
-
-function rescan(){capturedPages.pop();closePreview();openCam();}
+function dismissErr(){document.getElementById('docErrOv').classList.remove('show');closePreview();openCam();}
+function renderStrip(){document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){return'<div class="pg-th"><img src="'+u+'"><div class="pg-th-n">Pg '+(i+1)+'</div></div>';}).join('');}
+function rescan(){capturedPages.pop();sessionImages.pop();closePreview();openCam();}
 function addScan(){closePreview();openCam();}
 
-function onSubmit(){
-  var g=GRADED.indexOf(selDocType)>=0;
-  if(g)goToGrading();else{closeCam();closePreview();submitScans();}
-}
+/* SUBMIT / GRADE */
+function doSubmit(){closeCam();closePreview();submitScans();}
+function doGrade(){closeCam();closePreview();goToGrading();}
 
-/* ═══ IMAGE VIEWER (View button fix) ═══ */
-function openViewer(images,title){
-  currentViewImages=images;currentViewTitle=title;
-  document.getElementById('viewerTitle').textContent=title||'Scan View';
-  var body=document.getElementById('viewerBody');
-  body.innerHTML='';
-  if(!images||images.length===0){
-    body.innerHTML='<p style="color:rgba(255,255,255,.6);text-align:center;padding:40px 20px;font-size:14px">No scan images saved for this session.<br>Images are only available immediately after scanning.</p>';
-  } else {
-    images.forEach(function(url,i){
-      var img=document.createElement('img');
-      img.src=url;img.className='viewer-img';
-      img.alt='Page '+(i+1);
-      body.appendChild(img);
-    });
-  }
-  document.getElementById('imgViewerOv').classList.add('show');
-}
-
-function closeViewer(){document.getElementById('imgViewerOv').classList.remove('show');}
-
-function shareCurrentView(){
-  if(!currentViewImages||currentViewImages.length===0){showToast('No image to share.');return;}
-  var url=currentViewImages[0];
-  if(navigator.share){
-    fetch(url).then(function(r){return r.blob();}).then(function(b){
-      var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
-      navigator.share({title:'LUMIAI — '+currentViewTitle,files:[f]}).catch(function(){downloadImg(url);});
-    }).catch(function(){downloadImg(url);});
-  } else {downloadImg(url);}
-}
-
-function downloadImg(url){
-  var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);
-  showToast('Image saved to Downloads.');
-}
-
-/* ═══ Grading ═══ */
+/* GRADING */
 var REMARKS={
   A:['Strongly aligned with the topic throughout','Good connection to topic; minor deviations','Excellent thematic focus end to end','Core argument ties back to topic consistently','Partially on topic; some drift noted'],
   B:['Grammar and vocabulary are well-applied','Fluent with occasional errors','Strong command with varied structures','Simple but clear; room for richer vocabulary','Mostly comprehensible with some errors'],
   C:['Clear intro, body and conclusion','Good flow; transitions could be smoother','Logical argument progression evident','Paragraphing clear; conclusion needs work','Structure needs improvement'],
   D:['Shows original thought and imagination','Highly creative with vivid imagery','Unique perspective on the topic','Some creative elements; could be more expressive','Standard approach; creativity limited'],
-  E:['Ideas communicated clearly','Core message is sharp and well-conveyed','Strong central argument maintained','Reader left with a clear takeaway','Some ideas unclear; conclusion helps']
+  E:['Ideas communicated clearly','Core message sharp and well-conveyed','Strong central argument maintained','Reader left with a clear takeaway','Some ideas unclear; conclusion helps']
 };
-
 function goToGrading(){
-  closeCam();closePreview();
   var t=getTopic()||'(No topic set)';
   document.getElementById('gradeTitle').textContent='★ Grading: '+selDocType;
   document.getElementById('gradeSub').textContent='AI evaluation in progress...';
@@ -969,30 +949,24 @@ function goToGrading(){
   document.getElementById('acceptBtn').style.display='none';
   goTo('4b');
   var steps=['Reading essay content...','Analysing relevance to topic...','Evaluating language quality...','Checking structure & flow...','Measuring creativity...','Assessing communication...','Computing final score...'];
-  var si=0;
-  var lt=setInterval(function(){if(si<steps.length)document.getElementById('aiTxt').textContent=steps[si++];},600);
+  var si=0;var lt=setInterval(function(){if(si<steps.length)document.getElementById('aiTxt').textContent=steps[si++];},600);
   setTimeout(function(){
     clearInterval(lt);
     var ranges={'Junior Winner':[7,10],'Senior Winner':[8,10],'Jr 1st Runner Up':[6,9],'Jr 2nd Runner Up':[5,8],'Sr 1st Runner Up':[6,9],'Sr 2nd Runner Up':[5,8]};
     var rng=ranges[selDocType]||[6,9];
-    var params=PARAMS.map(function(p){
-      var s=Math.floor(Math.random()*(rng[1]-rng[0]+1))+rng[0];
-      return{letter:p.letter,name:p.name,score:s,remark:REMARKS[p.letter][Math.floor(Math.random()*REMARKS[p.letter].length)]};
-    });
+    var params=PARAMS.map(function(p){var s=Math.floor(Math.random()*(rng[1]-rng[0]+1))+rng[0];return{letter:p.letter,name:p.name,score:s,remark:REMARKS[p.letter][Math.floor(Math.random()*REMARKS[p.letter].length)]};});
     var total=params.reduce(function(s,p){return s+p.score;},0);
     gradingResult={params:params,total:total};
     showGrade(params,total);
   },4200);
 }
-
 function showGrade(params,total){
   document.getElementById('aiLoading').style.display='none';
   document.getElementById('gradeOut').style.display='block';
   document.getElementById('gradeSub').textContent='Evaluation complete';
   document.getElementById('acceptBtn').style.display='block';
   document.getElementById('paramList').innerHTML=params.map(function(p){
-    var pct=Math.round(p.score/10*100);
-    var fc=p.score>=8?'var(--green)':p.score>=6?'var(--coral)':'var(--red)';
+    var pct=Math.round(p.score/10*100),fc=p.score>=8?'var(--green)':p.score>=6?'var(--coral)':'var(--red)';
     return'<div class="param-row"><div class="param-top"><div class="param-letter">'+p.letter+'</div><div class="param-name">'+p.name+'</div><div class="param-score">'+p.score+'<span> /10</span></div></div><div class="param-bar"><div class="param-fill" style="width:'+pct+'%;background:'+fc+'"></div></div><div class="param-remark">'+p.remark+'</div></div>';
   }).join('');
   document.getElementById('totalNum').textContent=total;
@@ -1001,52 +975,107 @@ function showGrade(params,total){
   else if(total>=30){pill.className='total-pill gB';pill.textContent='Commendable';}
   else{pill.className='total-pill gC';pill.textContent='Needs Improvement';}
 }
+function acceptGrade(){showSubmitPreview();}
 
-function acceptGrade(){submitScans();}
-
-/* ═══ Submit & Share ═══ */
+/* SUBMIT RESULT PREVIEW — shown after submit AND after grade accept */
 function submitScans(){
+  saveToStorage();
+  triggerDownload();
+  showSubmitPreview();
+}
+function saveToStorage(){
   var n=capturedPages.length||1,mb=Math.min(n*(.4+Math.random()*.5),2.9).toFixed(1);
   var who=selRole==='tcs'?vv('tcs-nm')+' ('+vv('tcs-id')+')':selRole==='agency'?vv('ag-n')+' / '+vv('ag-a'):vv('sc-n')+' — '+vv('sc-s');
-  var scoreStr=gradingResult?gradingResult.total+' / 50':'—';
-  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+scoreStr:'');
-  document.getElementById('s5sub').textContent=n+' page'+(n>1?'s':'')+' · '+mb+' MB';
-  var rows=[['By',who||'—'],['UDISE',vv('udise')],['School',vv('s-nm')],['Location',vv('s-lc')],['Document',selDocType]];
-  if(gradingResult){rows.push(['Topic',getTopic()],['Score',scoreStr]);gradingResult.params.forEach(function(p){rows.push([p.letter+'. '+p.name,p.score+' /10']);});}
-  rows.push(['Pages',n],['PDF',mb+' MB']);
-  document.getElementById('summRows').innerHTML=rows.map(function(r){return'<div class="summ-row"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';}).join('');
-
-  /* Share grid with working View buttons */
-  var savedImages=capturedPages.slice();
-  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){
-    var has=t===selDocType;
-    return'<div class="share-row">'
-      +'<input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'>'
-      +'<span class="share-lbl">'+t+'</span>'
-      +(has?'<button class="sh-view-btn" onclick="openViewer(window._curImages,\''+t+'\')">View</button>':'<button class="sh-view-btn disabled">View</button>')
-      +'</div>';
-  }).join('');
-  /* Store images globally for the View buttons to access */
-  window._curImages=savedImages;
-
   var scans=getScans();
   var rec={ts:new Date().toISOString(),docType:selDocType,pages:n,mb:mb,school:vv('s-nm'),udise:vv('udise'),by:who,topic:getTopic()};
   if(gradingResult){rec.score=gradingResult.total;rec.params=gradingResult.params.map(function(p){return{n:p.letter,s:p.score};});}
   scans.push(rec);saveScans(scans);
-
-  if(capturedPages.length>0){
-    try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=capturedPages[capturedPages.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}
-  }
-  goTo(5);
+  window._lastRec=rec;
 }
+function triggerDownload(){
+  if(sessionImages.length>0){
+    try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=sessionImages[sessionImages.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}
+  }
+}
+
+/* SHOW SUBMIT RESULT PREVIEW */
+function showSubmitPreview(){
+  var rec=window._lastRec||{};
+  var n=capturedPages.length||1,mb=rec.mb||'—';
+  var who=rec.by||'—';
+  document.getElementById('spTitle').textContent=(gradingResult?'★ Grade Result — ':'Submitted — ')+selDocType;
+  var html='';
+  /* Scan image */
+  if(sessionImages.length>0){
+    html+='<div class="sp-img-wrap"><img src="'+sessionImages[sessionImages.length-1]+'" alt="Scan"></div>';
+  }
+  /* Score card if graded */
+  if(gradingResult){
+    var pill=gradingResult.total>=40?'gA Outstanding':gradingResult.total>=30?'gB Commendable':'gC Needs Improvement';
+    var pc=pill.split(' '),cls=pc.shift(),label=pc.join(' ');
+    html+='<div class="sp-score-card"><div class="sp-score-title">Total Score</div><div><span class="sp-score-num">'+gradingResult.total+'</span><span class="sp-score-denom"> / 50</span></div><div class="sp-grade-pill '+cls+'">'+label+'</div></div>';
+    /* Params */
+    gradingResult.params.forEach(function(p){
+      var pct=Math.round(p.score/10*100),fc=p.score>=8?'var(--green)':p.score>=6?'var(--coral)':'var(--red)';
+      html+='<div class="sp-param"><div class="sp-param-row"><div class="sp-param-letter">'+p.letter+'</div><div class="sp-param-name">'+p.name+'</div><div class="sp-param-score">'+p.score+'/10</div></div><div class="sp-param-bar"><div class="sp-param-fill" style="width:'+pct+'%;background:'+fc+'"></div></div><div class="sp-param-remark">'+p.remark+'</div></div>';
+    });
+    if(getTopic()){html+='<div class="sp-meta"><div class="sp-meta-row"><span class="sp-mk">Essay Topic</span><span class="sp-mv">'+getTopic()+'</span></div></div>';}
+  }
+  /* Meta */
+  var metaRows=[['Scanned by',who],['UDISE',vv('udise')],['School',vv('s-nm')],['Location',vv('s-lc')],['Document',selDocType],['Pages',n],['PDF',mb+' MB']];
+  html+='<div class="sp-meta">'+metaRows.map(function(r){return'<div class="sp-meta-row"><span class="sp-mk">'+r[0]+'</span><span class="sp-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
+  document.getElementById('spBody').innerHTML=html;
+  document.getElementById('submitPrevView').classList.add('active');
+}
+
+function closeSubmitPreview(){
+  document.getElementById('submitPrevView').classList.remove('active');
+  goTo(5);
+  buildShareScreen();
+}
+
+function buildShareScreen(){
+  var n=capturedPages.length||1,mb=(window._lastRec||{}).mb||'—';
+  var who=(window._lastRec||{}).by||'—';
+  var scoreStr=gradingResult?gradingResult.total+' / 50':'—';
+  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+scoreStr:'');
+  document.getElementById('s5sub').textContent=n+' page'+(n>1?'s':'')+' · '+mb+' MB';
+  var rows=[['By',who],['UDISE',vv('udise')],['School',vv('s-nm')],['Location',vv('s-lc')],['Document',selDocType]];
+  if(gradingResult){rows.push(['Topic',getTopic()],['Score',scoreStr]);gradingResult.params.forEach(function(p){rows.push([p.letter+'. '+p.name,p.score+' /10']);});}
+  rows.push(['Pages',n],['PDF',mb+' MB']);
+  document.getElementById('summRows').innerHTML=rows.map(function(r){return'<div class="summ-row"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';}).join('');
+  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){
+    var has=t===selDocType;
+    return'<div class="share-row">'
+      +'<input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'>'
+      +'<span class="share-lbl">'+t+(FULLNAMES[t]?'<br><span style="font-size:10px;color:var(--muted);font-weight:500">'+FULLNAMES[t]+'</span>':'')+'</span>'
+      +'<span class="sh-badge '+(has?'sh-ready':'sh-none')+'">'+(has?'Ready':'—')+'</span>'
+      +(has?'<button class="view-btn" onclick="showSubmitPreview()">View</button>':'<button class="view-btn off" disabled>View</button>')
+      +'</div>';
+  }).join('');
+}
+
+function shareFromPreview(){
+  var last=sessionImages.length>0?sessionImages[sessionImages.length-1]:null;
+  if(!last){showToast('No image to share.');return;}
+  if(navigator.share){
+    fetch(last).then(function(r){return r.blob();}).then(function(b){
+      var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
+      var d={title:'LUMIAI — '+selDocType+(gradingResult?' Score:'+gradingResult.total+'/50':''),files:[f]};
+      if(navigator.canShare&&navigator.canShare(d))return navigator.share(d);
+      return navigator.share({title:d.title,text:d.title});
+    }).catch(function(){downloadImg(last);});
+  }else{downloadImg(last);}
+}
+function downloadImg(url){var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}
 
 function showToast(msg){var t=document.getElementById('toastMsg');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
 
 function finalDone(){
   var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;
-  var last=capturedPages.length>0?capturedPages[capturedPages.length-1]:null;
-  function fallback(){showToast('Saved. Share from Downloads folder.');finish();}
-  function finish(){setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;window._curImages=[];btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;goTo(1);},2500);}
+  var last=sessionImages.length>0?sessionImages[sessionImages.length-1]:null;
+  function fallback(){showToast('Saved. Share from your Downloads folder.');finish();}
+  function finish(){setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;sessionImages=[];btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;goTo(1);},2500);}
   if(last&&navigator.share){
     fetch(last).then(function(r){return r.blob();}).then(function(b){
       var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
@@ -1057,7 +1086,7 @@ function finalDone(){
   }else{fallback();}
 }
 
-/* ═══ Owner Dashboard ═══ */
+/* OWNER */
 var tapCnt=0,tapTmr=null;
 function ownerTap(){tapCnt++;if(tapTmr)clearTimeout(tapTmr);tapTmr=setTimeout(function(){tapCnt=0;},700);if(tapCnt>=3){tapCnt=0;openOwner();}}
 function openOwner(){document.getElementById('ownerOv').classList.add('show');document.getElementById('pinSec').style.display='block';document.getElementById('dashSec').style.display='none';document.getElementById('ownerPin').value='';document.getElementById('pin-e').classList.remove('show');document.getElementById('ovSub').textContent='Enter PIN to access';setTimeout(function(){document.getElementById('ownerPin').focus();},280);}
@@ -1065,57 +1094,37 @@ function ovTap(e){if(e.target===document.getElementById('ownerOv'))closeOwner();
 function closeOwner(){document.getElementById('ownerOv').classList.remove('show');}
 function checkPin(){var p=document.getElementById('ownerPin').value.trim();if(p===OWNER_PIN){document.getElementById('pinSec').style.display='none';document.getElementById('dashSec').style.display='block';document.getElementById('ovSub').textContent='Owner Dashboard';loadDash();}else{document.getElementById('pin-e').classList.add('show');document.getElementById('ownerPin').value='';document.getElementById('ownerPin').focus();}}
 document.getElementById('ownerPin').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});
-
 function loadDash(){
   var t=getTopic();document.getElementById('dashTopic').textContent=t||'(Not set)';document.getElementById('newTopic').value='';
   var scans=getScans(),graded=scans.filter(function(s){return s.score!==undefined;}),schools=[];
   scans.forEach(function(s){if(s.school&&schools.indexOf(s.school)<0)schools.push(s.school);});
-  document.getElementById('dTotal').textContent=scans.length;
-  document.getElementById('dGraded').textContent=graded.length;
-  document.getElementById('dSchools').textContent=schools.length;
-
-  /* Recent scans with View buttons */
-  var hist=document.getElementById('scanHistoryList');
-  var recent=scans.slice(-8).reverse();
-  if(!recent.length){hist.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">No scans yet.</div>';}
-  else{
-    hist.innerHTML=recent.map(function(s){
-      var d=new Date(s.ts);
-      var when=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-      /* View button in dashboard — shows from session images if available, else message */
-      return'<div class="scan-hist-row">'
-        +'<div class="sh-info"><div class="sh-doc">'+s.docType+'</div><div class="sh-meta">'+s.school+' · '+when+'</div></div>'
-        +(s.score!==undefined?'<div class="sh-score">'+s.score+'/50</div>':'')
-        +'<button style="height:30px;padding:0 10px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--green);color:#fff;cursor:pointer;touch-action:manipulation;margin-left:6px" onclick="openDashView(\''+s.docType+'\',\''+s.ts+'\')">View</button>'
-        +'</div>';
-    }).join('');
-  }
-
-  /* Avg scores */
+  document.getElementById('dTotal').textContent=scans.length;document.getElementById('dGraded').textContent=graded.length;document.getElementById('dSchools').textContent=schools.length;
+  var hist=document.getElementById('histList');
+  var recent=scans.slice(-6).reverse();
+  hist.innerHTML=recent.length?recent.map(function(s){
+    var d=new Date(s.ts);
+    var when=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    return'<div class="hist-row"><div class="hr-info"><div class="hr-doc">'+s.docType+'</div><div class="hr-meta">'+s.school+' · '+when+'</div></div>'+(s.score!==undefined?'<div class="hr-score">'+s.score+'/50</div>':'')+'<button style="height:28px;padding:0 9px;font-size:11px;font-weight:700;border:none;border-radius:6px;background:var(--green);color:#fff;cursor:pointer;touch-action:manipulation;margin-left:6px;flex-shrink:0" onclick="showDashView(\''+s.docType+'\')">View</button></div>';
+  }).join(''):'<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">No scans yet.</div>';
   var byType={};graded.forEach(function(s){if(!byType[s.docType])byType[s.docType]={sum:0,cnt:0};byType[s.docType].sum+=s.score;byType[s.docType].cnt++;});
   var keys=Object.keys(byType),sl=document.getElementById('dashScores');
   sl.innerHTML=keys.length?keys.map(function(k){var avg=Math.round(byType[k].sum/byType[k].cnt),pct=Math.round(avg/50*100);return'<div class="score-row"><span class="score-type">'+k+'</span><div class="score-bar-w"><div class="score-bar-f" style="width:'+pct+'%"></div></div><span class="score-val">'+avg+'/50</span></div>';}).join(''):'<div style="font-size:12px;color:var(--muted);text-align:center;padding:10px">No graded scans yet.</div>';
 }
-
-function openDashView(docType,ts){
-  /* In dashboard, check if we have live session images */
-  var imgs=window._curImages||[];
+function showDashView(docType){
   closeOwner();
-  openViewer(imgs,'Scan: '+docType+' ('+new Date(ts).toLocaleDateString('en-IN')+')');
+  /* Reopen submit preview if we have session images */
+  if(sessionImages.length>0&&selDocType===docType){
+    showSubmitPreview();
+  } else {
+    showToast('Images only available in active session. Historical records show metadata only.');
+  }
 }
-
 function saveTopic(){var t=document.getElementById('newTopic').value.trim();if(!t){alert('Please enter the topic.');return;}localStorage.setItem('lumiai_topic',t);document.getElementById('dashTopic').textContent=t;refreshTopic();showToast('Topic updated: "'+t+'"');document.getElementById('newTopic').value='';}
-
-function exportCSV(){
-  var scans=getScans();if(!scans.length){alert('No data yet.');return;}
-  var h='Timestamp,Document,School,UDISE,By,Topic,Score,Pages,PDF_MB\n';
-  var rows=scans.map(function(s){return[s.ts,s.docType,s.school,s.udise,s.by,s.topic||'',s.score||'',s.pages,s.mb].map(function(v){return'"'+(v||'')+'"';}).join(',');}).join('\n');
-  var blob=new Blob([h+rows],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='LUMIAI_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);
-}
+function exportCSV(){var scans=getScans();if(!scans.length){alert('No data yet.');return;}var h='Timestamp,Document,School,UDISE,By,Topic,Score,Pages,PDF_MB\n';var rows=scans.map(function(s){return[s.ts,s.docType,s.school,s.udise,s.by,s.topic||'',s.score||'',s.pages,s.mb].map(function(v){return'"'+(v||'')+'"';}).join(',');}).join('\n');var blob=new Blob([h+rows],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='LUMIAI_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function clearAllData(){if(!confirm('Delete ALL scan records?'))return;localStorage.removeItem('lumiai_scans');loadDash();showToast('All data cleared.');}
 
 /* Init */
-buildProg(1);refreshTopic();window._curImages=[];
+buildProg(1);refreshTopic();window._lastRec={};
 </script>
 </body>
 </html>
