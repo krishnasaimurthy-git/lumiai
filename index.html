@@ -190,6 +190,29 @@ button:active{transform:scale(.93)}
 .rv-mk{font-size:12px;color:var(--mu)}.rv-mv{font-size:12px;font-weight:700;color:var(--tx);text-align:right;max-width:55%;word-break:break-word}
 .rv-foot{background:#111;padding:12px 14px max(env(safe-area-inset-bottom),12px);display:flex;gap:10px;flex-shrink:0}
 
+/* SCAN NEXT PANEL inside Result View */
+.scan-next-panel{background:#1A2342;border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.snp-title{font-size:12px;font-weight:800;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.snp-title:before{content:'';display:inline-block;width:3px;height:13px;background:var(--co);border-radius:2px;flex-shrink:0}
+.snp-chips{display:flex;flex-wrap:wrap;gap:7px}
+.snp-chip{padding:7px 12px;border-radius:22px;font-size:12px;font-weight:700;cursor:pointer;touch-action:manipulation;transition:transform .06s,background .08s;border:none;display:flex;align-items:center;gap:5px}
+.snp-chip:active{transform:scale(.92)}
+.snp-chip.form-chip{background:rgba(255,255,255,.12);color:#fff}
+.snp-chip.form-chip:hover{background:rgba(255,255,255,.2)}
+.snp-chip.essay-chip{background:rgba(107,82,200,.35);color:#C5B8F0}
+.snp-chip.essay-chip:hover{background:rgba(107,82,200,.5)}
+.snp-chip.done-chip{background:rgba(29,158,117,.2);color:#5DCAA5;pointer-events:none}
+.snp-chip-tick{width:14px;height:14px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.snp-all-done{font-size:13px;color:rgba(255,255,255,.6);text-align:center;padding:8px 0;font-style:italic}
+
+/* SESSION SUMMARY on S5 */
+.sess-list{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.sess-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:var(--sf);border:1.5px solid var(--bd)}
+.sess-doc{flex:1;font-size:13px;font-weight:700;color:var(--tx)}
+.sess-score{font-size:13px;font-weight:800;color:var(--sl);flex-shrink:0}
+.sess-vbtn{height:30px;padding:0 10px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--gr);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.sess-vbtn:active{background:var(--gr2)}
+
 /* GRADING */
 .gpanel{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.22)}
 .ghdr{padding:14px 18px 11px;background:linear-gradient(135deg,var(--sl),var(--sl2));text-align:center}
@@ -378,15 +401,22 @@ button:active{transform:scale(.93)}
     <!-- S5 Share -->
     <div class="screen" id="s5">
       <div class="card">
-        <div class="chdr"><div class="cstep">Step 5 of 5</div><div class="ctitle">Share Scans</div><div class="csub">Save to device · share via WhatsApp / Email</div></div>
+        <div class="chdr"><div class="cstep">Session Complete</div><div class="ctitle">Session Summary</div><div class="csub" id="s5sub">All scans for this school</div></div>
         <div class="cbody">
-          <div class="suc-wrap"><div class="tick-big"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="s5ok" id="s5ok">Saved!</div><div class="s5sub" id="s5sub"></div></div>
-          <div class="pdfnote"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--co2)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Saved on device · no cloud</div>
-          <div style="background:var(--sf);border-radius:10px;padding:10px 12px;margin-bottom:12px" id="sumRows"></div>
-          <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Scans in this session</div>
-          <div class="sgrid" id="shareGrid"></div>
+          <div class="suc-wrap"><div class="tick-big"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="s5ok" id="s5ok">Session Saved!</div></div>
+          <div class="pdfnote"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--co2)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All scans saved on device · no cloud</div>
+          <!-- Session scans list -->
+          <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Documents scanned this session</div>
+          <div class="sess-list" id="sessList"></div>
+          <!-- Scan another -->
+          <button style="width:100%;height:46px;border-radius:12px;background:#1A2342;color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(204,120,92,.5);cursor:pointer;touch-action:manipulation;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px" onclick="scanAnotherFromS5()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            Scan Another Document
+          </button>
           <div class="toast" id="toast"></div>
-          <div class="br"><button class="bb" onclick="openCam()">← Back</button><button class="bc" id="doneBtn" onclick="finalDone()">Share &amp; Done ✓</button></div>
+          <div class="br">
+            <button class="bc" id="doneBtn" onclick="finalDone()">Share &amp; End Session ✓</button>
+          </div>
         </div>
       </div>
     </div>
@@ -470,8 +500,12 @@ button:active{transform:scale(.93)}
   <div class="rv-hdr"><div class="rv-title" id="rvTitle">Scan Result</div><button class="rv-close" onclick="closeRView()">✕</button></div>
   <div class="rv-body" id="rvBody"></div>
   <div class="rv-foot">
-    <button style="flex:1;height:44px;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="shareResult()">Share</button>
-    <button style="flex:1;height:44px;border-radius:10px;background:var(--co);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeRView()">Done ✓</button>
+    <button style="flex:0;height:44px;padding:0 14px;border-radius:10px;background:rgba(255,255,255,.13);color:#fff;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.2);cursor:pointer;touch-action:manipulation" onclick="shareResult()">Share</button>
+    <button style="flex:1;height:44px;border-radius:10px;background:#2D3561;color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(204,120,92,.6);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;gap:6px" onclick="scanNextDoc()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      Scan Next Doc
+    </button>
+    <button style="flex:0;height:44px;padding:0 14px;border-radius:10px;background:var(--gr);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeRView()">Done ✓</button>
   </div>
 </div>
 
@@ -550,6 +584,8 @@ var audioCtx=null,sessionImgs=[];
 var tesseractWorker=null;
 /* Crop animation */
 var cropR={x:.03,y:.04,w:.94,h:.92},cropT={x:.03,y:.04,w:.94,h:.92},animId=null;
+/* Session — tracks ALL docs scanned for same school without re-entering info */
+var sessionScans=[]; /* [{docType, score, pages, imgUrl}] */
 
 /* Storage */
 function getTopic(){return localStorage.getItem('lumiai_topic')||'';}
@@ -652,7 +688,7 @@ function s1next(){
   if(selRole==='tcs'){ok=rq('tid','tid-e')&ok;ok=rq('tnm','tnm-e')&ok;ok=rq('tlc','tlc-e')&ok;}
   if(selRole==='agency'){ok=rq('aa','aa-e')&ok;ok=rq('an','an-e')&ok;ok=rq('am','am-e')&ok;}
   if(selRole==='school'){ok=rq('ss','ss-e')&ok;ok=rq('sn','sn-e')&ok;ok=rq('sd','sd-e')&ok;}
-  if(ok)goTo(2);
+  if(ok){sessionScans=[];goTo(2);}
 }
 function refreshTopic(){var t=getTopic();var el=document.getElementById('topicTxt');if(t){el.textContent=t;el.style.fontStyle='normal';el.style.opacity='1';}else{el.textContent='No topic set — owner must configure';el.style.fontStyle='italic';el.style.opacity='.6';}}
 function s2next(){if(rq('udise','ud-e')&rq('snm','snm-e')&rq('slc','slc-e')){buildDocGrid();goTo(3);}}
@@ -896,8 +932,11 @@ function saveRecord(){
   if(gradingResult){rec.score=gradingResult.total;rec.params=gradingResult.params.map(function(p){return{n:p.l,s:p.score};});}
   var scans=getScans();scans.push(rec);saveScans(scans);
   window._rec=rec;window._imgs=sessionImgs.slice();
+  /* Add to session tracker */
+  sessionScans.push({docType:selDocType,score:gradingResult?gradingResult.total:null,pages:n,imgUrl:sessionImgs.length>0?sessionImgs[sessionImgs.length-1]:null,gradingResult:gradingResult?{params:gradingResult.params,total:gradingResult.total}:null});
   if(sessionImgs.length>0){try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=sessionImgs[sessionImgs.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}}
 }
+
 function showRView(){
   var rec=window._rec||{},imgs=window._imgs||[];
   document.getElementById('rvTitle').textContent=(gradingResult?'★ Grade Result — ':'')+selDocType;
@@ -911,22 +950,102 @@ function showRView(){
   }
   var mrows=[['Scanned by',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType],['Pages',rec.pages||1],['PDF',rec.mb+' MB']];
   h+='<div class="rv-meta">'+mrows.map(function(r){return'<div class="rv-mr"><span class="rv-mk">'+r[0]+'</span><span class="rv-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
+  /* Scan Next panel — show remaining doc types as quick-tap chips */
+  var scannedTypes=sessionScans.map(function(s){return s.docType;});
+  var remaining=SCAN_TYPES.filter(function(t){return scannedTypes.indexOf(t)<0;});
+  h+='<div class="scan-next-panel"><div class="snp-title">Quick — Scan Another Document</div><div class="snp-chips">';
+  if(remaining.length===0){
+    h+='<div class="snp-all-done">✓ All document types scanned for this school!</div>';
+  } else {
+    remaining.forEach(function(t){
+      var isGraded=GRADED.indexOf(t)>=0;
+      var cls=isGraded?'essay-chip':'form-chip';
+      var sub=FULLNAMES[t]?'<span style="font-size:9px;opacity:.7;font-weight:500;display:block;margin-top:1px">'+FULLNAMES[t]+'</span>':'';
+      h+='<button class="snp-chip '+cls+'" onclick="quickScanNext(\''+t+'\')">'+(isGraded?'★ ':'')+t+sub+'</button>';
+    });
+    scannedTypes.forEach(function(t){
+      h+='<button class="snp-chip done-chip"><div class="snp-chip-tick"><svg width="8" height="8" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5L8 2" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg></div>'+t+'</button>';
+    });
+  }
+  h+='</div></div>';
   document.getElementById('rvBody').innerHTML=h;
   document.getElementById('rView').classList.add('active');
 }
+
+/* Tap a chip in Result View to scan next doc immediately */
+function quickScanNext(docType){
+  document.getElementById('rView').classList.remove('active');
+  /* Reset just the scan state — keep school info */
+  capturedPages=[];gradingResult=null;sessionImgs=[];
+  selDocType=docType;
+  SCAN_TYPES.forEach(function(x){var el=document.getElementById('dtc-'+x.replace(/ /g,'_'));if(el)el.classList.toggle('sel',x===docType);});
+  document.getElementById('camDoc').textContent=docType+(FULLNAMES[docType]?'\n'+FULLNAMES[docType]:'');
+  openCam();
+}
+
+/* Scan Another button on Result View footer */
+function scanNextDoc(){
+  document.getElementById('rView').classList.remove('active');
+  capturedPages=[];gradingResult=null;sessionImgs=[];
+  /* Go to doc type picker, keep school info */
+  buildDocGrid();goTo(3);
+  /* Highlight already-scanned types */
+  var scannedTypes=sessionScans.map(function(s){return s.docType;});
+  setTimeout(function(){
+    scannedTypes.forEach(function(t){
+      var el=document.getElementById('dtc-'+t.replace(/ /g,'_'));
+      if(el){el.style.opacity='.5';el.style.position='relative';el.title='Already scanned';}
+    });
+  },100);
+}
+
+/* Scan Another button on S5 */
+function scanAnotherFromS5(){
+  capturedPages=[];gradingResult=null;sessionImgs=[];
+  buildDocGrid();goTo(3);
+  var scannedTypes=sessionScans.map(function(s){return s.docType;});
+  setTimeout(function(){
+    scannedTypes.forEach(function(t){
+      var el=document.getElementById('dtc-'+t.replace(/ /g,'_'));
+      if(el){el.style.opacity='.5';el.title='Already scanned';}
+    });
+  },100);
+}
+
 function closeRView(){document.getElementById('rView').classList.remove('active');buildShareScreen();goTo(5);}
+
 function buildShareScreen(){
-  var rec=window._rec||{},scoreStr=gradingResult?gradingResult.total+' / 50':'—';
-  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+scoreStr:'');
-  document.getElementById('s5sub').textContent=(rec.pages||1)+' page(s) · '+(rec.mb||'—')+' MB';
-  var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType]];
-  if(gradingResult){rows.push(['Topic',getTopic()],['Score',scoreStr]);gradingResult.params.forEach(function(p){rows.push([p.l+'. '+p.n,p.score+' /10']);});}
-  rows.push(['Pages',rec.pages||1],['PDF',(rec.mb||'—')+' MB']);
-  document.getElementById('sumRows').innerHTML=rows.map(function(r){return'<div class="smrow"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';}).join('');
-  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){
-    var has=t===selDocType;
-    return'<div class="srow"><input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'><span class="slbl">'+t+(FULLNAMES[t]?'<br><span style="font-size:10px;color:var(--mu);font-weight:500">'+FULLNAMES[t]+'</span>':'')+'</span><span class="sbadge '+(has?'sb-r':'sb-n')+'">'+(has?'Ready':'—')+'</span>'+(has?'<button class="vbtn" onclick="showRView()">View</button>':'<button class="vbtn off" disabled>View</button>')+'</div>';
-  }).join('');
+  var schoolName=vv('snm')||'—';
+  var totalScanned=sessionScans.length;
+  document.getElementById('s5ok').textContent='Session Saved — '+schoolName;
+  document.getElementById('s5sub').textContent=totalScanned+' document'+(totalScanned>1?'s':'')+' scanned this session';
+  /* Session list */
+  var sl=document.getElementById('sessList');
+  if(sessionScans.length===0){
+    sl.innerHTML='<div style="font-size:12px;color:var(--mu);text-align:center;padding:12px">No scans in this session yet.</div>';
+  } else {
+    sl.innerHTML=sessionScans.map(function(s,i){
+      var scoreStr=s.score!==null?s.score+'/50':'—';
+      var viewBtn=s.imgUrl?'<button class="sess-vbtn" onclick="viewSessionScan('+i+')">View</button>':'';
+      return'<div class="sess-item">'
+        +'<div style="width:32px;height:32px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/></svg></div>'
+        +'<div class="sess-doc"><div style="font-size:13px;font-weight:700;color:var(--tx)">'+s.docType+'</div>'+(FULLNAMES[s.docType]?'<div style="font-size:10px;color:var(--mu)">'+FULLNAMES[s.docType]+'</div>':'')+'</div>'
+        +(s.score!==null?'<div class="sess-score">'+scoreStr+'</div>':'')
+        +viewBtn
+        +'</div>';
+    }).join('');
+  }
+}
+
+function viewSessionScan(idx){
+  var s=sessionScans[idx];
+  if(!s||!s.imgUrl){showToast('No image for this scan.');return;}
+  /* Temporarily load this scan's data into rView */
+  window._rec={docType:s.docType,pages:s.pages,mb:'—',by:vv('tnm')||vv('an')||vv('sn')};
+  window._imgs=[s.imgUrl];
+  gradingResult=s.gradingResult;
+  selDocType=s.docType;
+  showRView();
 }
 function shareResult(){
   var imgs=window._imgs||[];if(!imgs.length){showToast('No image available.');return;}
@@ -935,7 +1054,7 @@ function shareResult(){
 }
 function dlImg(url){var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
-function finalDone(){var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;shareResult();setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;sessionImgs=[];btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;goTo(1);},3000);}
+function finalDone(){var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;shareResult();setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;sessionImgs=[];sessionScans=[];btn.textContent='Share & End Session ✓';btn.style.background='';btn.disabled=false;goTo(1);},3000);}
 
 /* OWNER */
 var tapCnt=0,tapTmr=null;
