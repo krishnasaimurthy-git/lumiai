@@ -83,124 +83,102 @@ button:active{transform:scale(.93)}
 .dtc-sub{font-size:9px;color:var(--mu);display:block;margin-top:2px;font-weight:500;line-height:1.2}
 .dtc.sel .dtc-sub{color:rgba(255,255,255,.75)}
 
-/* ══ CAMERA ══ */
+/* ══ CAMERA — Apple Notes Scanner ══ */
 .camv{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
 .camv.active{display:flex}
 .camwrap{position:relative;flex:1;overflow:hidden;background:#000}
 #vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#cropCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
-/* Document detection outline */
+#cropCanvas{display:none}
 #docOutlineCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
-/* Status pill */
-.cam-top{position:absolute;top:max(env(safe-area-inset-top),60px);left:0;right:0;display:flex;justify-content:center;z-index:12;pointer-events:none}
-.cpill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);border-radius:22px;padding:6px 16px;font-size:13px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,.15)}
-.sdot{width:9px;height:9px;border-radius:50%;background:#888;transition:background .3s;flex-shrink:0}
-.sdot.look{background:#F0A020;animation:pulse 1.1s infinite}
-.sdot.found{background:var(--gr)}
-.sdot.bad{background:var(--rd)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
-/* Doc label top-right */
-.cam-doc{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:14;background:rgba(204,120,92,.92);border-radius:10px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;max-width:160px;text-align:center;line-height:1.3}
-/* Flash */
-.cam-flash-ov{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .07s}
-.cam-flash-ov.pop{opacity:.88}
-/* Grid */
-.cam-grid-ov{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .22s}
+.cam-grid-ov{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .2s}
 .cam-grid-ov.show{opacity:1}
-/* Hint at bottom of viewfinder */
-.cam-hint{position:absolute;bottom:110px;left:0;right:0;text-align:center;z-index:12;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.9);font-weight:600;padding:0 20px}
-/* Tap area */
+.cam-flash-ov{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .06s}
+.cam-flash-ov.pop{opacity:.9}
 .tap-area{position:absolute;inset:0;z-index:6;cursor:crosshair}
-/* Denied */
-.cam-denied{position:absolute;inset:0;z-index:22;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;background:rgba(0,0,0,.92)}
-.cam-denied p{color:#fff;font-size:14px;text-align:center;line-height:1.7}
-/* Doc err overlay */
-.doc-err{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.93);padding:22px 20px;gap:12px}
+/* Status pill */
+.cam-status-pill{position:absolute;bottom:max(env(safe-area-inset-bottom),105px);left:50%;transform:translateX(-50%);z-index:14;pointer-events:none;background:rgba(0,0,0,.58);backdrop-filter:blur(12px);border-radius:22px;padding:7px 18px;font-size:13px;font-weight:500;color:#fff;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .3s}
+.sdot.look{background:#FF9F0A;animation:blink 1.1s infinite}
+.sdot.found{background:#30D158}
+.sdot.bad{background:#FF453A}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+/* Doc type pill */
+.cam-doc-pill{position:absolute;top:max(env(safe-area-inset-top),16px);left:50%;transform:translateX(-50%);z-index:15;pointer-events:none;background:rgba(0,0,0,.58);backdrop-filter:blur(12px);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.9);white-space:nowrap;border:1px solid rgba(255,255,255,.12)}
+/* Camera denied */
+.cam-denied{position:absolute;inset:0;z-index:22;display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px;background:rgba(0,0,0,.9)}
+.cam-denied p{color:rgba(255,255,255,.88);font-size:15px;text-align:center;line-height:1.7}
+/* Doc err */
+.doc-err{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.94);padding:24px 22px;gap:14px}
 .doc-err.show{display:flex}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-.de-icon{width:58px;height:58px;border-radius:50%;background:var(--rd);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .4s ease}
-.de-title{font-size:18px;font-weight:900;color:#fff;text-align:center}
-.de-band{border-radius:10px;padding:10px 14px;width:100%;text-align:center}
-.de-sel{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.4)}
-.de-found{background:rgba(217,79,79,.2);border:1px solid rgba(217,79,79,.4)}
-.de-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
-.de-val{font-size:13px;font-weight:800;color:#fff;line-height:1.3}
-.de-msg{font-size:13px;color:rgba(255,255,255,.72);text-align:center;line-height:1.6;max-width:330px}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.de-icon{width:60px;height:60px;border-radius:50%;background:#FF453A;display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .35s ease}
+.de-title{font-size:19px;font-weight:700;color:#fff;text-align:center;letter-spacing:-.3px}
+.de-band,.de-sel,.de-found,.de-lbl,.de-val{display:none}
+.de-msg{font-size:14px;color:rgba(255,255,255,.7);text-align:center;line-height:1.6;max-width:300px}
 .de-btns{display:flex;gap:10px;width:100%}
-.de-btns button{height:46px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;flex:1}
+.de-btns button{height:48px;border-radius:14px;font-size:15px;font-weight:600;border:none;cursor:pointer;touch-action:manipulation;flex:1}
+/* Top bar */
+.cam-topbar{position:absolute;top:0;left:0;right:0;z-index:14;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 22px 10px}
+.cam-cancel-btn,.cam-done-btn{background:none;border:none;font-size:17px;cursor:pointer;touch-action:manipulation;padding:4px 0;-webkit-tap-highlight-color:transparent;font-family:inherit;letter-spacing:-.2px}
+.cam-cancel-btn{font-weight:400;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
+.cam-cancel-btn:active{opacity:.45}
+.cam-done-btn{font-weight:600;color:#FFD60A;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.cam-done-btn:active{opacity:.45}
+.cam-top-icons{display:flex;gap:20px;align-items:center}
+.cam-icon-btn{width:34px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;padding:0}
+.cam-icon-btn:active{opacity:.45}
+.cam-icon-btn span{font-size:9px;color:rgba(255,255,255,.75);font-weight:500;letter-spacing:.3px;line-height:1}
+.cam-icon-btn.on svg *{stroke:#FFD60A}
+.cam-icon-btn.on span{color:#FFD60A}
+/* Shutter */
+.shutbar{background:rgba(0,0,0,.88);flex-shrink:0;display:flex;align-items:center;justify-content:center;border-top:1px solid rgba(255,255,255,.07);padding:18px 28px max(env(safe-area-inset-bottom),28px);position:relative}
+.shutter{width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,.22);border:4px solid rgba(255,255,255,.82);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s;-webkit-tap-highlight-color:transparent}
+.shutter:active{transform:scale(.87)}
+.shut-inner{width:64px;height:64px;border-radius:50%;background:#fff}
+.pglbl{position:absolute;right:28px;font-size:12px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:.2px}
 
-/* ── CAMERA TOP CONTROLS ── */
-.cam-top-controls{position:absolute;top:0;left:0;right:0;z-index:14;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 18px 0}
-.cam-circle-btn{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;border:none;transition:transform .07s,opacity .12s;-webkit-tap-highlight-color:transparent}
-.cam-circle-btn:active{transform:scale(.87)}
-.cam-x-btn{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.3)}
-.cam-tick-btn{background:#FFD600;border:2px solid rgba(255,220,0,.5);box-shadow:0 2px 16px rgba(255,214,0,.4)}
-.cam-mid-btns{display:flex;gap:14px;align-items:center}
-.ccbtn{width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:manipulation;flex-shrink:0}
-.ccbtn:active{background:rgba(255,255,255,.18);transform:scale(.88)}
-.ccbtn.on{background:rgba(255,215,0,.28);border-color:#FFD600}
-.ccbtn span{font-size:8px;color:rgba(255,255,255,.6);line-height:1;font-weight:600}
-
-/* ── SHUTTER BAR ── */
-.shutbar{background:rgba(0,0,0,.0);padding-bottom:max(env(safe-area-inset-bottom),24px);padding-top:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
-/* large capture button — 90px circle, 50pt tap target */
-.shutter{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.18);border:4px solid rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s;-webkit-tap-highlight-color:transparent;position:relative}
-.shutter:active{transform:scale(.88)}
-.shut-inner{width:72px;height:72px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
-/* page count badge */
-.pglbl{position:absolute;left:50%;transform:translateX(-50%);bottom:max(env(safe-area-inset-bottom),24px);margin-bottom:96px;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);pointer-events:none;z-index:8;white-space:nowrap}
-
-/* ══ PREVIEW ══ */
-.prevv{position:fixed;inset:0;z-index:110;background:#000;display:none;flex-direction:column}
+/* ══ PREVIEW — Apple "Keep Scan" ══ */
+.prevv{position:fixed;inset:0;z-index:110;background:#1C1C1E;display:none;flex-direction:column}
 .prevv.active{display:flex}
-/* Top bar: Retake left | Keep right */
-.ptopbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 18px 14px;background:linear-gradient(rgba(0,0,0,.75),transparent)}
-.ptb-back{width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-direction:column;gap:3px}
-.ptb-back span{font-size:9px;color:rgba(255,255,255,.8);font-weight:700;line-height:1}
-.ptb-back:active{background:rgba(0,0,0,.9);transform:scale(.88)}
-.ptb-keep{width:52px;height:52px;border-radius:50%;background:#1D9E75;border:2px solid rgba(80,220,140,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-direction:column;gap:3px;box-shadow:0 2px 16px rgba(29,158,117,.4)}
-.ptb-keep span{font-size:9px;color:#fff;font-weight:700;line-height:1}
-.ptb-keep:active{background:#0F6E56;transform:scale(.88)}
-/* Image area */
+.prev-topbar-apple{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 22px 12px;background:#1C1C1E;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.prev-retake-btn,.prev-keep-btn{background:none;border:none;font-size:17px;cursor:pointer;touch-action:manipulation;padding:4px 0;-webkit-tap-highlight-color:transparent;font-family:inherit;letter-spacing:-.2px}
+.prev-retake-btn{font-weight:400;color:#fff}
+.prev-retake-btn:active{opacity:.45}
+.prev-keep-btn{font-weight:600;color:#FFD60A}
+.prev-keep-btn:active{opacity:.45}
+.id-pill{font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;flex-shrink:0;letter-spacing:.1px}
+.id-pill.ok{background:rgba(48,209,88,.18);color:#30D158;border:1px solid rgba(48,209,88,.28)}
+.id-pill.ng{background:rgba(255,69,58,.18);color:#FF6B6B;border:1px solid rgba(255,69,58,.28)}
+.id-pill.wait{background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);border:1px solid rgba(255,255,255,.12)}
 .prev-img{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
-.prev-img img{width:100%;height:100%;object-fit:contain}
-/* Crop canvas */
+.prev-img img{width:100%;height:100%;object-fit:contain;display:block}
 #cropCv{position:absolute;inset:0;width:100%;height:100%;z-index:6;touch-action:none;display:none}
-/* Status */
-.id-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;backdrop-filter:blur(8px);flex-shrink:0}
-.id-pill.ok{background:rgba(29,158,117,.92);color:#fff}
-.id-pill.ng{background:rgba(217,79,79,.92);color:#fff}
-.id-pill.wait{background:rgba(45,53,97,.88);color:#fff}
-.pgpill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(45,53,97,.78);color:#fff;backdrop-filter:blur(6px);flex-shrink:0}
-/* Error banner */
-.wrongbanner{position:absolute;top:90px;left:12px;right:12px;z-index:15;background:rgba(195,25,25,.97);border-radius:14px;padding:14px 16px;display:none;border:1.5px solid rgba(255,100,100,.35);box-shadow:0 4px 24px rgba(0,0,0,.55)}
+.wrongbanner{position:absolute;top:12px;left:12px;right:12px;z-index:15;background:rgba(28,28,30,.97);backdrop-filter:blur(20px);border-radius:16px;padding:16px 18px;display:none;border:1px solid rgba(255,69,58,.38);box-shadow:0 8px 32px rgba(0,0,0,.55)}
 .wrongbanner.show{display:block}
-.wb-title{font-size:15px;font-weight:900;color:#fff;margin-bottom:5px;line-height:1.3}
-.wb-msg{font-size:12px;color:rgba(255,255,255,.92);line-height:1.55;white-space:pre-line}
-/* Page strip thumbnails */
-.pgstrip{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;padding:0 12px;justify-content:center;z-index:5}
-.pgth{width:44px;height:58px;border-radius:6px;overflow:hidden;border:2px solid rgba(255,255,255,.4);background:#222;position:relative;flex-shrink:0}
+.wb-title{font-size:15px;font-weight:700;color:#FF6B6B;margin-bottom:6px;line-height:1.3;letter-spacing:-.2px}
+.wb-msg{font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;white-space:pre-line}
+.pgstrip{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;padding:0 14px;justify-content:center;z-index:5}
+.pgth{width:42px;height:56px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.3);background:#2C2C2E;position:relative;flex-shrink:0}
 .pgth img{width:100%;height:100%;object-fit:cover}
-.pgth-n{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.9);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
-/* OCR overlay */
-.id-ov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.7);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(4px)}
+.pgth-n{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.72);color:#fff;font-size:9px;font-weight:600;text-align:center;padding:2px 0}
+.pgpill{position:absolute;bottom:80px;left:50%;transform:translateX(-50%);font-size:12px;font-weight:600;color:rgba(255,255,255,.7);background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-radius:14px;padding:4px 12px;z-index:5;white-space:nowrap;pointer-events:none}
+.id-ov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.65);display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;backdrop-filter:blur(6px)}
 .id-ov.show{display:flex}
-.id-spin{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--co);border-radius:50%;animation:spin .7s linear infinite}
+.id-spin{width:40px;height:40px;border:3px solid rgba(255,255,255,.15);border-top-color:#FFD60A;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.id-txt{font-size:14px;color:#fff;font-weight:600;text-align:center;line-height:1.5;padding:0 20px}
-/* Action row: Crop | Rotate | Add Page */
-.pactions{display:flex;align-items:center;justify-content:space-around;padding:10px 8px max(env(safe-area-inset-bottom),10px);background:#111;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
-.pact{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,.85);font-size:11px;font-weight:700;cursor:pointer;touch-action:manipulation;padding:6px 14px;border-radius:12px;min-width:70px;font-family:inherit}
-.pact:active{background:rgba(255,255,255,.1);transform:scale(.93)}
-.pact.crop-on{color:#FFD600;background:rgba(255,215,0,.1)}
-/* Submit/Grade bar */
-.prev-bar{background:#111;padding:10px 14px max(env(safe-area-inset-bottom),12px);border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
-.prev-btns{display:flex;gap:8px;justify-content:center}
-.pb{flex:1;height:46px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation}
-.pb:active{transform:scale(.93)}
-.pb-sub{background:var(--gr);color:#fff}
-.pb-gr{background:var(--co);color:#fff}
-
+.id-txt{font-size:14px;color:rgba(255,255,255,.85);font-weight:500;text-align:center;line-height:1.5;padding:0 24px}
+/* Action bar */
+.prev-action-bar{background:#1C1C1E;padding:12px 16px max(env(safe-area-inset-bottom),16px);border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.pact-row{display:flex;align-items:center;justify-content:space-around;margin-bottom:10px}
+.pact{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,.78);font-size:11px;font-weight:500;cursor:pointer;touch-action:manipulation;padding:6px 14px;border-radius:10px;font-family:inherit;letter-spacing:.1px;-webkit-tap-highlight-color:transparent}
+.pact:active{background:rgba(255,255,255,.07);transform:scale(.91)}
+.pact.crop-on{color:#FFD60A}
+.pact.crop-on svg *{stroke:#FFD60A !important}
+.prev-submit-row{display:flex;gap:10px}
+.pb{flex:1;height:50px;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:7px;touch-action:manipulation;letter-spacing:-.2px;-webkit-tap-highlight-color:transparent;transition:transform .06s,opacity .1s}
+.pb:active{transform:scale(.93);opacity:.85}
+.pb-sub{background:#30D158;color:#fff}
+.pb-gr{background:#FFD60A;color:#1C1C1E}
 /* RESULT VIEW */
 .rview{position:fixed;inset:0;z-index:120;background:#000;display:none;flex-direction:column}
 .rview.active{display:flex}
@@ -530,187 +508,91 @@ button:active{transform:scale(.93)}
   <div class="camwrap" id="camWrap">
     <video id="vid" autoplay playsinline muted></video>
     <canvas id="cropCanvas" style="display:none"></canvas>
-    <!-- Document detection outline -->
     <canvas id="docOutlineCanvas"></canvas>
-    <!-- Grid overlay -->
     <svg class="cam-grid-ov" id="camGrid" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
+      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
+      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
     </svg>
-    <!-- Flash -->
     <div class="cam-flash-ov" id="camFlash"></div>
-    <!-- Status pill -->
-    <div class="cam-top"><div class="cpill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div></div>
-    <!-- Doc type badge top-right -->
-    <div class="cam-doc" id="camDoc">—</div>
-    <!-- Hint -->
-    <div class="cam-hint" id="camHint">Tap shutter to capture</div>
-    <!-- Tap area (focus on tap) -->
+    <div class="cam-status-pill" id="camStatusPill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div>
+    <div class="cam-doc-pill" id="camDoc">—</div>
     <div class="tap-area" id="tapArea"></div>
-    <!-- Doc error overlay -->
     <div class="doc-err" id="docErr">
       <div class="de-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-      <div class="de-title">Wrong Document!</div>
-      <div class="de-band de-sel"><div class="de-lbl">You selected</div><div class="de-val" id="deSelected">—</div></div>
-      <div class="de-band de-found"><div class="de-lbl">OCR reads</div><div class="de-val" id="deFound">—</div></div>
+      <div class="de-title">Wrong Document</div>
       <div class="de-msg" id="deMsg">Please scan the correct document.</div>
       <div class="de-btns">
-        <button style="background:rgba(255,255,255,.15);color:#fff" onclick="dismissErr()">Try Again</button>
-        <button style="background:var(--co);color:#fff" onclick="goTo(3);closeCam()">Change Type</button>
+        <button style="background:rgba(255,255,255,.1);color:#fff" onclick="dismissErr()">Try Again</button>
+        <button style="background:#FF9F0A;color:#000;font-weight:700" onclick="goTo(3);closeCam()">Change Type</button>
       </div>
     </div>
-    <!-- Camera denied -->
     <div class="cam-denied" id="camDenied">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
       <p>Camera access denied.<br>Allow camera in browser settings &amp; refresh.</p>
     </div>
-    <!-- TOP CONTROLS: ✕ left | Flash+Grid mid | ✓ right -->
-    <div class="cam-top-controls">
-      <button class="cam-circle-btn cam-x-btn" onclick="goTo(3);closeCam()" title="Cancel">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <div class="cam-mid-btns">
-        <div class="ccbtn" id="torchBtn" onclick="toggleTorch()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <div class="cam-topbar">
+      <button class="cam-cancel-btn" onclick="goTo(3);closeCam()">Cancel</button>
+      <div class="cam-top-icons">
+        <button class="cam-icon-btn" id="torchBtn" onclick="toggleTorch()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span>Flash</span>
-        </div>
-        <div class="ccbtn" id="gridBtn" onclick="toggleGrid()">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+        </button>
+        <button class="cam-icon-btn" id="gridBtn" onclick="toggleGrid()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
           <span>Grid</span>
-        </div>
+        </button>
       </div>
-      <!-- Yellow tick = DONE (finishes session scanning, goes to S5) -->
-      <button class="cam-circle-btn cam-tick-btn" onclick="finishScanning()" title="Done scanning">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>
+      <button class="cam-done-btn" onclick="finishScanning()">Done</button>
     </div>
   </div>
-  <!-- SHUTTER BAR — large centered button -->
-  <div class="shutbar" style="background:rgba(0,0,0,.82);border-top:1px solid rgba(255,255,255,.08)">
-    <div style="position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:14px 0 max(env(safe-area-inset-bottom),20px)">
-      <div class="pglbl" id="pgLbl" style="position:absolute;left:24px;font-size:12px;font-weight:700;color:rgba(255,255,255,.55)"></div>
-      <div class="shutter" id="shutterBtn">
-        <div class="shut-inner">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-            <circle cx="16" cy="16" r="11" fill="#2D3561"/>
-            <circle cx="16" cy="16" r="7" fill="#CC785C"/>
-            <circle cx="16" cy="16" r="3.5" fill="#fff" opacity=".55"/>
-          </svg>
-        </div>
-      </div>
-    </div>
+  <div class="shutbar">
+    <div class="pglbl" id="pgLbl"></div>
+    <div class="shutter" id="shutterBtn"><div class="shut-inner"></div></div>
   </div>
 </div>
 
 <!-- PREVIEW -->
 <div class="prevv" id="prevView">
-  <!-- TOP: Retake (left) | Keep (right) -->
-  <div class="ptopbar">
-    <button class="ptb-back" onclick="rescan()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
-      <span>Retake</span>
-    </button>
+  <div class="prev-topbar-apple">
+    <button class="prev-retake-btn" onclick="rescan()">Retake</button>
     <div class="id-pill wait" id="idPill">Reading…</div>
-    <button class="ptb-keep" onclick="keepScan()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span>Keep</span>
-    </button>
+    <button class="prev-keep-btn" onclick="keepScan()">Keep Scan</button>
   </div>
-
-  <!-- IMAGE + CROP CANVAS -->
   <div class="prev-img" id="prevImgWrap">
     <img id="prevImg" src="" alt="">
     <canvas id="cropCv"></canvas>
-    <div class="pgpill" id="pgPill" style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:5">1 page</div>
+    <div class="pgpill" id="pgPill">1 page</div>
     <div class="wrongbanner" id="wrongBanner">
       <div class="wb-title" id="wbTitle">Wrong Document</div>
       <div class="wb-msg" id="wbMsg"></div>
     </div>
     <div class="pgstrip" id="pgStrip"></div>
-    <div class="id-ov" id="idOv">
-      <div class="id-spin"></div>
-      <div class="id-txt" id="idTxt">Reading document…</div>
+    <div class="id-ov" id="idOv"><div class="id-spin"></div><div class="id-txt" id="idTxt">Reading document…</div></div>
+  </div>
+  <div class="prev-action-bar">
+    <div class="pact-row">
+      <button class="pact" id="cropBtn" onclick="toggleCrop()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+        Crop
+      </button>
+      <button class="pact" onclick="rotateScan()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
+        Rotate
+      </button>
+      <button class="pact" onclick="addScan()">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add Page
+      </button>
     </div>
-  </div>
-
-  <!-- ACTION ROW: Crop | Rotate | Add Page -->
-  <div class="pactions">
-    <button class="pact" id="cropBtn" onclick="toggleCrop()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
-      <span>Crop</span>
-    </button>
-    <button class="pact" onclick="rotateScan()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
-      <span>Rotate</span>
-    </button>
-    <button class="pact" onclick="addScan()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      <span>Add Page</span>
-    </button>
-  </div>
-
-  <!-- SUBMIT / GRADE (shown after Keep) -->
-  <div class="prev-bar" id="submitBar" style="display:none">
-    <div class="prev-btns">
+    <div class="prev-submit-row" id="submitBar" style="display:none">
       <button class="pb pb-sub" id="subBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
-      <button class="pb pb-gr" id="grBtn" style="display:none" onclick="doGrade()">Grade ★ →</button>
+      <button class="pb pb-gr" id="grBtn" style="display:none" onclick="doGrade()">Grade ★</button>
     </div>
   </div>
 </div>
 
-<!-- RESULT VIEW -->
-<div class="rview" id="rView">
-  <div class="rv-hdr"><div class="rv-title" id="rvTitle">Scan Result</div><button class="rv-close" onclick="closeRView()">✕</button></div>
-  <div class="rv-body" id="rvBody"></div>
-  <div class="rv-foot">
-    <button style="flex:0;height:44px;padding:0 14px;border-radius:10px;background:rgba(255,255,255,.13);color:#fff;font-size:13px;font-weight:700;border:1px solid rgba(255,255,255,.2);cursor:pointer;touch-action:manipulation" onclick="shareResult()">Share</button>
-    <button style="flex:1;height:44px;border-radius:10px;background:#2D3561;color:#fff;font-size:14px;font-weight:700;border:2px solid rgba(204,120,92,.6);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;gap:6px" onclick="scanNextDoc()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-      Scan Next Doc
-    </button>
-    <button style="flex:0;height:44px;padding:0 14px;border-radius:10px;background:var(--gr);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeRView()">Done ✓</button>
-  </div>
-</div>
-
-<!-- OWNER -->
-<div class="ov" id="ownerOv" onclick="ovTap(event)">
-  <div class="ovsh">
-    <div class="ovh"></div>
-    <div class="ovtitle">Owner Dashboard</div>
-    <div class="ovsub" id="ovSub">Enter PIN to access</div>
-    <div id="pinSec">
-      <div class="prow2"><input id="ownerPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"><button class="bn" style="flex:0;padding:0 18px;font-size:14px" onclick="checkPin()">Enter</button></div>
-      <div class="em" id="pin-e" style="text-align:center;margin-bottom:10px">Incorrect PIN.</div>
-    </div>
-    <div id="dashSec" style="display:none">
-      <div style="margin-bottom:16px">
-        <div class="dshtitle">Essay Topic</div>
-        <div class="tcbox"><div class="tclbl">Current Topic</div><div class="tcnm" id="dashTopic">—</div></div>
-        <div class="fg" style="margin-bottom:10px"><label class="fl">Update Topic</label><input id="newTopic" type="text" placeholder="Type new essay topic"></div>
-        <button class="bc" style="width:100%;height:44px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:4px" onclick="saveTopic()">Save Topic ✓</button>
-      </div>
-      <div class="dv"></div>
-      <div style="margin-bottom:12px">
-        <div class="dshtitle">Summary</div>
-        <div class="sgrid3"><div class="scard"><div class="snum" id="dTotal">0</div><div class="slbl2">Total Scans</div></div><div class="scard"><div class="snum" id="dGraded">0</div><div class="slbl2">Graded</div></div><div class="scard"><div class="snum" id="dSchools">0</div><div class="slbl2">Schools</div></div></div>
-      </div>
-      <!-- School Folders -->
-      <div class="dshtitle">School Folders</div>
-      <div id="schoolFoldersList"></div>
-      <div class="dv"></div>
-      <div style="margin-bottom:12px"><div class="dshtitle">Avg Scores by Category</div><div class="scl" id="dashScores"></div></div>
-      <div class="dv"></div>
-      <button class="expbtn" onclick="exportCSV()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export All Data (CSV)</button>
-      <div class="ovact"><button class="bb" onclick="closeOwner()">Close</button><button style="flex:1;height:44px;border-radius:11px;font-size:13px;font-weight:700;background:#FDEAEA;color:var(--rd);border:none;cursor:pointer;touch-action:manipulation" onclick="clearAll()">Clear All Data</button></div>
-    </div>
-  </div>
-</div>
-
-<canvas id="snapCanvas" style="display:none"></canvas>
-
-<!-- ══ IMAGE VIEWER OVERLAY ══ -->
 <div id="imgViewer" style="display:none;position:fixed;inset:0;z-index:300;background:#000;flex-direction:column">
   <div style="padding:max(env(safe-area-inset-top),14px) 14px 12px;background:#111;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.1)">
     <button onclick="closeImgViewer()" style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;touch-action:manipulation">←</button>
@@ -816,36 +698,69 @@ async function runOCR(imageUrl){
   }catch(e){throw e;}
 }
 
-/* Classify OCR text to document type */
+/* ══ CLASSIFY OCR TEXT — TBI document types ══
+   ECF: Event Completion Form (printed, structured, has school/UDISE/date fields)
+   WSF: Winner Shortlisting Form (printed, has winner/rank columns)
+   GCF: Gift Distribution Confirmation Form (printed, has gift/received columns)
+   Essay: Handwritten 4-sided essay answer sheets (cursive/print, no column structure)
+*/
 function classifyText(text){
-  var t=text.toLowerCase();
-  /* ── Specific form keywords ── */
-  var ecfKw=['event completion form','event completion','essay collection form','essay collection','ecf'];
-  var wsfKw=['winner shortlisting form','winner shortlisting','winner short listing','shortlisting form','wsf'];
-  var gcfKw=['gifts distribution confirmation','gift distribution confirmation','gifts distribution','gift distribution','gifts confirmation','gcf'];
-  for(var i=0;i<ecfKw.length;i++){if(t.indexOf(ecfKw[i])>=0)return{type:'ECF',label:'ECF',confidence:'high'};}
-  for(var j=0;j<wsfKw.length;j++){if(t.indexOf(wsfKw[j])>=0)return{type:'WSF',label:'WSF',confidence:'high'};}
-  for(var k=0;k<gcfKw.length;k++){if(t.indexOf(gcfKw[k])>=0)return{type:'GCF',label:'GCF',confidence:'high'};}
-  /* ── Generic form signals ── */
-  var formKw=['tata building india','tbi','school name','udise','date of event','class teacher',
-              'head master','headmaster','principal','signature','authorized','invigilator',
-              'venue','district','sl.no','serial no'];
-  var formScore=0;
-  for(var f=0;f<formKw.length;f++){if(t.indexOf(formKw[f])>=0)formScore++;}
-  /* ── Essay / handwriting signals ── */
-  var essayKw=['dear','once upon','introduction','conclusion','therefore','however','because',
-               'furthermore','moreover','in conclusion','paragraph','essay','my opinion',
-               'i think','i believe','firstly','secondly','thirdly','topic'];
+  var t=text.toLowerCase().replace(/\s+/g,' ');
+
+  /* ── TIER 1: High-confidence exact title matches ── */
+  if(t.indexOf('event completion')>=0)return{type:'ECF',label:'ECF',confidence:'high'};
+  if(t.indexOf('essay collection form')>=0)return{type:'ECF',label:'ECF',confidence:'high'};
+  if(t.indexOf('winner shortlisting')>=0||t.indexOf('shortlisting form')>=0)return{type:'WSF',label:'WSF',confidence:'high'};
+  if(t.indexOf('gift distribution')>=0||t.indexOf('gifts distribution')>=0)return{type:'GCF',label:'GCF',confidence:'high'};
+  if(t.indexOf('distribution confirmation')>=0)return{type:'GCF',label:'GCF',confidence:'high'};
+
+  /* ── TIER 2: TBI printed-form structural keywords ── */
+  /* ECF has: number of essays collected, class, teacher name, school */
+  var ecfKw=['no. of essays','number of essays','essays collected','event date','date of event',
+             'class teacher','total essays','no of students','roll no','registration no'];
+  /* WSF has: winner, rank, student name columns */
+  var wsfKw=['winner name','rank','shortlisted','1st winner','2nd winner','3rd winner',
+             'prize','runner up','winner details','award'];
+  /* GCF has: gift received, acknowledgement, received by */
+  var gcfKw=['gift received','received by','acknowledgement','prize received',
+             'distributed','items distributed','receipt','signature of recipient'];
+  /* Generic TBI form markers */
+  var tbiFormKw=['tata building india','udise','school name','school code',
+                 'head master','headmaster','principal','invigilator','venue',
+                 'district','state','taluk','mandal','block'];
+
+  var ecfScore=0,wsfScore=0,gcfScore=0,tbiScore=0;
+  for(var i=0;i<ecfKw.length;i++){if(t.indexOf(ecfKw[i])>=0)ecfScore++;}
+  for(var j=0;j<wsfKw.length;j++){if(t.indexOf(wsfKw[j])>=0)wsfScore++;}
+  for(var k=0;k<gcfKw.length;k++){if(t.indexOf(gcfKw[k])>=0)gcfScore++;}
+  for(var m=0;m<tbiFormKw.length;m++){if(t.indexOf(tbiFormKw[m])>=0)tbiScore++;}
+
+  if(ecfScore>=2)return{type:'ECF',label:'ECF',confidence:'high'};
+  if(wsfScore>=2)return{type:'WSF',label:'WSF',confidence:'high'};
+  if(gcfScore>=2)return{type:'GCF',label:'GCF',confidence:'high'};
+  if(ecfScore===1)return{type:'ECF',label:'ECF',confidence:'medium'};
+  if(wsfScore===1)return{type:'WSF',label:'WSF',confidence:'medium'};
+  if(gcfScore===1)return{type:'GCF',label:'GCF',confidence:'medium'};
+  if(tbiScore>=2)return{type:'form_unknown',label:'Printed Form',confidence:'medium'};
+  if(tbiScore===1)return{type:'form_unknown',label:'Printed Form',confidence:'low_form'};
+
+  /* ── TIER 3: Essay detection — handwritten answer sheet ── */
+  /* Essays: long continuous text, narrative words, no table/column structure */
+  var essayKw=['introduction','conclusion','therefore','however','because','furthermore',
+               'moreover','in my opinion','i believe','firstly','secondly','topic',
+               'paragraph','dear','once upon','narrate','describe'];
   var essayScore=0;
   for(var e=0;e<essayKw.length;e++){if(t.indexOf(essayKw[e])>=0)essayScore++;}
-  /* Long text with many words and no form markers = handwritten essay */
-  var words=t.split(/\s+/).filter(function(w){return w.length>2;}).length;
-  if(words>40&&formScore===0)essayScore+=3;
-  else if(words>20&&formScore===0)essayScore+=1;
-  if(formScore>=2)return{type:'form_unknown',label:'Printed Form',confidence:'medium'};
-  if(essayScore>=2)return{type:'essay',label:'Essay Sheet',confidence:'medium'};
-  if(essayScore===1&&formScore===0)return{type:'essay',label:'Essay Sheet',confidence:'low_essay'};
-  if(formScore===1)return{type:'form_unknown',label:'Printed Form',confidence:'low_form'};
+  /* Word-count heuristic: essays have many words, forms have fewer content words */
+  var words=t.split(' ').filter(function(w){return w.length>3;}).length;
+  /* Handwritten = OCR gives many words, few structure keywords */
+  if(words>50&&tbiScore===0)essayScore+=3;
+  else if(words>25&&tbiScore===0)essayScore+=2;
+  else if(words>12&&tbiScore===0)essayScore+=1;
+
+  if(essayScore>=3)return{type:'essay',label:'Essay Sheet',confidence:'medium'};
+  if(essayScore>=1&&tbiScore===0)return{type:'essay',label:'Essay Sheet',confidence:'low_essay'};
+
   return{type:'unknown',label:'Unknown',confidence:'low'};
 }
 
@@ -930,7 +845,7 @@ function openCam(){
   document.getElementById('prevView').classList.remove('active');
   sheetFound=false;sheetStable=0;
   setStat('look','Point at document');
-  var hint=document.getElementById('camHint');if(hint)hint.textContent='Tap shutter to capture';
+  /* hint via status pill */
   var de=document.getElementById('docErr');if(de)de.classList.remove('show');
   var cd=document.getElementById('camDenied');if(cd)cd.style.display='none';
   camZoomLevel=1;
@@ -1043,6 +958,7 @@ function stopCamera(){
   if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
   var v=document.getElementById('vid');if(v)v.srcObject=null;
   clearCrop();
+  var oc=document.getElementById('docOutlineCanvas');if(oc){var ctx=oc.getContext('2d');ctx.clearRect(0,0,oc.width,oc.height);}
 }
 
 function toggleTorch(){
@@ -1120,10 +1036,10 @@ function startDetLoop(){
       drawDocOutline(sheetFound);
       if(sheetFound){
         setStat('found','Document detected — tap to capture');
-        document.getElementById('camHint').textContent='Tap shutter to capture';
+        /* hint via status pill */
       }else{
         setStat('look','Point at document');
-        document.getElementById('camHint').textContent='Point camera at document';
+        /* hint via status pill */
       }
     }catch(e){}
   },250);
@@ -1133,7 +1049,7 @@ function updatePgLbl(){var el=document.getElementById('pgLbl');if(el)el.textCont
 
 /* CAPTURE */
 document.getElementById('shutterBtn').addEventListener('click',takePicture);
-document.getElementById('camBackBtn').addEventListener('click',function(e){e.stopPropagation();closeCam();});
+/* camBackBtn removed */
 
 function takePicture(){
   var vid=document.getElementById('vid');if(!vid.videoWidth||vid.videoWidth===0)return;
@@ -1191,20 +1107,20 @@ function handleOCRResult(classified,rawText){
   var conf=classified.confidence;
 
   /* ══ CASE 1: Form selected → Essay scanned ══ */
-  if(isFormSel&&detType==='essay'&&conf!=='low'&&conf!=='low_form'){
+  if(isFormSel&&detType==='essay'&&(conf==='medium'||conf==='high')){
     showScanError('Scan '+selDocType+' — not Essay copy!',
       'You selected "'+selDocType+'" ('+FULLNAMES[selDocType]+').\nBut this looks like a Handwritten Essay Sheet.\nPlease scan the correct printed form.');
     return;
   }
   /* ══ CASE 2: Essay selected → Form scanned ══ */
-  if(isEssaySel&&(detType==='ECF'||detType==='WSF'||detType==='GCF'||detType==='form_unknown')&&conf!=='low'&&conf!=='low_essay'){
+  if(isEssaySel&&(detType==='ECF'||detType==='WSF'||detType==='GCF'||detType==='form_unknown')&&(conf==='medium'||conf==='high')){
     var fLbl=detType==='ECF'?'ECF':detType==='WSF'?'WSF':detType==='GCF'?'GCF':'a Printed Form';
     showScanError('Scan Essay — not '+fLbl+'!',
       'You selected "'+selDocType+'" Essay Sheet.\nBut this looks like '+fLbl+'.\nPlease scan the correct handwritten essay.');
     return;
   }
-  /* ══ CASE 3: Wrong form type ══ */
-  if(isFormSel&&(detType==='ECF'||detType==='WSF'||detType==='GCF')&&detType!==selDocType&&conf==='high'){
+  /* ══ CASE 3: Wrong form type (e.g. ECF selected but WSF scanned) ══ */
+  if(isFormSel&&(detType==='ECF'||detType==='WSF'||detType==='GCF')&&detType!==selDocType&&(conf==='high'||conf==='medium')){
     showScanError('Scan '+selDocType+' — not '+detType+'!',
       'You selected "'+selDocType+'" ('+FULLNAMES[selDocType]+').\nBut this scan reads as '+classified.label+'.\nPlease scan the correct form.');
     return;
@@ -1235,8 +1151,6 @@ function showScanError(headline,detail){
 var cropActive=false;
 var cropHandles={tl:{x:0,y:0},tr:{x:0,y:0},bl:{x:0,y:0},br:{x:0,y:0}};
 var draggingHandle=null,HANDLE_R=22;
-
-/* ── PREVIEW ACTIONS ── */
 function rescan(){
   /* Retake: discard last capture, reopen camera */
   capturedPages.pop();sessionImgs.pop();
