@@ -905,13 +905,13 @@ function openCam(){
   document.getElementById('prevView').classList.remove('active');
   sheetFound=false;sheetStable=0;
   setStat('look','Point at document');
-  document.getElementById('camHint').textContent='Hold camera over the document';
-  document.getElementById('docErr').classList.remove('show');
-  document.getElementById('camDenied').style.display='none';
-  resetCrop();camZoomLevel=1;
+  var hint=document.getElementById('camHint');if(hint)hint.textContent='Tap shutter to capture';
+  var de=document.getElementById('docErr');if(de)de.classList.remove('show');
+  var cd=document.getElementById('camDenied');if(cd)cd.style.display='none';
+  camZoomLevel=1;
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     document.getElementById('vid').style.display='none';
-    document.getElementById('camDenied').style.display='flex';return;
+    if(cd)cd.style.display='flex';return;
   }
   var con={video:{facingMode:{ideal:camFacing},width:{ideal:1920,max:4096},height:{ideal:1440,max:3072}},audio:false};
   navigator.mediaDevices.getUserMedia(con)
@@ -921,7 +921,7 @@ function openCam(){
         .then(startStream)
         .catch(function(){
           document.getElementById('vid').style.display='none';
-          document.getElementById('camDenied').style.display='flex';
+          var cd2=document.getElementById('camDenied');if(cd2)cd2.style.display='flex';
         });
     });
   updatePgLbl();
@@ -992,6 +992,7 @@ function attachCamGestures(){
 
 function showFocusRing(x,y){
   var ring=document.getElementById('focusRing');
+  if(!ring)return;
   ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
   ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
   setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);
@@ -1006,12 +1007,6 @@ function setCamZoom(v){
       if(caps.zoom)track.applyConstraints({advanced:[{zoom:camZoomLevel}]}).catch(function(){});
     }
   }
-  /* Show badge */
-  var badge=document.getElementById('zoomBadge');
-  badge.textContent=camZoomLevel===1?'1×':camZoomLevel.toFixed(1)+'×';
-  badge.style.opacity='1';
-  if(zoomBadgeTimer)clearTimeout(zoomBadgeTimer);
-  zoomBadgeTimer=setTimeout(function(){badge.style.opacity='0';},1800);
 }
 
 function closeCam(){stopCamera();document.getElementById('camView').classList.remove('active');}
@@ -1045,6 +1040,8 @@ function toggleGrid(){
 /* zoom badge only on pinch */
 
 /* Dynamic crop */
+function resizeCrop(){/* no boundary — clean viewfinder */}
+function resetCrop(){/* no boundary */}
 function drawCrop(){/* boundary removed — clean viewfinder */}
 function clearCrop(){var cc=document.getElementById('cropCanvas');if(cc)cc.getContext('2d').clearRect(0,0,cc.width,cc.height);}
 
