@@ -83,33 +83,42 @@ button:active{transform:scale(.93)}
 .dtc-sub{font-size:9px;color:var(--mu);display:block;margin-top:2px;font-weight:500;line-height:1.2}
 .dtc.sel .dtc-sub{color:rgba(255,255,255,.75)}
 
-/* CAMERA */
+/* ══ CAMERA ══ */
 .camv{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
 .camv.active{display:flex}
 .camwrap{position:relative;flex:1;overflow:hidden;background:#000}
 #vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 #cropCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
-.focus-ring{position:absolute;width:70px;height:70px;border:2.5px solid #FFD600;border-radius:50%;pointer-events:none;z-index:20;display:none;transform:translate(-50%,-50%)}
-.focus-ring.go{animation:fring .7s ease forwards}
-@keyframes fring{0%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}}
-.cam-top{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;display:flex;align-items:center;justify-content:center;z-index:12;pointer-events:none}
-.cpill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:22px;padding:6px 16px;font-size:13px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,.14)}
-.sdot{width:9px;height:9px;border-radius:50%;background:#666;transition:background .3s;flex-shrink:0}
-.sdot.look{background:rgba(232,160,32,.9);animation:pulse 1.1s infinite}
+/* Document detection outline */
+#docOutlineCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+/* Status pill */
+.cam-top{position:absolute;top:max(env(safe-area-inset-top),60px);left:0;right:0;display:flex;justify-content:center;z-index:12;pointer-events:none}
+.cpill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,.72);backdrop-filter:blur(10px);border-radius:22px;padding:6px 16px;font-size:13px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,.15)}
+.sdot{width:9px;height:9px;border-radius:50%;background:#888;transition:background .3s;flex-shrink:0}
+.sdot.look{background:#F0A020;animation:pulse 1.1s infinite}
 .sdot.found{background:var(--gr)}
 .sdot.bad{background:var(--rd)}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
-.cam-back{position:absolute;top:max(env(safe-area-inset-top),14px);left:14px;z-index:13;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.58);border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
-.cam-back:active{background:rgba(0,0,0,.85)}
-.cam-doc{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:13;background:rgba(204,120,92,.9);border-radius:10px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;max-width:160px;text-align:center;line-height:1.3}
-.cam-hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;z-index:12;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.8);font-weight:500;padding:0 18px}
-.tap-area{position:absolute;inset:0;z-index:5;cursor:crosshair}
-.cam-denied{position:absolute;inset:0;z-index:22;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;background:rgba(0,0,0,.9)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.2}}
+/* Doc label top-right */
+.cam-doc{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:14;background:rgba(204,120,92,.92);border-radius:10px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;max-width:160px;text-align:center;line-height:1.3}
+/* Flash */
+.cam-flash-ov{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .07s}
+.cam-flash-ov.pop{opacity:.88}
+/* Grid */
+.cam-grid-ov{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .22s}
+.cam-grid-ov.show{opacity:1}
+/* Hint at bottom of viewfinder */
+.cam-hint{position:absolute;bottom:110px;left:0;right:0;text-align:center;z-index:12;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.9);font-weight:600;padding:0 20px}
+/* Tap area */
+.tap-area{position:absolute;inset:0;z-index:6;cursor:crosshair}
+/* Denied */
+.cam-denied{position:absolute;inset:0;z-index:22;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;background:rgba(0,0,0,.92)}
 .cam-denied p{color:#fff;font-size:14px;text-align:center;line-height:1.7}
+/* Doc err overlay */
 .doc-err{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.93);padding:22px 20px;gap:12px}
 .doc-err.show{display:flex}
-.de-icon{width:58px;height:58px;border-radius:50%;background:var(--rd);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .4s ease}
 @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.de-icon{width:58px;height:58px;border-radius:50%;background:var(--rd);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .4s ease}
 .de-title{font-size:18px;font-weight:900;color:#fff;text-align:center}
 .de-band{border-radius:10px;padding:10px 14px;width:100%;text-align:center}
 .de-sel{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.4)}
@@ -119,61 +128,76 @@ button:active{transform:scale(.93)}
 .de-msg{font-size:13px;color:rgba(255,255,255,.72);text-align:center;line-height:1.6;max-width:330px}
 .de-btns{display:flex;gap:10px;width:100%}
 .de-btns button{height:46px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;flex:1}
-/* CAMERA ENRICHMENTS */
-.cam-ctrl-bar{position:absolute;bottom:0;left:0;right:0;z-index:12;display:flex;align-items:center;justify-content:center;gap:20px;padding:10px 0 12px;background:linear-gradient(transparent,rgba(0,0,0,.65));pointer-events:auto}
-.ccbtn{width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.26);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:background .12s,transform .07s;flex-shrink:0}
-.ccbtn:active{transform:scale(.87);background:rgba(255,255,255,.3)}
-.ccbtn.on{background:rgba(255,215,0,.3);border-color:#FFD600}
-.ccbtn.on svg *{stroke:#FFD600}
-.cam-grid-ov{position:absolute;inset:0;z-index:3;pointer-events:none;opacity:0;transition:opacity .22s}
-.cam-grid-ov.show{opacity:1}
-.cam-flash-ov{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .07s}
-.cam-flash-ov.pop{opacity:.9}
-.cam-zoom-row{position:absolute;left:50%;transform:translateX(-50%);bottom:72px;z-index:13;display:flex;align-items:center;gap:9px;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);border-radius:24px;padding:7px 15px;opacity:0;transition:opacity .28s;pointer-events:none;white-space:nowrap}
-.cam-zoom-row.show{opacity:1;pointer-events:auto}
-.cam-zoom-row input[type=range]{width:110px;-webkit-appearance:none;appearance:none;height:3px;background:rgba(255,255,255,.32);border-radius:3px;outline:none}
-.cam-zoom-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;border:2.5px solid var(--co);cursor:pointer}
-.cam-zlbl{font-size:12px;font-weight:800;color:#fff;min-width:30px;text-align:right}
-.cam-brite-col{position:absolute;top:max(env(safe-area-inset-top),54px);right:13px;z-index:13;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:.85}
-.brite-sun{font-size:13px;line-height:1}
-.brite-track{width:4px;height:62px;background:rgba(255,255,255,.18);border-radius:4px;overflow:hidden;position:relative}
-.brite-fill{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,#FFD600,rgba(255,255,255,.9));border-radius:4px;transition:height .3s}
-.shutbar{background:rgba(0,0,0,.88);padding-bottom:max(env(safe-area-inset-bottom),18px);padding-top:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:32px;border-top:1px solid rgba(255,255,255,.08)}
-.shutter{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.13);border:3px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s}
-.shutter:active{transform:scale(.86)}
-.shut-inner{width:60px;height:60px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
-.pglbl{width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.5);font-weight:600;line-height:1.5}
 
-/* PREVIEW */
+/* ── CAMERA TOP CONTROLS ── */
+.cam-top-controls{position:absolute;top:0;left:0;right:0;z-index:14;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 18px 0}
+.cam-circle-btn{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;border:none;transition:transform .07s,opacity .12s;-webkit-tap-highlight-color:transparent}
+.cam-circle-btn:active{transform:scale(.87)}
+.cam-x-btn{background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.3)}
+.cam-tick-btn{background:#FFD600;border:2px solid rgba(255,220,0,.5);box-shadow:0 2px 16px rgba(255,214,0,.4)}
+.cam-mid-btns{display:flex;gap:14px;align-items:center}
+.ccbtn{width:46px;height:46px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.ccbtn:active{background:rgba(255,255,255,.18);transform:scale(.88)}
+.ccbtn.on{background:rgba(255,215,0,.28);border-color:#FFD600}
+.ccbtn span{font-size:8px;color:rgba(255,255,255,.6);line-height:1;font-weight:600}
+
+/* ── SHUTTER BAR ── */
+.shutbar{background:rgba(0,0,0,.0);padding-bottom:max(env(safe-area-inset-bottom),24px);padding-top:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative}
+/* large capture button — 90px circle, 50pt tap target */
+.shutter{width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,.18);border:4px solid rgba(255,255,255,.7);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s;-webkit-tap-highlight-color:transparent;position:relative}
+.shutter:active{transform:scale(.88)}
+.shut-inner{width:72px;height:72px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+/* page count badge */
+.pglbl{position:absolute;left:50%;transform:translateX(-50%);bottom:max(env(safe-area-inset-bottom),24px);margin-bottom:96px;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);pointer-events:none;z-index:8;white-space:nowrap}
+
+/* ══ PREVIEW ══ */
 .prevv{position:fixed;inset:0;z-index:110;background:#000;display:none;flex-direction:column}
 .prevv.active{display:flex}
-.prev-img{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a0a}
+/* Top bar: Retake left | Keep right */
+.ptopbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 18px 14px;background:linear-gradient(rgba(0,0,0,.75),transparent)}
+.ptb-back{width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,.6);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-direction:column;gap:3px}
+.ptb-back span{font-size:9px;color:rgba(255,255,255,.8);font-weight:700;line-height:1}
+.ptb-back:active{background:rgba(0,0,0,.9);transform:scale(.88)}
+.ptb-keep{width:52px;height:52px;border-radius:50%;background:#1D9E75;border:2px solid rgba(80,220,140,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-direction:column;gap:3px;box-shadow:0 2px 16px rgba(29,158,117,.4)}
+.ptb-keep span{font-size:9px;color:#fff;font-weight:700;line-height:1}
+.ptb-keep:active{background:#0F6E56;transform:scale(.88)}
+/* Image area */
+.prev-img{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
 .prev-img img{width:100%;height:100%;object-fit:contain}
-.prev-topbar{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:0 14px;z-index:5;gap:8px}
-.id-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);flex-shrink:0}
-.id-pill.ok{background:rgba(29,158,117,.9);color:#fff}
-.id-pill.ng{background:rgba(217,79,79,.9);color:#fff}
-.id-pill.wait{background:rgba(45,53,97,.85);color:#fff}
-.pgpill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(45,53,97,.75);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);flex-shrink:0}
-.wrongbanner{position:absolute;top:72px;left:10px;right:10px;z-index:15;background:rgba(200,30,30,.97);border-radius:14px;padding:14px 16px;display:none;border:1.5px solid rgba(255,120,120,.4);box-shadow:0 4px 24px rgba(0,0,0,.5)}
+/* Crop canvas */
+#cropCv{position:absolute;inset:0;width:100%;height:100%;z-index:6;touch-action:none;display:none}
+/* Status */
+.id-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;backdrop-filter:blur(8px);flex-shrink:0}
+.id-pill.ok{background:rgba(29,158,117,.92);color:#fff}
+.id-pill.ng{background:rgba(217,79,79,.92);color:#fff}
+.id-pill.wait{background:rgba(45,53,97,.88);color:#fff}
+.pgpill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(45,53,97,.78);color:#fff;backdrop-filter:blur(6px);flex-shrink:0}
+/* Error banner */
+.wrongbanner{position:absolute;top:90px;left:12px;right:12px;z-index:15;background:rgba(195,25,25,.97);border-radius:14px;padding:14px 16px;display:none;border:1.5px solid rgba(255,100,100,.35);box-shadow:0 4px 24px rgba(0,0,0,.55)}
 .wrongbanner.show{display:block}
 .wb-title{font-size:15px;font-weight:900;color:#fff;margin-bottom:5px;line-height:1.3}
-.wb-msg{font-size:12px;color:rgba(255,255,255,.9);line-height:1.55;white-space:pre-line}
-.pgstrip{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:6px;padding:0 12px;justify-content:center;z-index:5}
+.wb-msg{font-size:12px;color:rgba(255,255,255,.92);line-height:1.55;white-space:pre-line}
+/* Page strip thumbnails */
+.pgstrip{position:absolute;bottom:10px;left:0;right:0;display:flex;gap:6px;padding:0 12px;justify-content:center;z-index:5}
 .pgth{width:44px;height:58px;border-radius:6px;overflow:hidden;border:2px solid rgba(255,255,255,.4);background:#222;position:relative;flex-shrink:0}
 .pgth img{width:100%;height:100%;object-fit:cover}
-.pgth-n{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.88);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
-.id-ov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.72);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.pgth-n{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.9);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
+/* OCR overlay */
+.id-ov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.7);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(4px)}
 .id-ov.show{display:flex}
 .id-spin{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--co);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .id-txt{font-size:14px;color:#fff;font-weight:600;text-align:center;line-height:1.5;padding:0 20px}
-.prev-bar{background:#111;padding-bottom:max(env(safe-area-inset-bottom),16px);padding-top:14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.08)}
-.prev-btns{display:flex;gap:8px;padding:0 14px 12px}
-.pb{flex:1;height:46px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:5px;touch-action:manipulation;transition:transform .06s}
-.pb:active{transform:scale(.92)}
-.pb-rs{background:#1E2245;color:#fff}
-.pb-add{background:#1A3A20;color:#7EC89A}
+/* Action row: Crop | Rotate | Add Page */
+.pactions{display:flex;align-items:center;justify-content:space-around;padding:10px 8px max(env(safe-area-inset-bottom),10px);background:#111;border-top:1px solid rgba(255,255,255,.07);flex-shrink:0}
+.pact{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,.85);font-size:11px;font-weight:700;cursor:pointer;touch-action:manipulation;padding:6px 14px;border-radius:12px;min-width:70px;font-family:inherit}
+.pact:active{background:rgba(255,255,255,.1);transform:scale(.93)}
+.pact.crop-on{color:#FFD600;background:rgba(255,215,0,.1)}
+/* Submit/Grade bar */
+.prev-bar{background:#111;padding:10px 14px max(env(safe-area-inset-bottom),12px);border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.prev-btns{display:flex;gap:8px;justify-content:center}
+.pb{flex:1;height:46px;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:6px;touch-action:manipulation}
+.pb:active{transform:scale(.93)}
 .pb-sub{background:var(--gr);color:#fff}
 .pb-gr{background:var(--co);color:#fff}
 
@@ -275,16 +299,6 @@ button:active{transform:scale(.93)}
 .sess-vbtn{height:30px;padding:0 11px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--sl);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
 .sess-vbtn:active{background:var(--sl2)}
 
-/* ── PREVIEW (minimalistic) ── */
-.prevv{position:fixed;inset:0;z-index:110;background:#000;display:none;flex-direction:column}
-.prevv.active{display:flex}
-.ptopbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 14px 12px;background:linear-gradient(rgba(0,0,0,.75),transparent)}
-.ptb-back{width:42px;height:42px;border-radius:50%;background:rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
-.ptb-back:active{background:rgba(0,0,0,.85)}
-.ptb-cross{width:42px;height:42px;border-radius:50%;background:rgba(180,30,30,.65);border:1.5px solid rgba(255,100,100,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
-.ptb-cross:active{background:rgba(180,30,30,.9)}
-.ptb-tick{width:42px;height:42px;border-radius:50%;background:rgba(20,140,70,.7);border:1.5px solid rgba(80,220,130,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
-.ptb-tick:active{background:rgba(20,140,70,.95)}
 .prev-img{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a0a}
 .prev-img img{width:100%;height:100%;object-fit:contain}
 .pactions{display:flex;align-items:center;justify-content:space-around;padding:12px 8px max(env(safe-area-inset-bottom),8px);background:#111;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
@@ -515,34 +529,27 @@ button:active{transform:scale(.93)}
 <div class="camv" id="camView">
   <div class="camwrap" id="camWrap">
     <video id="vid" autoplay playsinline muted></video>
-    <canvas id="cropCanvas"></canvas>
+    <canvas id="cropCanvas" style="display:none"></canvas>
+    <!-- Document detection outline -->
+    <canvas id="docOutlineCanvas"></canvas>
     <!-- Grid overlay -->
     <svg class="cam-grid-ov" id="camGrid" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
-      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
-      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
-      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
+      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
+      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
+      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
+      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
     </svg>
-    <!-- Manual crop handles -->
-    <canvas id="cropOverlay" style="position:absolute;inset:0;width:100%;height:100%;z-index:8;touch-action:none;display:none"></canvas>
-    <!-- Capture flash -->
+    <!-- Flash -->
     <div class="cam-flash-ov" id="camFlash"></div>
+    <!-- Status pill -->
     <div class="cam-top"><div class="cpill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div></div>
-    <div class="cam-back" id="camBackBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <!-- Doc type badge top-right -->
     <div class="cam-doc" id="camDoc">—</div>
+    <!-- Hint -->
     <div class="cam-hint" id="camHint">Tap shutter to capture</div>
-    <!-- Controls: Torch | Grid ONLY -->
-    <div class="cam-ctrl-bar">
-      <div class="ccbtn" id="torchBtn" onclick="toggleTorch()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        <span style="font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">Flash</span>
-      </div>
-      <div class="ccbtn" id="gridBtn" onclick="toggleGrid()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-        <span style="font-size:9px;color:rgba(255,255,255,.6);margin-top:2px">Grid</span>
-      </div>
-    </div>
+    <!-- Tap area (focus on tap) -->
     <div class="tap-area" id="tapArea"></div>
+    <!-- Doc error overlay -->
     <div class="doc-err" id="docErr">
       <div class="de-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
       <div class="de-title">Wrong Document!</div>
@@ -554,51 +561,69 @@ button:active{transform:scale(.93)}
         <button style="background:var(--co);color:#fff" onclick="goTo(3);closeCam()">Change Type</button>
       </div>
     </div>
+    <!-- Camera denied -->
     <div class="cam-denied" id="camDenied">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
       <p>Camera access denied.<br>Allow camera in browser settings &amp; refresh.</p>
     </div>
+    <!-- TOP CONTROLS: ✕ left | Flash+Grid mid | ✓ right -->
+    <div class="cam-top-controls">
+      <button class="cam-circle-btn cam-x-btn" onclick="goTo(3);closeCam()" title="Cancel">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="cam-mid-btns">
+        <div class="ccbtn" id="torchBtn" onclick="toggleTorch()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span>Flash</span>
+        </div>
+        <div class="ccbtn" id="gridBtn" onclick="toggleGrid()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+          <span>Grid</span>
+        </div>
+      </div>
+      <!-- Yellow tick = DONE (finishes session scanning, goes to S5) -->
+      <button class="cam-circle-btn cam-tick-btn" onclick="finishScanning()" title="Done scanning">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A2E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
   </div>
-  <div class="shutbar">
-    <div class="pglbl" id="pgLbl"></div>
-    <div class="shutter" id="shutterBtn">
-      <div class="shut-inner">
-        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
-          <path d="M11 7l-2 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V13a2 2 0 0 0-2-2h-4l-2-4z" fill="#2D3561"/>
-          <circle cx="16" cy="17" r="5" fill="#CC785C"/>
-          <circle cx="16" cy="17" r="2.5" fill="#fff" opacity="0.5"/>
-          <circle cx="24" cy="12" r="1.5" fill="#CC785C"/>
-        </svg>
+  <!-- SHUTTER BAR — large centered button -->
+  <div class="shutbar" style="background:rgba(0,0,0,.82);border-top:1px solid rgba(255,255,255,.08)">
+    <div style="position:relative;display:flex;align-items:center;justify-content:center;width:100%;padding:14px 0 max(env(safe-area-inset-bottom),20px)">
+      <div class="pglbl" id="pgLbl" style="position:absolute;left:24px;font-size:12px;font-weight:700;color:rgba(255,255,255,.55)"></div>
+      <div class="shutter" id="shutterBtn">
+        <div class="shut-inner">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="11" fill="#2D3561"/>
+            <circle cx="16" cy="16" r="7" fill="#CC785C"/>
+            <circle cx="16" cy="16" r="3.5" fill="#fff" opacity=".55"/>
+          </svg>
+        </div>
       </div>
     </div>
-    <div style="width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.4);line-height:1.4">tap to<br>capture</div>
   </div>
 </div>
 
 <!-- PREVIEW -->
-<!-- PREVIEW -->
 <div class="prevv" id="prevView">
-  <!-- TOP: ← Back left | ✕ Discard + ✓ Save right -->
+  <!-- TOP: Retake (left) | Keep (right) -->
   <div class="ptopbar">
     <button class="ptb-back" onclick="rescan()">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
+      <span>Retake</span>
     </button>
     <div class="id-pill wait" id="idPill">Reading…</div>
-    <div style="display:flex;gap:10px">
-      <button class="ptb-cross" onclick="discardScan()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-      <button class="ptb-tick" id="saveBtn" onclick="saveScan()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>
-    </div>
+    <button class="ptb-keep" onclick="keepScan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>Keep</span>
+    </button>
   </div>
 
   <!-- IMAGE + CROP CANVAS -->
   <div class="prev-img" id="prevImgWrap">
     <img id="prevImg" src="" alt="">
-    <canvas id="cropCv" style="position:absolute;inset:0;width:100%;height:100%;z-index:6;touch-action:none;display:none"></canvas>
-    <div class="pgpill" id="pgPill">1 page</div>
+    <canvas id="cropCv"></canvas>
+    <div class="pgpill" id="pgPill" style="position:absolute;bottom:80px;left:50%;transform:translateX(-50%);z-index:5">1 page</div>
     <div class="wrongbanner" id="wrongBanner">
       <div class="wb-title" id="wbTitle">Wrong Document</div>
       <div class="wb-msg" id="wbMsg"></div>
@@ -606,7 +631,7 @@ button:active{transform:scale(.93)}
     <div class="pgstrip" id="pgStrip"></div>
     <div class="id-ov" id="idOv">
       <div class="id-spin"></div>
-      <div class="id-txt" id="idTxt">Running OCR…</div>
+      <div class="id-txt" id="idTxt">Reading document…</div>
     </div>
   </div>
 
@@ -626,7 +651,7 @@ button:active{transform:scale(.93)}
     </button>
   </div>
 
-  <!-- SUBMIT / GRADE (shown after OCR + Save) -->
+  <!-- SUBMIT / GRADE (shown after Keep) -->
   <div class="prev-bar" id="submitBar" style="display:none">
     <div class="prev-btns">
       <button class="pb pb-sub" id="subBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
@@ -1042,27 +1067,66 @@ function toggleGrid(){
 /* Dynamic crop */
 function resizeCrop(){/* no boundary — clean viewfinder */}
 function resetCrop(){/* no boundary */}
-function drawCrop(){/* boundary removed — clean viewfinder */}
-function clearCrop(){var cc=document.getElementById('cropCanvas');if(cc)cc.getContext('2d').clearRect(0,0,cc.width,cc.height);}
+function drawCrop(){}
+function clearCrop(){var cc=document.getElementById('docOutlineCanvas');if(cc)cc.getContext('2d').clearRect(0,0,cc.width,cc.height);}
+
+function resizeDocOutline(){
+  var wrap=document.getElementById('camWrap');
+  var cv=document.getElementById('docOutlineCanvas');
+  if(!cv||!wrap)return;
+  cv.width=wrap.offsetWidth;cv.height=wrap.offsetHeight;
+}
+
+function drawDocOutline(found){
+  var cv=document.getElementById('docOutlineCanvas');if(!cv)return;
+  var ctx=cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  if(!found)return;
+  var W=cv.width,H=cv.height;
+  var pad=18;
+  var x=pad,y=pad,w=W-pad*2,h=H-pad*2;
+  /* Green glowing rect around detected document area */
+  ctx.strokeStyle='rgba(29,200,120,.85)';ctx.lineWidth=2.5;ctx.setLineDash([]);
+  ctx.shadowColor='rgba(29,200,120,.6)';ctx.shadowBlur=10;
+  ctx.strokeRect(x,y,w,h);
+  /* Corner L-shapes */
+  ctx.strokeStyle='#1DC878';ctx.lineWidth=4;ctx.lineCap='round';ctx.shadowBlur=14;
+  var cs=28;
+  ctx.beginPath();ctx.moveTo(x+cs,y);ctx.lineTo(x,y);ctx.lineTo(x,y+cs);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w-cs,y);ctx.lineTo(x+w,y);ctx.lineTo(x+w,y+cs);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x,y+h-cs);ctx.lineTo(x,y+h);ctx.lineTo(x+cs,y+h);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w,y+h-cs);ctx.lineTo(x+w,y+h);ctx.lineTo(x+w-cs,y+h);ctx.stroke();
+  ctx.shadowBlur=0;ctx.setLineDash([]);
+}
 
 function startDetLoop(){
   if(detLoop)clearInterval(detLoop);
-  if(animId)cancelAnimationFrame(animId);animId=null;
+  animId=null;
+  resizeDocOutline();
   detLoop=setInterval(function(){
     var vid=document.getElementById('vid');if(!vid||!vid.videoWidth||vid.readyState<2)return;
-    var sc=document.getElementById('snapCanvas');var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);sc.width=W;sc.height=H;
+    var sc=document.getElementById('snapCanvas');
+    var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);
+    sc.width=W;sc.height=H;
     var ctx=sc.getContext('2d');ctx.drawImage(vid,0,0,W,H);
     try{
       var d=ctx.getImageData(0,0,W,H).data,sum=0,mn=255,mx=0;
       for(var i=0;i<d.length;i+=4){var b=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
       var avg=sum/(d.length/4),contrast=mx-mn;
-      var has=(avg>80&&contrast>25);
+      /* Document detected: reasonable brightness and good contrast */
+      var has=(avg>70&&contrast>28);
       sheetStable=has?Math.min(sheetStable+1,6):Math.max(sheetStable-1,0);
       sheetFound=sheetStable>=3;
-      if(sheetFound){setStat('found','Ready — tap shutter');document.getElementById('camHint').textContent='Tap shutter to capture';}
-      else{setStat('look','Point at document');document.getElementById('camHint').textContent='Point camera at document';}
+      drawDocOutline(sheetFound);
+      if(sheetFound){
+        setStat('found','Document detected — tap to capture');
+        document.getElementById('camHint').textContent='Tap shutter to capture';
+      }else{
+        setStat('look','Point at document');
+        document.getElementById('camHint').textContent='Point camera at document';
+      }
     }catch(e){}
-  },300);
+  },250);
 }
 function setStat(s,t){document.getElementById('sdot').className='sdot '+s;document.getElementById('stxt').textContent=t;}
 function updatePgLbl(){var el=document.getElementById('pgLbl');if(el)el.textContent=capturedPages.length>0?(capturedPages.length+'\npg'+(capturedPages.length>1?'s':'')):''}
@@ -1172,31 +1236,42 @@ var cropActive=false;
 var cropHandles={tl:{x:0,y:0},tr:{x:0,y:0},bl:{x:0,y:0},br:{x:0,y:0}};
 var draggingHandle=null,HANDLE_R=22;
 
+/* ── PREVIEW ACTIONS ── */
 function rescan(){
+  /* Retake: discard last capture, reopen camera */
   capturedPages.pop();sessionImgs.pop();
   resetCropState();closePrev();openCam();
-}
-function discardScan(){
-  capturedPages.pop();sessionImgs.pop();
-  resetCropState();closePrev();openCam();
-}
-function resetCropState(){
-  cropActive=false;draggingHandle=null;
-  var cv=document.getElementById('cropCv');if(cv)cv.style.display='none';
-  var btn=document.getElementById('cropBtn');if(btn)btn.classList.remove('crop-on');
-  document.getElementById('submitBar').style.display='none';
-  document.getElementById('subBtn').style.display='none';
-  document.getElementById('grBtn').style.display='none';
 }
 
-function saveScan(){
-  /* If crop active, apply it */
+function keepScan(){
+  /* Keep: if crop active apply it first, then reopen camera for more pages OR show submit */
   if(cropActive){applyCrop();return;}
-  /* Show submit/grade */
+  /* Camera reopens — user can scan more pages or press yellow ✓ to finish */
+  resetCropState();closePrev();openCam();
+}
+
+function finishScanning(){
+  /* Yellow tick on camera = done all pages → go to submit/grade */
+  if(capturedPages.length===0){showToast('Please scan at least one page first.');return;}
+  closeCam();
   var g=GRADED.indexOf(selDocType)>=0;
   document.getElementById('submitBar').style.display='block';
   document.getElementById('subBtn').style.display=g?'none':'flex';
   document.getElementById('grBtn').style.display=g?'flex':'none';
+  /* Show the last scanned image in prevView for review */
+  document.getElementById('prevImg').src=capturedPages[capturedPages.length-1];
+  document.getElementById('pgPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'');
+  renderStrip();
+  document.getElementById('prevView').classList.add('active');
+}
+
+function resetCropState(){
+  cropActive=false;draggingHandle=null;
+  var cv=document.getElementById('cropCv');if(cv)cv.style.display='none';
+  var btn=document.getElementById('cropBtn');if(btn)btn.classList.remove('crop-on');
+  var sb=document.getElementById('submitBar');if(sb)sb.style.display='none';
+  var s=document.getElementById('subBtn');if(s)s.style.display='none';
+  var g2=document.getElementById('grBtn');if(g2)g2.style.display='none';
 }
 
 function rotateScan(){
@@ -1355,20 +1430,17 @@ function applyCrop(){
     capturedPages[capturedPages.length-1]=url;
     sessionImgs[sessionImgs.length-1]=url;
     img.src=url;
-    /* Hide crop */
+    /* Hide crop overlay */
     cropActive=false;
     document.getElementById('cropCv').style.display='none';
     document.getElementById('cropBtn').classList.remove('crop-on');
-    /* Show submit/grade */
-    var g=GRADED.indexOf(selDocType)>=0;
-    document.getElementById('submitBar').style.display='block';
-    document.getElementById('subBtn').style.display=g?'none':'flex';
-    document.getElementById('grBtn').style.display=g?'flex':'none';
+    /* After crop applied — go back to camera for more pages or yellow tick to finish */
+    closePrev();openCam();
   };
   ci.src=capturedPages[capturedPages.length-1];
 }
 
-function addScan(){closePrev();openCam();}
+function addScan(){resetCropState();closePrev();openCam();}
 function doSubmit(){closeCam();closePrev();saveRecord();showRView();}
 function doGrade(){closeCam();closePrev();goToGrading();}
 
@@ -1481,10 +1553,11 @@ function showRView(){
 }
 
 function openImgViewerFromResult(){
-  var imgs=window._imgs||[];
-  if(!imgs.length){showToast('No image captured yet.');return;}
-  var meta={ts:new Date().toISOString(),docType:selDocType,school:vv('snm'),udise:vv('udise'),score:gradingResult?gradingResult.total:null};
-  openImgViewer(imgs.slice(),selDocType+(gradingResult?' — '+gradingResult.total+'/50':''),meta);
+  /* Show ALL captured pages in full resolution */
+  var imgs=(window._imgs&&window._imgs.length)?window._imgs:capturedPages;
+  if(!imgs||!imgs.length){showToast('No image captured yet.');return;}
+  var meta={ts:new Date().toISOString(),docType:selDocType,school:vv('snm'),udise:vv('udise'),score:gradingResult?gradingResult.total:null,pages:imgs.length};
+  openImgViewer(imgs.slice(),selDocType+(gradingResult?' — '+gradingResult.total+'/50':'')+(imgs.length>1?' · '+imgs.length+' pages':''),meta);
 }
 /* Tap a chip in Result View to scan next doc immediately */
 function quickScanNext(docType){
