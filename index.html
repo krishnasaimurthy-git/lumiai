@@ -490,46 +490,44 @@ button:active{transform:scale(.93)}
   </div>
 </div>
 
-<!-- CAMERA (enriched) -->
+<!-- CAMERA -->
 <div class="camv" id="camView">
   <div class="camwrap" id="camWrap">
     <video id="vid" autoplay playsinline muted></video>
     <canvas id="cropCanvas"></canvas>
-    <!-- Rule-of-thirds grid overlay -->
+    <!-- Grid overlay -->
     <svg class="cam-grid-ov" id="camGrid" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
-      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.22)" stroke-width=".5"/>
+      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
+      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
+      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
+      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.25)" stroke-width=".5"/>
     </svg>
-    <!-- White-flash on capture -->
+    <!-- Manual crop handles -->
+    <canvas id="cropOverlay" style="position:absolute;inset:0;width:100%;height:100%;z-index:8;touch-action:none;display:none"></canvas>
+    <!-- Capture flash -->
     <div class="cam-flash-ov" id="camFlash"></div>
     <div class="focus-ring" id="focusRing"></div>
     <div class="cam-top"><div class="cpill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div></div>
     <div class="cam-back" id="camBackBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
     <div class="cam-doc" id="camDoc">—</div>
-    <!-- Live brightness bar -->
-    <div class="cam-brite-col" id="camBrite">
-      <div class="brite-sun">☀</div>
+    <!-- Brightness bar -->
+    <div class="cam-brite-col">
+      <div style="font-size:12px;line-height:1;color:rgba(255,255,255,.7)">☀</div>
       <div class="brite-track"><div class="brite-fill" id="briteFill" style="height:50%"></div></div>
     </div>
+    <!-- Zoom level badge (top-center, appears on pinch) -->
+    <div id="zoomBadge" style="position:absolute;top:max(env(safe-area-inset-top),54px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);backdrop-filter:blur(6px);border-radius:20px;padding:4px 14px;font-size:13px;font-weight:800;color:#fff;z-index:15;opacity:0;transition:opacity .25s;pointer-events:none">1×</div>
     <div class="cam-hint" id="camHint">Hold camera over the document</div>
-    <!-- Zoom bar (shows on pinch / slider interaction) -->
-    <div class="cam-zoom-row" id="camZoomRow">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <input type="range" id="zoomSlider" min="1" max="5" step="0.1" value="1" oninput="applyCamZoom(+this.value,true)">
-      <div class="cam-zlbl" id="zoomLbl">1×</div>
-    </div>
-    <!-- Control buttons: torch | grid | flip -->
+    <!-- Controls: ONLY Torch | Grid | Flip -->
     <div class="cam-ctrl-bar">
-      <div class="ccbtn" id="torchBtn" onclick="toggleTorch()" title="Flash">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <div class="ccbtn" id="torchBtn" onclick="toggleTorch()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
-      <div class="ccbtn" id="gridBtn" onclick="toggleGrid()" title="Grid">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+      <div class="ccbtn" id="gridBtn" onclick="toggleGrid()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
       </div>
-      <div class="ccbtn" id="flipBtn" onclick="flipCamera()" title="Flip camera">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M20 7H4"/><polyline points="7 4 4 7 7 10"/><path d="M4 17h16"/><polyline points="17 20 20 17 17 14"/></svg>
+      <div class="ccbtn" id="flipBtn" onclick="flipCamera()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </div>
     </div>
     <div class="tap-area" id="tapArea"></div>
@@ -842,7 +840,13 @@ function pickDoc(t){
 }
 
 /* CAMERA (enriched) */
-var camFacing='environment',torchOn=false,gridOn=false,camZoom=1,zoomHideTimer=null;
+/* detection loop below */
+
+/* ═══════════════════════════════════════════════
+   CAMERA  (v10 — no cloneNode, fully clean)
+═══════════════════════════════════════════════ */
+var camFacing='environment',torchOn=false,gridOn=false;
+var camZoomLevel=1,zoomBadgeTimer=null;
 
 function openCam(){
   initAudio();initTesseract();
@@ -852,32 +856,116 @@ function openCam(){
   setStat('look','Point at document');
   document.getElementById('camHint').textContent='Hold camera over the document';
   document.getElementById('docErr').classList.remove('show');
-  resetCrop();
-  /* Reset zoom UI */
-  camZoom=1;document.getElementById('zoomSlider').value=1;document.getElementById('zoomLbl').textContent='1×';
-  document.getElementById('camZoomRow').classList.remove('show');
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';return;}
-  var con={video:{facingMode:{ideal:camFacing},width:{ideal:1920,max:4096},height:{ideal:1440,max:3072},focusMode:'continuous',whiteBalanceMode:'continuous',exposureMode:'continuous'},audio:false};
-  navigator.mediaDevices.getUserMedia(con).then(startStream).catch(function(){navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing}},audio:false}).then(startStream).catch(function(){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';});});
+  document.getElementById('camDenied').style.display='none';
+  resetCrop();camZoomLevel=1;
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    document.getElementById('vid').style.display='none';
+    document.getElementById('camDenied').style.display='flex';return;
+  }
+  var con={video:{facingMode:{ideal:camFacing},width:{ideal:1920,max:4096},height:{ideal:1440,max:3072}},audio:false};
+  navigator.mediaDevices.getUserMedia(con)
+    .then(startStream)
+    .catch(function(){
+      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing}},audio:false})
+        .then(startStream)
+        .catch(function(){
+          document.getElementById('vid').style.display='none';
+          document.getElementById('camDenied').style.display='flex';
+        });
+    });
   updatePgLbl();
 }
 
 function startStream(stream){
-  camStream=stream;var vid=document.getElementById('vid');
-  vid.srcObject=stream;vid.muted=true;vid.setAttribute('playsinline','true');vid.play().catch(function(){});
+  camStream=stream;
+  var vid=document.getElementById('vid');
+  vid.srcObject=stream;
+  vid.muted=true;
+  vid.setAttribute('playsinline','true');
+  vid.play().catch(function(){});
   vid.addEventListener('loadedmetadata',function(){resizeCrop();startDetLoop();},{once:true});
+  /* Try continuous autofocus */
   var track=stream.getVideoTracks()[0];
-  if(track)try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}
-  /* Torch button visibility */
-  if(track&&track.getCapabilities){var caps=track.getCapabilities();document.getElementById('torchBtn').style.opacity=caps.torch?'1':'.38';}
-  /* Restore torch if on */
-  if(torchOn&&track)try{track.applyConstraints({advanced:[{torch:true}]}).catch(function(){torchOn=false;updateTorchBtn();});}catch(e){torchOn=false;updateTorchBtn();}
-  /* Pinch-to-zoom */
-  setupPinchZoom();
+  if(track){
+    try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}
+    /* Restore torch if was on */
+    if(torchOn){
+      var caps=track.getCapabilities?track.getCapabilities():{};
+      if(caps.torch)track.applyConstraints({advanced:[{torch:true}]}).catch(function(){torchOn=false;updateTorchBtn();});
+      else torchOn=false;
+    }
+    updateTorchBtn();
+    /* Torch button opacity */
+    var caps2=track.getCapabilities?track.getCapabilities():{};
+    document.getElementById('torchBtn').style.opacity=caps2.torch?'1':'.4';
+  }
+  /* Attach one-time gesture listeners directly — NO cloneNode */
+  attachCamGestures();
+}
+
+function attachCamGestures(){
+  /* Tap to focus */
+  var tapEl=document.getElementById('tapArea');
+  tapEl.onclick=function(e){
+    var wrap=document.getElementById('camWrap'),rect=wrap.getBoundingClientRect();
+    var x=e.clientX-rect.left,y=e.clientY-rect.top;
+    showFocusRing(x,y);
+    if(camStream){
+      var track=camStream.getVideoTracks()[0];
+      if(track&&track.getCapabilities){
+        var caps=track.getCapabilities();
+        if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){
+          var xn=Math.max(0,Math.min(1,x/rect.width)),yn=Math.max(0,Math.min(1,y/rect.height));
+          try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:xn,y:yn}]}]}).catch(function(){});}catch(ex){}
+          setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2200);
+        }
+      }
+    }
+  };
+  /* Pinch-to-zoom on camWrap (NOT cloned — directly on element) */
+  var wrap=document.getElementById('camWrap');
+  var ptDist=null,ptStartZ=1;
+  wrap.addEventListener('touchstart',function(e){
+    if(e.touches.length===2){
+      ptDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+      ptStartZ=camZoomLevel;
+    }
+  },{passive:true});
+  wrap.addEventListener('touchmove',function(e){
+    if(e.touches.length!==2||ptDist===null)return;
+    var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    setCamZoom(ptStartZ*(d/ptDist));
+  },{passive:true});
+  wrap.addEventListener('touchend',function(){ptDist=null;},{passive:true});
+}
+
+function showFocusRing(x,y){
+  var ring=document.getElementById('focusRing');
+  ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
+  ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
+  setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);
+}
+
+function setCamZoom(v){
+  camZoomLevel=Math.max(1,Math.min(5,v));
+  if(camStream){
+    var track=camStream.getVideoTracks()[0];
+    if(track&&track.getCapabilities){
+      var caps=track.getCapabilities();
+      if(caps.zoom)track.applyConstraints({advanced:[{zoom:camZoomLevel}]}).catch(function(){});
+    }
+  }
+  /* Show badge */
+  var badge=document.getElementById('zoomBadge');
+  badge.textContent=camZoomLevel===1?'1×':camZoomLevel.toFixed(1)+'×';
+  badge.style.opacity='1';
+  if(zoomBadgeTimer)clearTimeout(zoomBadgeTimer);
+  zoomBadgeTimer=setTimeout(function(){badge.style.opacity='0';},1800);
 }
 
 function closeCam(){stopCamera();document.getElementById('camView').classList.remove('active');}
 function closePrev(){document.getElementById('prevView').classList.remove('active');}
+
 function stopCamera(){
   if(detLoop){clearInterval(detLoop);detLoop=null;}
   if(animId){cancelAnimationFrame(animId);animId=null;}
@@ -886,9 +974,9 @@ function stopCamera(){
   clearCrop();
 }
 
-/* ── Camera controls ── */
 function toggleTorch(){
-  if(!camStream)return;var track=camStream.getVideoTracks()[0];if(!track)return;
+  if(!camStream)return;
+  var track=camStream.getVideoTracks()[0];if(!track)return;
   var caps=track.getCapabilities?track.getCapabilities():{};
   if(!caps.torch){showToast('Flash not available on this device.');return;}
   torchOn=!torchOn;
@@ -911,40 +999,6 @@ function flipCamera(){
   navigator.mediaDevices.getUserMedia(con).then(startStream).catch(function(){
     navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing}},audio:false}).then(startStream).catch(function(){});
   });
-}
-
-function applyCamZoom(v,fromSlider){
-  camZoom=Math.max(1,Math.min(v,5));
-  document.getElementById('zoomSlider').value=camZoom;
-  var lbl=camZoom===1?'1×':camZoom.toFixed(1)+'×';
-  document.getElementById('zoomLbl').textContent=lbl;
-  /* Apply to camera track if supported */
-  if(camStream){
-    var track=camStream.getVideoTracks()[0];
-    if(track){var caps=track.getCapabilities?track.getCapabilities():{};if(caps.zoom){track.applyConstraints({advanced:[{zoom:camZoom}]}).catch(function(){});}}
-  }
-  /* Show zoom bar */
-  var row=document.getElementById('camZoomRow');row.classList.add('show');
-  if(zoomHideTimer)clearTimeout(zoomHideTimer);
-  zoomHideTimer=setTimeout(function(){row.classList.remove('show');},2200);
-}
-
-function setupPinchZoom(){
-  var wrap=document.getElementById('camWrap'),lastDist=null,startZ=1;
-  /* Remove old listeners */
-  var nw=wrap.cloneNode(true);wrap.parentNode.replaceChild(nw,wrap);
-  /* Re-attach tap-to-focus */
-  nw.querySelector('#tapArea').addEventListener('click',function(e){
-    var rect=nw.getBoundingClientRect(),x=e.clientX-rect.left,y=e.clientY-rect.top;
-    var ring=nw.querySelector('#focusRing');
-    ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
-    ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
-    setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);
-    if(camStream){var track=camStream.getVideoTracks()[0];if(track&&track.getCapabilities){var caps=track.getCapabilities();if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){var xn=Math.max(0,Math.min(1,x/rect.width)),yn=Math.max(0,Math.min(1,y/rect.height));try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:xn,y:yn}]}]}).catch(function(){});}catch(ex){}setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(ee){}},2000);}}}
-  });
-  nw.addEventListener('touchstart',function(e){if(e.touches.length===2){lastDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);startZ=camZoom;}},{passive:true});
-  nw.addEventListener('touchmove',function(e){if(e.touches.length!==2||!lastDist)return;var d=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);applyCamZoom(startZ*(d/lastDist),false);},{passive:true});
-  nw.addEventListener('touchend',function(){lastDist=null;},{passive:true});
 }
 
 /* Dynamic crop */
