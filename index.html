@@ -118,13 +118,11 @@ button:active{transform:scale(.93)}
 .de-btns{display:flex;gap:10px;width:100%}
 .de-btns button{height:48px;border-radius:14px;font-size:15px;font-weight:600;border:none;cursor:pointer;touch-action:manipulation;flex:1}
 /* Top bar */
+.cam-sym-btn{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .07s,opacity .1s;flex-shrink:0}
+.cam-sym-btn:active{transform:scale(.87);opacity:.7}
+.cam-sym-x{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.25)}
+.cam-sym-tick{background:#FFD60A;border:1.5px solid rgba(255,220,0,.3);box-shadow:0 2px 12px rgba(255,214,0,.35)}
 .cam-topbar{position:absolute;top:0;left:0;right:0;z-index:14;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 22px 10px}
-.cam-cancel-btn,.cam-done-btn{background:none;border:none;font-size:17px;cursor:pointer;touch-action:manipulation;padding:4px 0;-webkit-tap-highlight-color:transparent;font-family:inherit;letter-spacing:-.2px}
-.cam-cancel-btn{font-weight:400;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.7)}
-.cam-cancel-btn:active{opacity:.45}
-.cam-done-btn{font-weight:600;color:#FFD60A;text-shadow:0 1px 4px rgba(0,0,0,.5)}
-.cam-done-btn:active{opacity:.45}
-.cam-top-icons{display:flex;gap:20px;align-items:center}
 .cam-icon-btn{width:34px;height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;padding:0}
 .cam-icon-btn:active{opacity:.45}
 .cam-icon-btn span{font-size:9px;color:rgba(255,255,255,.75);font-weight:500;letter-spacing:.3px;line-height:1}
@@ -140,12 +138,8 @@ button:active{transform:scale(.93)}
 /* ══ PREVIEW — Apple "Keep Scan" ══ */
 .prevv{position:fixed;inset:0;z-index:110;background:#1C1C1E;display:none;flex-direction:column}
 .prevv.active{display:flex}
-.prev-topbar-apple{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 22px 12px;background:#1C1C1E;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
-.prev-retake-btn,.prev-keep-btn{background:none;border:none;font-size:17px;cursor:pointer;touch-action:manipulation;padding:4px 0;-webkit-tap-highlight-color:transparent;font-family:inherit;letter-spacing:-.2px}
-.prev-retake-btn{font-weight:400;color:#fff}
-.prev-retake-btn:active{opacity:.45}
-.prev-keep-btn{font-weight:600;color:#FFD60A}
-.prev-keep-btn:active{opacity:.45}
+.prev-topbar-apple{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 18px 12px;background:#1C1C1E;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,.06)}
+.cam-top-icons{display:flex;gap:20px;align-items:center}
 .id-pill{font-size:12px;font-weight:600;padding:5px 13px;border-radius:20px;flex-shrink:0;letter-spacing:.1px}
 .id-pill.ok{background:rgba(48,209,88,.18);color:#30D158;border:1px solid rgba(48,209,88,.28)}
 .id-pill.ng{background:rgba(255,69,58,.18);color:#FF6B6B;border:1px solid rgba(255,69,58,.28)}
@@ -508,6 +502,7 @@ button:active{transform:scale(.93)}
   <div class="camwrap" id="camWrap">
     <video id="vid" autoplay playsinline muted></video>
     <canvas id="cropCanvas" style="display:none"></canvas>
+    <canvas id="snapCanvas" style="display:none"></canvas>
     <canvas id="docOutlineCanvas"></canvas>
     <svg class="cam-grid-ov" id="camGrid" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.18)" stroke-width=".5"/>
@@ -533,7 +528,11 @@ button:active{transform:scale(.93)}
       <p>Camera access denied.<br>Allow camera in browser settings &amp; refresh.</p>
     </div>
     <div class="cam-topbar">
-      <button class="cam-cancel-btn" onclick="goTo(3);closeCam()">Cancel</button>
+      <!-- ✕ left — cancel/back -->
+      <button class="cam-sym-btn cam-sym-x" onclick="goTo(3);closeCam()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <!-- Flash + Grid — center -->
       <div class="cam-top-icons">
         <button class="cam-icon-btn" id="torchBtn" onclick="toggleTorch()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -544,7 +543,10 @@ button:active{transform:scale(.93)}
           <span>Grid</span>
         </button>
       </div>
-      <button class="cam-done-btn" onclick="finishScanning()">Done</button>
+      <!-- ✓ right — done/finish (yellow) -->
+      <button class="cam-sym-btn cam-sym-tick" onclick="finishScanning()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
     </div>
   </div>
   <div class="shutbar">
@@ -556,9 +558,15 @@ button:active{transform:scale(.93)}
 <!-- PREVIEW -->
 <div class="prevv" id="prevView">
   <div class="prev-topbar-apple">
-    <button class="prev-retake-btn" onclick="rescan()">Retake</button>
+    <!-- ← Retake left -->
+    <button class="cam-sym-btn cam-sym-x" onclick="rescan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
     <div class="id-pill wait" id="idPill">Reading…</div>
-    <button class="prev-keep-btn" onclick="keepScan()">Keep Scan</button>
+    <!-- ✓ Keep right (yellow) -->
+    <button class="cam-sym-btn cam-sym-tick" onclick="keepScan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
   </div>
   <div class="prev-img" id="prevImgWrap">
     <img id="prevImg" src="" alt="">
