@@ -275,7 +275,35 @@ button:active{transform:scale(.93)}
 .sess-vbtn{height:30px;padding:0 11px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--sl);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
 .sess-vbtn:active{background:var(--sl2)}
 
-/* SHARE */
+/* ── PREVIEW v10 ── */
+.prev-topbar{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 12px 10px;background:linear-gradient(rgba(0,0,0,.72),transparent);pointer-events:auto}
+.ptb-btn{width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);border:1.5px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.ptb-btn:active{background:rgba(0,0,0,.85);transform:scale(.9)}
+.ptb-cross{border-color:rgba(220,80,80,.6);background:rgba(180,40,40,.5)}
+.ptb-tick{border-color:rgba(80,200,120,.6);background:rgba(30,140,70,.5)}
+.prev-actions{display:flex;align-items:center;justify-content:space-around;padding:10px 8px;background:#1A1A2E;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.pact-btn{display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:none;color:rgba(255,255,255,.8);font-size:10px;font-weight:700;cursor:pointer;touch-action:manipulation;padding:6px 10px;border-radius:10px;min-width:56px}
+.pact-btn:active{background:rgba(255,255,255,.1)}
+.pact-btn span{font-family:inherit;letter-spacing:.3px}
+.pact-del{color:#E88080}
+.pact-btn.active-crop{color:#FFD600;background:rgba(255,215,0,.12)}
+/* Manual crop instruction banner */
+.crop-hint{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);color:#fff;font-size:12px;font-weight:600;text-align:center;padding:8px;z-index:7;display:none}
+.crop-hint.show{display:block}
+
+/* keep existing prev-img full height */
+.prevv{display:none;position:fixed;inset:0;z-index:40;background:#000;flex-direction:column}
+.prevv.active{display:flex}
+.prev-img{position:relative;flex:1;overflow:hidden;background:#000;display:flex;align-items:center;justify-content:center}
+.prev-img img{max-width:100%;max-height:100%;object-fit:contain;display:block}
+.prev-bar{background:#1A1A2E;padding:10px 12px max(env(safe-area-inset-bottom),12px);border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
+.prev-btns{display:flex;gap:8px;justify-content:center}
+.pb{height:42px;border-radius:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;padding:0 18px}
+.pb-sub{background:#2D3561;color:#fff;border:1.5px solid rgba(204,120,92,.5)}
+.pb-gr{background:var(--co);color:#fff}
+
+/* hide old topbar inside prev-img (position reset) */
+#prevTopBar{position:absolute}
 .suc-wrap{text-align:center;padding:8px 0 10px}
 .tick-big{width:52px;height:52px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
 .s5ok{font-size:15px;font-weight:800;color:#065F46;margin-bottom:3px}
@@ -518,16 +546,13 @@ button:active{transform:scale(.93)}
     <!-- Zoom level badge (top-center, appears on pinch) -->
     <div id="zoomBadge" style="position:absolute;top:max(env(safe-area-inset-top),54px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);backdrop-filter:blur(6px);border-radius:20px;padding:4px 14px;font-size:13px;font-weight:800;color:#fff;z-index:15;opacity:0;transition:opacity .25s;pointer-events:none">1×</div>
     <div class="cam-hint" id="camHint">Hold camera over the document</div>
-    <!-- Controls: ONLY Torch | Grid | Flip -->
+    <!-- Controls: Torch | Grid ONLY -->
     <div class="cam-ctrl-bar">
       <div class="ccbtn" id="torchBtn" onclick="toggleTorch()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <div class="ccbtn" id="gridBtn" onclick="toggleGrid()">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-      </div>
-      <div class="ccbtn" id="flipBtn" onclick="flipCamera()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </div>
     </div>
     <div class="tap-area" id="tapArea"></div>
@@ -564,13 +589,30 @@ button:active{transform:scale(.93)}
 </div>
 
 <!-- PREVIEW -->
+<!-- PREVIEW (v10 redesign) -->
 <div class="prevv" id="prevView">
+  <!-- TOP BAR: ← Back | OCR pill | ✕ Discard  ✓ Save -->
+  <div class="prev-topbar" id="prevTopBar">
+    <button class="ptb-btn" onclick="rescan()" title="Back to camera">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="id-pill wait" id="idPill">Reading text…</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="ptb-btn ptb-cross" onclick="discardScan()" title="Discard">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <button class="ptb-btn ptb-tick" id="saveBtn" onclick="saveScan()" title="Save scan">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.8" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- IMAGE AREA with manual crop overlay -->
   <div class="prev-img" id="prevImgWrap">
     <img id="prevImg" src="" alt="">
-    <div class="prev-topbar">
-      <div class="id-pill wait" id="idPill">Reading text...</div>
-      <div class="pgpill" id="pgPill">1 page</div>
-    </div>
+    <!-- Manual crop canvas (drawn on top) -->
+    <canvas id="manualCropCanvas" style="position:absolute;inset:0;width:100%;height:100%;z-index:6;touch-action:none;cursor:crosshair;display:none"></canvas>
+    <div class="pgpill" id="pgPill">1 page</div>
     <div class="wrongbanner" id="wrongBanner">
       <div class="wb-title" id="wbTitle">Wrong Document</div>
       <div class="wb-msg" id="wbMsg"></div>
@@ -578,13 +620,33 @@ button:active{transform:scale(.93)}
     <div class="pgstrip" id="pgStrip"></div>
     <div class="id-ov" id="idOv">
       <div class="id-spin"></div>
-      <div class="id-txt" id="idTxt">Running OCR on image...<br>Reading printed text</div>
+      <div class="id-txt" id="idTxt">Running OCR on image…<br>Reading printed text</div>
     </div>
   </div>
+
+  <!-- ACTION BUTTONS: Crop | Rotate | Delete | Add Page -->
+  <div class="prev-actions">
+    <button class="pact-btn" id="cropToggleBtn" onclick="toggleManualCrop()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
+      <span>Crop</span>
+    </button>
+    <button class="pact-btn" onclick="rotateScan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
+      <span>Rotate</span>
+    </button>
+    <button class="pact-btn" onclick="addScan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Add Page</span>
+    </button>
+    <button class="pact-btn pact-del" onclick="discardScan()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      <span>Delete</span>
+    </button>
+  </div>
+
+  <!-- SUBMIT / GRADE row (shown after OCR) -->
   <div class="prev-bar">
     <div class="prev-btns">
-      <button class="pb pb-rs" onclick="rescan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>Re-Scan</button>
-      <button class="pb pb-add" onclick="addScan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7EC89A" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Page</button>
       <button class="pb pb-sub" id="subBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
       <button class="pb pb-gr" id="grBtn" style="display:none" onclick="doGrade()">Grade ★ →</button>
     </div>
@@ -991,15 +1053,7 @@ function toggleGrid(){
   document.getElementById('gridBtn').classList.toggle('on',gridOn);
 }
 
-function flipCamera(){
-  torchOn=false;updateTorchBtn();
-  camFacing=camFacing==='environment'?'user':'environment';
-  stopCamera();
-  var con={video:{facingMode:{ideal:camFacing},width:{ideal:1920,max:4096},height:{ideal:1440,max:3072}},audio:false};
-  navigator.mediaDevices.getUserMedia(con).then(startStream).catch(function(){
-    navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing}},audio:false}).then(startStream).catch(function(){});
-  });
-}
+/* zoom badge only on pinch */
 
 /* Dynamic crop */
 function resizeCrop(){var w=document.getElementById('camWrap'),cc=document.getElementById('cropCanvas');cc.width=w.offsetWidth;cc.height=w.offsetHeight;}
@@ -1078,18 +1132,24 @@ async function showPreviewAndIdentify(url){
   document.getElementById('prevView').classList.add('active');
   document.getElementById('prevImg').src=url;
   document.getElementById('pgPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'');
-  document.getElementById('idPill').className='id-pill wait';document.getElementById('idPill').textContent='Reading text...';
+  document.getElementById('idPill').className='id-pill wait';document.getElementById('idPill').textContent='Reading text…';
   document.getElementById('wrongBanner').classList.remove('show');
   document.getElementById('subBtn').style.display='none';document.getElementById('grBtn').style.display='none';
+  /* Reset crop/rotate state */
+  currentRotation=0;cropRect=null;manualCropActive=false;
+  document.getElementById('manualCropCanvas').style.display='none';
+  document.getElementById('cropToggleBtn').classList.remove('active-crop');
   renderStrip();updatePgLbl();
   document.getElementById('idOv').classList.add('show');
-  document.getElementById('idTxt').textContent='Running OCR...\nReading printed text on document';
+  document.getElementById('idTxt').textContent='Running OCR…\nReading printed text on document';
+  /* Add crop hint element if not present */
+  var wrap=document.getElementById('prevImgWrap');
+  if(!wrap.querySelector('.crop-hint')){var h=document.createElement('div');h.className='crop-hint';h.textContent='Drag to select crop area  ·  Tap Crop again to apply';wrap.appendChild(h);}
   try{
     var text=await runOCR(url);
     var classified=classifyText(text);
     handleOCRResult(classified,text);
   }catch(err){
-    /* OCR failed — allow proceed without identification */
     handleOCRResult({type:'unknown',label:'Unknown',confidence:'low'},'');
   }
 }
@@ -1128,14 +1188,139 @@ function handleOCRResult(classified,rawText){
     document.getElementById('idPill').className='id-pill ok';
     var lbl=conf==='low'?'Scanned ✓':detType==='essay'?'Essay ✓':(detLabel+' ✓');
     document.getElementById('idPill').textContent=lbl;
-    document.getElementById('subBtn').style.display=g?'none':'block';
-    document.getElementById('grBtn').style.display=g?'block':'none';
+    /* Show submit/grade only after user taps Save ✓ */
+    document.getElementById('subBtn').style.display='none';
+    document.getElementById('grBtn').style.display='none';
   }
 }
 
-function dismissErr(){document.getElementById('docErr').classList.remove('show');closePrev();openCam();}
-function renderStrip(){document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){return'<div class="pgth"><img src="'+u+'"><div class="pgth-n">Pg '+(i+1)+'</div></div>';}).join('');}
-function rescan(){capturedPages.pop();sessionImgs.pop();closePrev();openCam();}
+/* ── PREVIEW ACTIONS (v10) ── */
+var currentRotation=0;
+var manualCropActive=false;
+var cropRect=null; /* {x,y,w,h} in image-natural coords */
+
+/* Back to camera (retake) */
+function rescan(){
+  capturedPages.pop();sessionImgs.pop();
+  currentRotation=0;cropRect=null;manualCropActive=false;
+  closePrev();openCam();
+}
+
+/* Discard current scan entirely */
+function discardScan(){
+  capturedPages.pop();sessionImgs.pop();
+  currentRotation=0;cropRect=null;manualCropActive=false;
+  document.getElementById('manualCropCanvas').style.display='none';
+  closePrev();openCam();
+}
+
+/* Save / accept scan → submit or grade */
+function saveScan(){
+  /* Apply pending crop if active */
+  if(manualCropActive&&cropRect){applyManualCrop();}
+  manualCropActive=false;cropRect=null;
+  document.getElementById('manualCropCanvas').style.display='none';
+  document.getElementById('cropToggleBtn').classList.remove('active-crop');
+  /* Show submit/grade buttons */
+  var g=GRADED.indexOf(selDocType)>=0;
+  document.getElementById('subBtn').style.display=g?'none':'block';
+  document.getElementById('grBtn').style.display=g?'block':'none';
+}
+
+/* Rotate 90° CW */
+function rotateScan(){
+  currentRotation=(currentRotation+90)%360;
+  var img=document.getElementById('prevImg');
+  /* Rotate the actual stored image data */
+  var src=capturedPages[capturedPages.length-1];
+  var ci=new Image();
+  ci.onload=function(){
+    var c=document.createElement('canvas');
+    var sw=(currentRotation%180!==0)?ci.naturalHeight:ci.naturalWidth;
+    var sh=(currentRotation%180!==0)?ci.naturalWidth:ci.naturalHeight;
+    c.width=sw;c.height=sh;
+    var ctx=c.getContext('2d');
+    ctx.translate(sw/2,sh/2);
+    ctx.rotate(Math.PI/2);
+    ctx.drawImage(ci,-ci.naturalWidth/2,-ci.naturalHeight/2);
+    var url=c.toDataURL('image/jpeg',.93);
+    capturedPages[capturedPages.length-1]=url;
+    sessionImgs[sessionImgs.length-1]=url;
+    img.src=url;
+    currentRotation=0; /* reset since we baked it in */
+  };
+  ci.src=src;
+}
+
+/* Manual crop toggle */
+function toggleManualCrop(){
+  manualCropActive=!manualCropActive;
+  var canvas=document.getElementById('manualCropCanvas');
+  var btn=document.getElementById('cropToggleBtn');
+  var hint=document.querySelector('.crop-hint');
+  if(manualCropActive){
+    canvas.style.display='block';
+    if(hint)hint.classList.add('show');
+    btn.classList.add('active-crop');
+    initCropCanvas();
+  }else{
+    /* Apply crop */
+    if(cropRect)applyManualCrop();
+    canvas.style.display='none';
+    if(hint)hint.classList.remove('show');
+    btn.classList.remove('active-crop');
+    cropRect=null;
+  }
+}
+
+function initCropCanvas(){
+  var wrap=document.getElementById('prevImgWrap');
+  var canvas=document.getElementById('manualCropCanvas');
+  canvas.width=wrap.offsetWidth;canvas.height=wrap.offsetHeight;
+  drawCropOverlay(canvas,null);
+  var isDragging=false,startX=0,startY=0,endX=0,endY=0;
+  canvas.onpointerdown=function(e){isDragging=true;var r=canvas.getBoundingClientRect();startX=e.clientX-r.left;startY=e.clientY-r.top;endX=startX;endY=startY;canvas.setPointerCapture(e.pointerId);};
+  canvas.onpointermove=function(e){if(!isDragging)return;var r=canvas.getBoundingClientRect();endX=e.clientX-r.left;endY=e.clientY-r.top;var x=Math.min(startX,endX),y=Math.min(startY,endY),w=Math.abs(endX-startX),h=Math.abs(endY-startY);drawCropOverlay(canvas,{x:x,y:y,w:w,h:h});};
+  canvas.onpointerup=function(e){isDragging=false;var r=canvas.getBoundingClientRect();endX=e.clientX-r.left;endY=e.clientY-r.top;var x=Math.min(startX,endX),y=Math.min(startY,endY),w=Math.abs(endX-startX),h=Math.abs(endY-startY);if(w>20&&h>20){cropRect={x:x,y:y,w:w,h:h};drawCropOverlay(canvas,cropRect);}};
+}
+
+function drawCropOverlay(canvas,rect){
+  var ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle='rgba(0,0,0,.45)';ctx.fillRect(0,0,canvas.width,canvas.height);
+  if(rect&&rect.w>0&&rect.h>0){
+    ctx.clearRect(rect.x,rect.y,rect.w,rect.h);
+    ctx.strokeStyle='rgba(204,120,92,.9)';ctx.lineWidth=2;ctx.strokeRect(rect.x,rect.y,rect.w,rect.h);
+    /* Corner handles */
+    var hs=10;ctx.fillStyle='#CC785C';
+    [[rect.x,rect.y],[rect.x+rect.w,rect.y],[rect.x,rect.y+rect.h],[rect.x+rect.w,rect.y+rect.h]].forEach(function(p){ctx.fillRect(p[0]-hs/2,p[1]-hs/2,hs,hs);});
+  }
+}
+
+function applyManualCrop(){
+  if(!cropRect)return;
+  var img=document.getElementById('prevImg');
+  var wrap=document.getElementById('prevImgWrap');
+  /* Map canvas coords → natural image coords */
+  var dispW=img.offsetWidth,dispH=img.offsetHeight;
+  var natW=img.naturalWidth,natH=img.naturalHeight;
+  var scX=natW/dispW,scY=natH/dispH;
+  /* Account for letterboxing offset */
+  var offX=(wrap.offsetWidth-dispW)/2,offY=(wrap.offsetHeight-dispH)/2;
+  var cx=Math.max(0,(cropRect.x-offX)*scX),cy=Math.max(0,(cropRect.y-offY)*scY);
+  var cw=Math.min(natW-cx,cropRect.w*scX),ch=Math.min(natH-cy,cropRect.h*scY);
+  if(cw<20||ch<20)return;
+  var c=document.createElement('canvas');c.width=Math.round(cw);c.height=Math.round(ch);
+  var ci=new Image();ci.src=capturedPages[capturedPages.length-1];
+  /* Sync draw (image already loaded in prevImg) */
+  c.getContext('2d').drawImage(img,cx/scX+offX,cy/scY+offY,cw/scX,ch/scY,0,0,Math.round(cw),Math.round(ch));
+  /* Actually draw from source natural image */
+  var c2=document.createElement('canvas');c2.width=Math.round(cw);c2.height=Math.round(ch);
+  c2.getContext('2d').drawImage(img,offX>0?(cropRect.x-offX):cropRect.x,offY>0?(cropRect.y-offY):cropRect.y,cropRect.w,cropRect.h,0,0,Math.round(cw),Math.round(ch));
+  var url=c2.toDataURL('image/jpeg',.93);
+  capturedPages[capturedPages.length-1]=url;sessionImgs[sessionImgs.length-1]=url;
+  img.src=url;
+}
+
 function addScan(){closePrev();openCam();}
 function doSubmit(){closeCam();closePrev();saveRecord();showRView();}
 function doGrade(){closeCam();closePrev();goToGrading();}
