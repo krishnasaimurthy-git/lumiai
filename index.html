@@ -697,13 +697,14 @@ async function initTesseract(){
 /* Run OCR on captured image URL, return lowercase text */
 async function runOCR(imageUrl){
   if(!tesseractWorker){await initTesseract();}
-  if(!tesseractWorker)throw new Error('unreadable');
+  if(!tesseractWorker)return '__unreadable__';
   try{
     var result=await tesseractWorker.recognize(imageUrl);
     var txt=(result.data.text||'').toLowerCase().trim();
-    if(txt.replace(/\s/g,'').length<10)throw new Error('unreadable');
+    /* Less than 8 non-space chars = blank/unreadable image */
+    if(txt.replace(/\s/g,'').length<8)return '__unreadable__';
     return txt;
-  }catch(e){throw e;}
+  }catch(e){return '__unreadable__';}
 }
 
 /* ══ CLASSIFY OCR TEXT — TBI document types ══
@@ -774,18 +775,7 @@ function classifyText(text){
 
 /* Shutter sound */
 function initAudio(){if(audioCtx)return;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
-function playShutter(){
-  if(!audioCtx)initAudio();if(!audioCtx)return;
-  try{
-    var ctx=audioCtx,t=ctx.currentTime;
-    var buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*.045),ctx.sampleRate);
-    var d=buf.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5);
-    var s=ctx.createBufferSource();s.buffer=buf;var g=ctx.createGain();g.gain.setValueAtTime(.85,t);g.gain.exponentialRampToValueAtTime(.001,t+.045);s.connect(g);g.connect(ctx.destination);s.start(t);
-    var o=ctx.createOscillator();o.type='sine';o.frequency.setValueAtTime(320,t);o.frequency.exponentialRampToValueAtTime(70,t+.07);var g2=ctx.createGain();g2.gain.setValueAtTime(.35,t);g2.gain.exponentialRampToValueAtTime(.001,t+.07);o.connect(g2);g2.connect(ctx.destination);o.start(t);o.stop(t+.07);
-    var o2=ctx.createOscillator();o2.type='square';o2.frequency.setValueAtTime(2200,t+.05);o2.frequency.exponentialRampToValueAtTime(600,t+.13);var g3=ctx.createGain();g3.gain.setValueAtTime(.1,t+.05);g3.gain.exponentialRampToValueAtTime(.001,t+.13);o2.connect(g3);g3.connect(ctx.destination);o2.start(t+.05);o2.stop(t+.13);
-  }catch(e){}
-  if(navigator.vibrate)navigator.vibrate([18,0,8]);
-}
+function playShutter(){if(navigator.vibrate)navigator.vibrate(30);}
 
 /* Progress */
 function buildProg(n){
@@ -853,10 +843,12 @@ function openCam(){
   document.getElementById('prevView').classList.remove('active');
   sheetFound=false;sheetStable=0;
   setStat('look','Point at document');
-  /* hint via status pill */
   var de=document.getElementById('docErr');if(de)de.classList.remove('show');
   var cd=document.getElementById('camDenied');if(cd)cd.style.display='none';
   camZoomLevel=1;
+  /* Attach shutter button every time camera opens */
+  var sb=document.getElementById('shutterBtn');
+  if(sb){sb.onclick=null;sb.onclick=function(e){e.stopPropagation();takePicture();};}
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     document.getElementById('vid').style.display='none';
     if(cd)cd.style.display='flex';return;
@@ -865,7 +857,7 @@ function openCam(){
   navigator.mediaDevices.getUserMedia(con)
     .then(startStream)
     .catch(function(){
-      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:camFacing}},audio:false})
+      navigator.mediaDevices.getUserMedia({video:true,audio:false})
         .then(startStream)
         .catch(function(){
           document.getElementById('vid').style.display='none';
@@ -1056,23 +1048,35 @@ function setStat(s,t){document.getElementById('sdot').className='sdot '+s;docume
 function updatePgLbl(){var el=document.getElementById('pgLbl');if(el)el.textContent=capturedPages.length>0?(capturedPages.length+'\npg'+(capturedPages.length>1?'s':'')):''}
 
 /* CAPTURE */
-document.getElementById('shutterBtn').addEventListener('click',takePicture);
+/* shutterBtn listener attached in openCam */
 /* camBackBtn removed */
 
 function takePicture(){
-  var vid=document.getElementById('vid');if(!vid.videoWidth||vid.videoWidth===0)return;
-  playShutter();
-  var fl=document.getElementById('camFlash');if(fl){fl.classList.add('pop');setTimeout(function(){fl.classList.remove('pop');},130);}
-  var vw=vid.videoWidth,vh=vid.videoHeight,sc=document.getElementById('snapCanvas');
-  /* Always capture full frame — portrait orientation */
-  if(vw>vh){
-    sc.width=vh;sc.height=vw;
-    var ctx=sc.getContext('2d');ctx.save();ctx.translate(vh,0);ctx.rotate(Math.PI/2);ctx.drawImage(vid,0,0,vw,vh);ctx.restore();
-  }else{
-    sc.width=vw;sc.height=vh;sc.getContext('2d').drawImage(vid,0,0,vw,vh);
+  var vid=document.getElementById('vid');
+  if(!vid||!vid.videoWidth||vid.videoWidth===0||!camStream){
+    showToast('Camera not ready — try again');return;
   }
-  var url=sc.toDataURL('image/jpeg',.95);
-  capturedPages.push(url);sessionImgs.push(url);
+  /* Visual flash only — no sound */
+  var fl=document.getElementById('camFlash');
+  if(fl){fl.classList.add('pop');setTimeout(function(){fl.classList.remove('pop');},150);}
+  if(navigator.vibrate)navigator.vibrate(30);
+  /* Capture full frame into an offscreen canvas */
+  var vw=vid.videoWidth,vh=vid.videoHeight;
+  var canvas=document.createElement('canvas');
+  /* If landscape video, rotate to portrait */
+  if(vw>vh){
+    canvas.width=vh;canvas.height=vw;
+    var ctx=canvas.getContext('2d');
+    ctx.save();ctx.translate(vh/2,vw/2);ctx.rotate(Math.PI/2);
+    ctx.drawImage(vid,-vw/2,-vh/2,vw,vh);
+    ctx.restore();
+  }else{
+    canvas.width=vw;canvas.height=vh;
+    canvas.getContext('2d').drawImage(vid,0,0,vw,vh);
+  }
+  var url=canvas.toDataURL('image/jpeg',0.96);
+  capturedPages.push(url);
+  sessionImgs.push(url);
   stopCamera();
   showPreviewAndIdentify(url);
 }
@@ -1090,21 +1094,20 @@ async function showPreviewAndIdentify(url){
   renderStrip();updatePgLbl();
   document.getElementById('idOv').classList.add('show');
   document.getElementById('idTxt').textContent='Running OCR…';
-  try{
-    var text=await runOCR(url);
-    var classified=classifyText(text);
-    handleOCRResult(classified,text);
-  }catch(err){
-    document.getElementById('idOv').classList.remove('show');
-    /* Unreadable scan */
+  var text=await runOCR(url);
+  document.getElementById('idOv').classList.remove('show');
+  if(text==='__unreadable__'){
     capturedPages.pop();sessionImgs.pop();
     document.getElementById('idPill').className='id-pill ng';
-    document.getElementById('idPill').textContent='⚠ Not Readable';
+    document.getElementById('idPill').textContent='Not Readable';
     document.getElementById('wbTitle').textContent='Scan is not readable — Re-Scan!';
-    document.getElementById('wbMsg').textContent='The image is too blurry, dark or unclear.\nPlease re-scan in better lighting.';
+    document.getElementById('wbMsg').textContent='Image is too blurry or dark.\nPlease re-scan in better lighting.';
     document.getElementById('wrongBanner').classList.add('show');
-    if(navigator.vibrate)navigator.vibrate([200,80,200]);
+    if(navigator.vibrate)navigator.vibrate([150,60,150]);
+    return;
   }
+  var classified=classifyText(text);
+  handleOCRResult(classified,text);
 }
 
 function handleOCRResult(classified,rawText){
