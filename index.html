@@ -122,20 +122,17 @@ button:active{transform:scale(.93);opacity:.85}
 .seva-full{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.18em;text-transform:uppercase}
 
 /* ══════════════════════════════════════
-   CAMERA — Apple Notes Scanner
+   CAMERA — Clean full-screen, zero overlays
 ══════════════════════════════════════ */
 .cam-screen{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
 .cam-screen.active{display:flex}
-
-/* Viewfinder fills the screen */
 .cam-vf{position:relative;flex:1;overflow:hidden;background:#000}
-#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-#docOvCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}
-#camGridSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;opacity:0;transition:opacity .2s}
-#camGridSvg.on{opacity:1}
-.cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:20;transition:opacity .05s}
-.cam-flash.pop{opacity:.92}
-.cam-denied{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;background:#000;z-index:10}
+/* Video fills the ENTIRE viewfinder — no clipping, no borders */
+#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:20;transition:opacity .04s}
+.cam-flash.pop{opacity:.95}
+.cam-tap{position:absolute;inset:0;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cam-denied{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;background:#000;z-index:30}
 .cam-denied p{color:rgba(255,255,255,.85);font-size:15px;text-align:center;line-height:1.7}
 
 /* Status pill — bottom of viewfinder */
@@ -167,8 +164,13 @@ button:active{transform:scale(.93);opacity:.85}
 .cam-act.yellow:active{background:#E6C400;transform:scale(.88)}
 
 /* Shutter bar — premium black glass */
-.cam-bar{background:rgba(10,10,12,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:22px 0 max(env(safe-area-inset-bottom),32px);border-top:1px solid rgba(255,255,255,.06);position:relative}
-.pg-badge{position:absolute;left:32px;font-size:13px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.3px}
+.cam-bar{background:rgba(10,10,12,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:18px 20px max(env(safe-area-inset-bottom),28px);border-top:1px solid rgba(255,255,255,.06);gap:10px}
+/* Thumbnail strip beside shutter */
+.cam-thumbs{display:flex;gap:5px;align-items:center;flex-wrap:nowrap;overflow:hidden;max-width:90px;flex-shrink:0}
+.cam-thumb{width:44px;height:58px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.5);flex-shrink:0;position:relative;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.cam-thumb img{width:100%;height:100%;object-fit:cover}
+.cam-thumb-n{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;text-align:center;padding:2px 0}
+.pg-badge{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.3px;flex-shrink:0;min-width:48px;text-align:center}
 
 /* Apple-exact shutter */
 .shutter{width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.18);border:5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .07s,box-shadow .07s;box-shadow:0 0 0 0 rgba(255,255,255,.4)}
@@ -425,36 +427,31 @@ button:active{transform:scale(.93);opacity:.85}
 <div class="toast" id="toast"></div>
 
 <!-- ══ CAMERA ══ -->
+<!-- ══ CAMERA: full-screen, zero overlays, clean black ══ -->
 <div class="cam-screen" id="camScreen">
   <div class="cam-vf" id="camVf">
+    <!-- Full-screen live video — NO canvas, NO grid, NO boundaries -->
     <video id="vid" autoplay playsinline muted></video>
-    <canvas id="docOvCanvas"></canvas>
-    <svg id="camGridSvg" viewBox="0 0 100 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="33.3" y1="0" x2="33.3" y2="100" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
-      <line x1="66.6" y1="0" x2="66.6" y2="100" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
-      <line x1="0" y1="33.3" x2="100" y2="33.3" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
-      <line x1="0" y1="66.6" x2="100" y2="66.6" stroke="rgba(255,255,255,.2)" stroke-width=".5"/>
-    </svg>
+    <!-- White flash on capture -->
     <div class="cam-flash" id="camFlash"></div>
+    <!-- Doc type label top-centre -->
     <div class="cam-doc-lbl" id="camDocLbl">—</div>
-    <div class="cam-status"><div class="sdot look" id="sdot"></div><span class="stxt" id="stxt">Point at document</span></div>
+    <!-- Tap anywhere to focus -->
+    <div class="cam-tap" id="camTap"></div>
+    <!-- Camera denied -->
     <div class="cam-denied" id="camDenied">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
       <p>Camera access denied.<br>Allow camera in browser settings &amp; refresh.</p>
     </div>
-    <!-- TOP BAR -->
+    <!-- TOP BAR: ✕ cancel | Flash only | ✓ done -->
     <div class="cam-top">
       <div class="cam-act" onclick="cancelCam()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </div>
       <div class="cam-top-center">
         <button class="cam-ibtn" id="torchBtn" onclick="toggleTorch()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span>Flash</span>
-        </button>
-        <button class="cam-ibtn" id="gridBtn" onclick="toggleGrid()">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="1"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
-          <span>Grid</span>
         </button>
       </div>
       <div class="cam-act yellow" onclick="finishScanning()">
@@ -462,10 +459,11 @@ button:active{transform:scale(.93);opacity:.85}
       </div>
     </div>
   </div>
-  <!-- SHUTTER BAR -->
+  <!-- SHUTTER BAR: thumbnails left | shutter centre | page count right -->
   <div class="cam-bar">
-    <div class="pg-badge" id="pgBadge"></div>
+    <div class="cam-thumbs" id="camThumbs"></div>
     <div class="shutter" id="shutterBtn"><div class="shut-inner"></div></div>
+    <div class="pg-badge" id="pgBadge"></div>
   </div>
 </div>
 
@@ -507,7 +505,7 @@ button:active{transform:scale(.93);opacity:.85}
     </div>
     <div class="sub-row" id="subRow" style="display:none">
       <button class="pb pb-sub" id="subBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
-      <button class="pb pb-gr" id="grBtn" style="display:none" onclick="doGrade()">Grade ★</button>
+      <!-- Grade button removed: grading is auto-triggered for essay types -->
     </div>
   </div>
 </div>
@@ -695,7 +693,7 @@ function openCam(){
   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
     document.getElementById('camDenied').style.display='flex';return;
   }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1920},height:{ideal:1440}},audio:false})
+  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:4096,min:1280},height:{ideal:3072,min:720},frameRate:{ideal:30}},audio:false})
     .then(startCamStream)
     .catch(function(){
       navigator.mediaDevices.getUserMedia({video:true,audio:false})
@@ -713,6 +711,23 @@ function startCamStream(stream){
     resizeOvCanvas();
     startDetLoop();
   },{once:true});
+  /* Tap anywhere in viewfinder to focus */
+  var tapEl=document.getElementById('camTap');
+  if(tapEl){
+    tapEl.onclick=function(e){
+      if(!camStream)return;
+      var track=camStream.getVideoTracks()[0];
+      if(!track||!track.getCapabilities)return;
+      var caps=track.getCapabilities();
+      if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){
+        var rect=tapEl.getBoundingClientRect();
+        var x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+        var y=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
+        try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:x,y:y}]}]}).catch(function(){});}catch(ex){}
+        setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2500);
+      }
+    };
+  }
   var track=stream.getVideoTracks()[0];
   if(track){
     try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}
@@ -737,8 +752,17 @@ function setStat(cls,txt){
 }
 
 function updatePgBadge(){
+  /* Update page count badge */
   var el=document.getElementById('pgBadge');
-  el.textContent=capturedPages.length>0?capturedPages.length+' pg'+(capturedPages.length>1?'s':''):'';
+  if(el)el.textContent=capturedPages.length>0?capturedPages.length+' pg'+(capturedPages.length>1?'s':''):'';
+  /* Update camera thumbnail strip — show last 2 captures */
+  var thumbs=document.getElementById('camThumbs');
+  if(!thumbs)return;
+  var show=capturedPages.slice(-2);
+  thumbs.innerHTML=show.map(function(url,i){
+    var idx=capturedPages.length-show.length+i;
+    return'<div class="cam-thumb"><img src="'+url+'"><div class="cam-thumb-n">Pg '+(idx+1)+'</div></div>';
+  }).join('');
 }
 
 /* ══════════════════════════════════════════════════════
@@ -746,177 +770,39 @@ function updatePgBadge(){
    Tracks document edges in real-time with smooth lerp animation
    Exactly like Apple's Notes scanner yellow quad
 ══════════════════════════════════════════════════════ */
-var _quad={tl:{x:.08,y:.1},tr:{x:.92,y:.1},bl:{x:.08,y:.9},br:{x:.92,y:.9}};
-var _quadT={tl:{x:.08,y:.1},tr:{x:.92,y:.1},bl:{x:.08,y:.9},br:{x:.92,y:.9}};
-var _quadAlpha=0,_quadAlphaT=0,_raf=null;
-
-function _lerp(a,b,t){return a+(b-a)*t;}
-function _lerpPt(a,b,t){return{x:_lerp(a.x,b.x,t),y:_lerp(a.y,b.y,t)};}
-
-function _animQuad(){
-  var spd=.10;
-  _quad.tl=_lerpPt(_quad.tl,_quadT.tl,spd);
-  _quad.tr=_lerpPt(_quad.tr,_quadT.tr,spd);
-  _quad.bl=_lerpPt(_quad.bl,_quadT.bl,spd);
-  _quad.br=_lerpPt(_quad.br,_quadT.br,spd);
-  _quadAlpha=_lerp(_quadAlpha,_quadAlphaT,.12);
-  _drawQuad();
-  _raf=requestAnimationFrame(_animQuad);
-}
-
-function _drawQuad(){
-  var cv=document.getElementById('docOvCanvas');if(!cv||!cv.width)return;
-  var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
-  ctx.clearRect(0,0,W,H);
-  if(_quadAlpha<.03)return;  /* Don't draw until sufficiently visible */
-  var tl={x:_quad.tl.x*W,y:_quad.tl.y*H},tr={x:_quad.tr.x*W,y:_quad.tr.y*H};
-  var bl={x:_quad.bl.x*W,y:_quad.bl.y*H},br={x:_quad.br.x*W,y:_quad.br.y*H};
-  /* Dim mask outside quad */
-  ctx.save();
-  ctx.fillStyle='rgba(0,0,0,'+(0.42*_quadAlpha)+')';
-  ctx.fillRect(0,0,W,H);
-  ctx.beginPath();ctx.moveTo(tl.x,tl.y);ctx.lineTo(tr.x,tr.y);ctx.lineTo(br.x,br.y);ctx.lineTo(bl.x,bl.y);ctx.closePath();
-  ctx.globalCompositeOperation='destination-out';ctx.fill();
-  ctx.restore();
-  /* Animated amber/yellow border */
-  var pulse=.82+Math.sin(Date.now()*.004)*.18;
-  ctx.save();
-  ctx.strokeStyle='rgba(255,214,10,'+(_quadAlpha*pulse)+')';
-  ctx.lineWidth=2.5;
-  ctx.shadowColor='rgba(255,214,10,'+(_quadAlpha*.6)+')';
-  ctx.shadowBlur=10;
-  ctx.beginPath();ctx.moveTo(tl.x,tl.y);ctx.lineTo(tr.x,tr.y);ctx.lineTo(br.x,br.y);ctx.lineTo(bl.x,bl.y);ctx.closePath();ctx.stroke();
-  ctx.restore();
-  /* Corner handles — white circles with amber fill */
-  var corners=[tl,tr,bl,br];
-  corners.forEach(function(p){
-    ctx.save();
-    ctx.shadowColor='rgba(255,214,10,.5)';ctx.shadowBlur=8;
-    ctx.beginPath();ctx.arc(p.x,p.y,9,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,214,10,'+(_quadAlpha*.9)+')';ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,'+(_quadAlpha*.95)+')';ctx.lineWidth=2;ctx.stroke();
-    ctx.restore();
-  });
-  /* L-shaped corner lines */
-  var L=26;
-  [[tl,1,1],[tr,-1,1],[bl,1,-1],[br,-1,-1]].forEach(function(c){
-    ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,'+(_quadAlpha*.95)+')';
-    ctx.lineWidth=3.5;ctx.lineCap='round';
-    ctx.shadowColor='rgba(255,255,255,.4)';ctx.shadowBlur=6;
-    ctx.beginPath();ctx.moveTo(c[0].x+c[1]*L,c[0].y);ctx.lineTo(c[0].x,c[0].y);ctx.lineTo(c[0].x,c[0].y+c[2]*L);ctx.stroke();
-    ctx.restore();
-  });
-}
-
-function resizeOvCanvas(){
-  var vf=document.getElementById('camVf');
-  var cv=document.getElementById('docOvCanvas');
-  if(!vf||!cv)return;
-  cv.width=vf.offsetWidth;cv.height=vf.offsetHeight;
-}
-
-function clearOvCanvas(){
-  _quadAlphaT=0;
-  var cv=document.getElementById('docOvCanvas');
-  if(cv)cv.getContext('2d').clearRect(0,0,cv.width,cv.height);
-}
+/* ── Detection: simple brightness check, NO canvas drawing ── */
+function resizeOvCanvas(){}   /* no-op: no overlay canvas */
+function clearOvCanvas(){}    /* no-op */
 
 function stopDetLoop(){
   if(detLoop){clearInterval(detLoop);detLoop=null;}
-  if(_raf){cancelAnimationFrame(_raf);_raf=null;}
+  /* Stop rAF if running from old code */
+  if(window._raf){cancelAnimationFrame(window._raf);window._raf=null;}
 }
 
 function startDetLoop(){
   stopDetLoop();
-  resizeOvCanvas();
-  /* Start animation loop */
-  _raf=requestAnimationFrame(_animQuad);
   var sc=document.createElement('canvas');
-  var smoothAvg=128,smoothContrast=0;
+  var smooth=128;
   detLoop=setInterval(function(){
     var vid=document.getElementById('vid');
     if(!vid||!vid.videoWidth||vid.readyState<2)return;
-    /* Sample at 1/6 resolution for speed */
-    var W=Math.floor(vid.videoWidth/6),H=Math.floor(vid.videoHeight/6);
+    /* Sample at 1/8 res — just for status pill */
+    var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);
     sc.width=W;sc.height=H;
-    var ctx=sc.getContext('2d');ctx.drawImage(vid,0,0,W,H);
+    sc.getContext('2d').drawImage(vid,0,0,W,H);
     try{
-      var d=ctx.getImageData(0,0,W,H).data;
-      var sum=0,mn=255,mx=0,cnt=d.length/4;
-      for(var i=0;i<d.length;i+=4){
-        var b=(.299*d[i]+.587*d[i+1]+.114*d[i+2])|0;
-        sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;
-      }
-      var avg=sum/cnt,contrast=mx-mn;
-      /* Smooth readings */
-      smoothAvg=smoothAvg*.7+avg*.3;
-      smoothContrast=smoothContrast*.7+contrast*.3;
-      var has=smoothAvg>65&&smoothContrast>35;
-      sheetStable=has?Math.min(sheetStable+1,8):Math.max(sheetStable-2,0);
-      var prev=sheetFound;
-      sheetFound=sheetStable>=4;
-      if(sheetFound){
-        /* Estimate document quad from brightness gradient */
-        var pad=_estimateDocPad(d,W,H,smoothContrast);
-        _quadT={
-          tl:{x:pad.l,y:pad.t},tr:{x:1-pad.r,y:pad.t},
-          bl:{x:pad.l,y:1-pad.b},br:{x:1-pad.r,y:1-pad.b}
-        };
-        _quadAlphaT=1;
-        if(!prev){setStat('found','Document detected');}
-      }else{
-        /* Drift back to full frame */
-        _quadT={tl:{x:.06,y:.08},tr:{x:.94,y:.08},bl:{x:.06,y:.92},br:{x:.94,y:.92}};
-        _quadAlphaT=0;
-        setStat('look','Point at document');
-      }
+      var d=sc.getContext('2d').getImageData(0,0,W,H).data,sum=0,mn=255,mx=0;
+      for(var i=0;i<d.length;i+=4){var b=(d[i]*77+d[i+1]*150+d[i+2]*29)>>8;sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
+      smooth=smooth*.7+(sum/(d.length/4))*.3;
+      var contrast=mx-mn;
+      var has=smooth>55&&contrast>28;
+      sheetStable=has?Math.min(sheetStable+1,6):Math.max(sheetStable-1,0);
+      sheetFound=sheetStable>=3;
+      if(sheetFound)setStat('found','Ready — tap to capture');
+      else setStat('look','Point at document');
     }catch(e){}
-  },200);
-}
-
-/* ── _estimateDocPad: scan pixel rows/cols to find document edges ──
-   Returns {t,b,l,r} as fractional insets from each edge (0=edge, 0.5=center)
-   Used to position the animated quad corners onto the document ── */
-function _estimateDocPad(d,W,H,contrast){
-  var thresh=Math.max(25,contrast*0.25);
-
-  /* Build row and column average brightness arrays */
-  var rowAvg=[],colAvg=[];
-  for(var row=0;row<H;row++){
-    var s=0;
-    for(var col=0;col<W;col++){var idx=(row*W+col)*4;s+=.299*d[idx]+.587*d[idx+1]+.114*d[idx+2];}
-    rowAvg.push(s/W);
-  }
-  for(var col=0;col<W;col++){
-    var s=0;
-    for(var row=0;row<H;row++){var idx=(row*W+col)*4;s+=.299*d[idx]+.587*d[idx+1]+.114*d[idx+2];}
-    colAvg.push(s/H);
-  }
-
-  /* Find first significant brightness change from each edge */
-  function findEdge(arr,fromStart){
-    var len=arr.length;
-    /* Sample base from the outer 15% */
-    var baseSamples=Math.max(1,Math.floor(len*0.15));
-    var base=0;
-    for(var k=0;k<baseSamples;k++) base+=arr[fromStart?k:len-1-k];
-    base/=baseSamples;
-    /* Walk inward to find the edge */
-    for(var k=0;k<len;k++){
-      var i=fromStart?k:len-1-k;
-      if(Math.abs(arr[i]-base)>thresh) return Math.min(0.38,Math.max(0.04,k/len));
-    }
-    /* Default: 7% inset if no edge found */
-    return 0.07;
-  }
-
-  return{
-    t:findEdge(rowAvg,true),
-    b:findEdge(rowAvg,false),
-    l:findEdge(colAvg,true),
-    r:findEdge(colAvg,false)
-  };
+  },250);
 }
 
 /* ── Torch / Grid ── */
@@ -929,11 +815,7 @@ function toggleTorch(){
   track.applyConstraints({advanced:[{torch:torchOn}]}).catch(function(){torchOn=false;});
   document.getElementById('torchBtn').classList.toggle('on',torchOn);
 }
-function toggleGrid(){
-  gridOn=!gridOn;
-  document.getElementById('camGridSvg').classList.toggle('on',gridOn);
-  document.getElementById('gridBtn').classList.toggle('on',gridOn);
-}
+function toggleGrid(){/* grid removed */}
 
 /* ── CAPTURE ── */
 /* ── Shutter sound ── */
@@ -960,28 +842,55 @@ function playShutterSound(){
 function takePicture(){
   var vid=document.getElementById('vid');
   if(!vid||!vid.videoWidth||!camStream)return;
-  /* Sound + flash + vibrate */
+
+  /* Flash + sound + haptic */
   playShutterSound();
-  if(navigator.vibrate)navigator.vibrate(20);
+  if(navigator.vibrate)navigator.vibrate(18);
   var fl=document.getElementById('camFlash');
-  fl.classList.add('pop');setTimeout(function(){fl.classList.remove('pop');},180);
-  /* Capture full frame */
+  fl.classList.add('pop');
+  setTimeout(function(){fl.classList.remove('pop');},180);
+
+  /* Try ImageCapture for highest quality (suppresses compression) */
+  var track=camStream.getVideoTracks()[0];
+  if(window.ImageCapture&&track){
+    try{
+      var ic=new ImageCapture(track);
+      ic.takePhoto({imageHeight:3000}).then(function(blob){
+        var reader=new FileReader();
+        reader.onload=function(e){
+          var url=e.target.result;
+          capturedPages.push(url);sessionImgs.push(url);
+          closeCam();showPreview(url);updatePgBadge();
+        };
+        reader.readAsDataURL(blob);
+      }).catch(function(){_captureFromVideo(vid);});
+      return;
+    }catch(e){}
+  }
+  _captureFromVideo(vid);
+}
+
+/* Fallback: draw video frame to canvas at full native resolution */
+function _captureFromVideo(vid){
   var vw=vid.videoWidth,vh=vid.videoHeight;
   var canvas=document.createElement('canvas');
+  /* Keep portrait orientation */
   if(vw>vh){
     canvas.width=vh;canvas.height=vw;
     var ctx=canvas.getContext('2d');
-    ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(Math.PI/2);
-    ctx.drawImage(vid,-vw/2,-vh/2,vw,vh);ctx.restore();
+    ctx.save();
+    ctx.translate(canvas.width/2,canvas.height/2);
+    ctx.rotate(Math.PI/2);
+    ctx.drawImage(vid,-vw/2,-vh/2,vw,vh);
+    ctx.restore();
   }else{
     canvas.width=vw;canvas.height=vh;
     canvas.getContext('2d').drawImage(vid,0,0,vw,vh);
   }
-  var url=canvas.toDataURL('image/jpeg',0.95);
+  /* 0.97 quality — highest without file size explosion */
+  var url=canvas.toDataURL('image/jpeg',0.97);
   capturedPages.push(url);sessionImgs.push(url);
-  closeCam();
-  showPreview(url);
-  updatePgBadge();
+  closeCam();showPreview(url);updatePgBadge();
 }
 
 function finishScanning(){
@@ -1021,20 +930,26 @@ function showPreview(url){
       if(navigator.vibrate)navigator.vibrate([150,60,150]);
       return;
     }
+    /* Store OCR text for AI grading */
+    window._lastOCRText=text;
     var classified=classifyText(text);
     var mismatch=handleOCRResult(classified);
     if(!mismatch){
-      /* Show action buttons */
       showPreviewActions();
     }
   });
 }
 
 function showPreviewActions(){
-  var g=GRADED.indexOf(selDocType)>=0;
-  document.getElementById('subRow').style.display='flex';
-  document.getElementById('subBtn').style.display=g?'none':'block';
-  document.getElementById('grBtn').style.display=g?'block':'none';
+  var isEssay=GRADED.indexOf(selDocType)>=0;
+  if(isEssay){
+    /* Auto-grade essays using Claude AI immediately after OCR */
+    autoGradeEssay();
+  }else{
+    /* Forms: just show Submit button */
+    document.getElementById('subRow').style.display='flex';
+    document.getElementById('subBtn').style.display='block';
+  }
 }
 
 function showFinalPreview(){
@@ -1285,9 +1200,133 @@ function doSubmit(){
   document.getElementById('prevScreen').classList.remove('active');
   saveRecord();showRView();
 }
-function doGrade(){
-  document.getElementById('prevScreen').classList.remove('active');
+/* ══════════════════════════════════════════════════════
+   autoGradeEssay — AI-powered essay grading using Claude API
+   
+   Sends the OCR'd essay text to Claude with a detailed rubric.
+   Claude analyses the actual content and returns:
+   - Score (0-10) per parameter
+   - Specific, meaningful comment per parameter
+   - Total out of 50
+   
+   Scoring is generous and teacher-aligned:
+   - 8-10: Excellent (clear, specific, relevant)
+   - 6-7:  Good (mostly on topic, minor issues)
+   - 4-5:  Average (partial relevance, some errors)
+   - 0-3:  Below average (off topic, incoherent)
+   
+   IMPORTANT: OCR on handwritten text is imperfect.
+   Claude is instructed to be GENEROUS — assume good quality
+   where OCR may have garbled words.
+══════════════════════════════════════════════════════ */
+function autoGradeEssay(){
+  var ocrText=window._lastOCRText||'';
+  var topic=getTopic()||'(essay topic not set)';
+  var docLabel=selDocType;
+
+  /* Show grading spinner in OCR overlay */
+  document.getElementById('ocrOv').classList.add('show');
+  document.getElementById('spinTxt').textContent='AI grading essay…';
+
+  /* If no OCR text, fallback to manual grading view */
+  if(!ocrText||ocrText==='__unreadable__'||ocrText.replace(/\s/g,'').length<20){
+    document.getElementById('ocrOv').classList.remove('show');
+    document.getElementById('subRow').style.display='flex';
+    document.getElementById('subBtn').style.display='none';
+    /* Show manual grade button as fallback */
+    var grFallback=document.getElementById('subRow');
+    grFallback.innerHTML='<button class="pb pb-gr" onclick="openGrViewManual()">Grade Manually ★</button>';
+    return;
+  }
+
+  /* Build grading prompt for Claude */
+  var prompt = [
+    'You are an expert Indian school essay evaluator for the TATA Building India competition.',
+    'Grade this student essay on the topic: "'+topic+'"',
+    'The essay is from a '+docLabel+' student.',
+    '',
+    'OCR TEXT (handwritten, may have OCR errors — be generous where text is unclear):',
+    '---',
+    ocrText.substring(0,3000),
+    '---',
+    '',
+    'Grade each parameter OUT OF 10. Be GENEROUS like a supportive teacher.',
+    'A student who writes 4+ paragraphs, stays on topic, uses good vocabulary = 8-9.',
+    'Do not penalise for OCR noise/garbled words — assume the student wrote well.',
+    '',
+    'Respond ONLY with valid JSON, no markdown, no explanation:',
+    '{',
+    '  "params": [',
+    '    {"l":"A","n":"Relevance to Topic","score":8,"remark":"specific 1-sentence comment about this essay"},',
+    '    {"l":"B","n":"Language & Expression","score":8,"remark":"specific 1-sentence comment"},',
+    '    {"l":"C","n":"Structure & Flow","score":8,"remark":"specific 1-sentence comment"},',
+    '    {"l":"D","n":"Creativity & Originality","score":7,"remark":"specific 1-sentence comment"},',
+    '    {"l":"E","n":"Idea Communication","score":8,"remark":"specific 1-sentence comment"}',
+    '  ],',
+    '  "total": 39,',
+    '  "summary": "One sentence overall assessment"',
+    '}'
+  ].join('\n');
+
+  /* Call Claude API */
+  fetch('https://api.anthropic.com/v1/messages',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:1000,
+      messages:[{role:'user',content:prompt}]
+    })
+  })
+  .then(function(r){return r.json();})
+  .then(function(data){
+    document.getElementById('ocrOv').classList.remove('show');
+    /* Extract text from response */
+    var txt='';
+    if(data.content&&data.content.length>0){
+      data.content.forEach(function(blk){if(blk.type==='text')txt+=blk.text;});
+    }
+    /* Strip any markdown fences */
+    txt=txt.replace(/```json/g,'').replace(/```/g,'').trim();
+    try{
+      var result=JSON.parse(txt);
+      /* Validate structure */
+      if(!result.params||result.params.length!==5)throw new Error('bad structure');
+      /* Calculate total from params */
+      var total=result.params.reduce(function(s,p){return s+(p.score||0);},0);
+      gradingResult={
+        total:total,
+        summary:result.summary||'',
+        params:result.params
+      };
+      /* Save and show result */
+      saveRecord();
+      showRView();
+    }catch(e){
+      /* JSON parse failed — show manual grading as fallback */
+      console.error('Grade parse error:',txt,e);
+      showToast('AI grading failed — please grade manually');
+      document.getElementById('subRow').style.display='flex';
+      document.getElementById('subRow').innerHTML='<button class="pb pb-gr" onclick="openGrViewManual()">Grade Manually ★</button>';
+    }
+  })
+  .catch(function(err){
+    document.getElementById('ocrOv').classList.remove('show');
+    console.error('API error:',err);
+    showToast('Network error — grading manually');
+    document.getElementById('subRow').style.display='flex';
+    document.getElementById('subRow').innerHTML='<button class="pb pb-gr" onclick="openGrViewManual()">Grade Manually ★</button>';
+  });
+}
+
+/* Manual grade view as fallback (same as before but renamed) */
+function openGrViewManual(){
   openGrView();
+}
+
+function doGrade(){
+  /* Kept for compatibility — now redirects to auto-grade */
+  autoGradeEssay();
 }
 
 /* ══ RESULT VIEW ══ */
@@ -1309,13 +1348,44 @@ function showRView(){
   var h='';
   if(imgs.length>0)h+='<div class="rv-imgwrap"><img src="'+imgs[imgs.length-1]+'" alt=""></div>';
   if(gradingResult){
-    var tot=gradingResult.total,pcls=tot>=40?'gA':tot>=30?'gB':'gC',ptxt=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';
-    h+='<div class="rv-score"><div class="rv-slbl">Total Score</div><div><span class="rv-snum">'+tot+'</span><span class="rv-sden"> / 50</span></div><div class="rv-spill '+pcls+'">'+ptxt+'</div></div>';
+    var tot=gradingResult.total;
+    var pcls=tot>=40?'gA':tot>=30?'gB':'gC';
+    var ptxt=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';
+    
+    /* Score card */
+    h+='<div class="rv-score">';
+    h+='<div class="rv-slbl">AI Grade — '+selDocType+'</div>';
+    h+='<div><span class="rv-snum">'+tot+'</span><span class="rv-sden"> / 50</span></div>';
+    h+='<div class="rv-spill '+pcls+'">'+ptxt+'</div>';
+    /* AI Summary comment */
+    if(gradingResult.summary){
+      h+='<div style="margin-top:10px;font-size:13px;color:#4B5563;line-height:1.55;background:#F9FAFB;border-radius:10px;padding:10px 12px;border-left:3px solid #1D9E75;text-align:left"><b>Teacher's Assessment:</b> '+gradingResult.summary+'</div>';
+    }
+    h+='</div>';
+    
+    /* Topic */
+    if(getTopic()){
+      h+='<div class="rv-meta"><div class="rv-mr"><span class="rv-mk">Topic</span><span class="rv-mv">'+getTopic()+'</span></div></div>';
+    }
+    
+    /* Per-parameter breakdown with real remarks */
+    h+='<div style="font-size:11px;font-weight:700;color:#6B7BA0;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 6px">Detailed Assessment</div>';
     gradingResult.params.forEach(function(p){
-      var pct=Math.round(p.score/10*100),fc=p.score>=8?'#30D158':p.score>=6?'#FF9F0A':'#FF453A';
-      h+='<div class="rv-param"><div class="rv-prow"><div class="rv-pltr">'+p.l+'</div><div class="rv-pname">'+p.n+'</div><div class="rv-pscore">'+p.score+'/10</div></div><div class="rv-pbar"><div class="rv-pfill" style="width:'+pct+'%;background:'+fc+'"></div></div><div class="rv-premark">'+p.remark+'</div></div>';
+      var pct=Math.round(p.score/10*100);
+      var fc=p.score>=8?'#30D158':p.score>=6?'#FF9F0A':'#FF453A';
+      var remark=p.remark||'';
+      h+='<div class="rv-param">';
+      h+='<div class="rv-prow">';
+      h+='<div class="rv-pltr">'+p.l+'</div>';
+      h+='<div class="rv-pname">'+p.n+'</div>';
+      h+='<div class="rv-pscore" style="color:'+fc+'">'+p.score+'/10</div>';
+      h+='</div>';
+      h+='<div class="rv-pbar"><div class="rv-pfill" style="width:'+pct+'%;background:'+fc+'"></div></div>';
+      if(remark){
+        h+='<div class="rv-premark" style="color:#374151;font-style:italic;padding:4px 6px;background:#F9FAFB;border-radius:6px;margin-top:4px">"'+remark+'"</div>';
+      }
+      h+='</div>';
     });
-    if(getTopic())h+='<div class="rv-meta"><div class="rv-mr"><span class="rv-mk">Topic</span><span class="rv-mv">'+getTopic()+'</span></div></div>';
   }
   var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType],['Pages',rec.pages||1]];
   h+='<div class="rv-meta">'+rows.map(function(r){return'<div class="rv-mr"><span class="rv-mk">'+r[0]+'</span><span class="rv-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
