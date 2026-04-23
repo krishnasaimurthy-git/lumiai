@@ -88,6 +88,10 @@ button:active{transform:scale(.93);opacity:.85}
 .dtc.sel{border-color:var(--co);background:var(--co);color:#fff}
 .dtc-essay{border-color:#C8A44A;background:#FFFBF0}
 .dtc-essay.sel{background:#C8A44A;border-color:#C8A44A;color:#fff}
+/* Green "scanned" state for doc type boxes */
+.dtc.scanned{border-color:#1D9E75 !important;background:linear-gradient(135deg,#D1FAE5,#ECFDF5) !important;color:#065F46 !important;position:relative}
+.dtc-essay.scanned{border-color:#1D9E75 !important;background:linear-gradient(135deg,#D1FAE5,#ECFDF5) !important;color:#065F46 !important}
+.dtc-check{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center}
 
 /* ── S5 SUMMARY ── */
 .s5hdr{text-align:center;padding:6px 0 12px}
@@ -315,7 +319,7 @@ button:active{transform:scale(.93);opacity:.85}
     <svg width="38" height="38" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" stroke="#CC785C" stroke-width="1.5" opacity=".4"/><circle cx="22" cy="22" r="13" fill="#CC785C" opacity=".15"/><line x1="22" y1="22" x2="35" y2="7" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="22" x2="6" y2="8" stroke="#E8A088" stroke-width="1.8" stroke-linecap="round"/><line x1="22" y1="22" x2="36" y2="31" stroke="#E8A088" stroke-width="1.4" stroke-linecap="round"/><circle cx="22" cy="22" r="4.5" fill="#CC785C"/><circle cx="35" cy="7" r="2.8" fill="#CC785C"/><circle cx="6" cy="8" r="2" fill="#E8A088" opacity=".85"/><circle cx="36" cy="31" r="1.8" fill="#E8A088" opacity=".7"/></svg>
     <div><div class="logo-name">LUM<span class="i">I</span>AI</div><div class="logo-sub">TBI School Scanner</div></div>
   </div>
-  <div class="owner-tap" onclick="ownerTap()"></div>
+  <div class="owner-tap" onclick="ownerTap()" title="Owner" style="opacity:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;gap:1px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.1em;font-weight:600">OWNER</span></div>
 </div>
 
 <!-- PROGRESS -->
@@ -402,10 +406,13 @@ button:active{transform:scale(.93);opacity:.85}
       </div>
       <div class="sum-box" id="sumRows"></div>
       <div id="sessList" style="margin-bottom:10px"></div>
-      <div class="br">
-        <button class="bb" onclick="newScan()">＋ Scan More</button>
-        <button class="bn" onclick="viewLastScan()" id="viewLastBtn" style="display:none">👁 View</button>
-        <button class="bc" id="doneBtn" onclick="finalDone()">Share ✓</button>
+      <!-- S5 action row: Back to scan | Submit & view all | Share -->
+      <div class="br" style="flex-direction:column;gap:8px">
+        <div style="display:flex;gap:8px">
+          <button class="bb" onclick="newScan()" style="flex:1">← Scan More</button>
+          <button class="bg" onclick="submitAll()" style="flex:2">Submit All ✓</button>
+        </div>
+        <button class="bc" id="doneBtn" onclick="finalDone()" style="width:100%">📤 Share Results</button>
       </div>
     </div>
   </div>
@@ -527,7 +534,7 @@ button:active{transform:scale(.93);opacity:.85}
 <div class="owner-ov" id="ownerOv" onclick="ovTap(event)">
   <div class="owner-sheet">
     <div class="ov-drag"></div>
-    <div class="ov-hdr"><div class="ov-title">LUMIAI</div><div class="ov-sub" id="ovSub">Enter PIN to access</div></div>
+    <div class="ov-hdr"><div class="ov-title">LUMIAI</div><div class="ov-sub" id="ovSub">Enter 4-digit Owner PIN</div></div>
     <div class="ov-body">
       <div id="pinSec" class="pin-wrap">
         <input id="ownerPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
@@ -565,8 +572,15 @@ button:active{transform:scale(.93);opacity:.85}
 var SCAN_TYPES=['ECF','Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up','WSF','GCF'];
 var GRADED=['Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up'];
 var FORMS=['ECF','WSF','GCF'];
-var FULLNAMES={ECF:'Event Completion Form',WSF:'Winner Shortlisting Form',GCF:'Gifts Distribution Confirmation Form'};
-var PARAMS=[{l:'A',n:'Relevance to Topic'},{l:'B',n:'Language & Expression'},{l:'C',n:'Structure & Flow'},{l:'D',n:'Creativity'},{l:'E',n:'Idea Communication'}];
+var FULLNAMES={ECF:'Event Completion Form / Essay Writing Event Completion Form',WSF:'Winner Shortlisting Form',GCF:'Gifts Distribution Confirmation Form'};
+/* Grading parameters — each out of 10, total = 50 */
+var PARAMS=[
+  {l:'A',n:'Relevance to Topic'},       /* Does essay address the prompt? */
+  {l:'B',n:'Language & Expression'},    /* Vocabulary, grammar, clarity */
+  {l:'C',n:'Structure & Flow'},         /* Intro, body, conclusion, transitions */
+  {l:'D',n:'Creativity & Originality'}, /* Unique ideas, interesting perspective */
+  {l:'E',n:'Idea Communication'}        /* How well ideas are conveyed */
+];
 var OWNER_PIN='1926';
 
 /* ══ STATE ══ */
@@ -639,10 +653,29 @@ function buildDocGrid(){
 buildDocGrid();
 
 function pickDoc(t){
+  /* Select doc type, clear previous scan state, open camera */
   selDocType=t;capturedPages=[];gradingResult=null;sessionImgs=[];
-  SCAN_TYPES.forEach(function(x){document.getElementById('dtc-'+x.replace(/ /g,'_')).classList.toggle('sel',x===t);});
+  SCAN_TYPES.forEach(function(x){
+    var el=document.getElementById('dtc-'+x.replace(/ /g,'_'));
+    el.classList.toggle('sel',x===t);
+  });
   document.getElementById('dt-e').classList.remove('show');
   openCam();
+}
+
+/* Called after a scan is accepted — turns the doc box green */
+function markDocScanned(docType){
+  var el=document.getElementById('dtc-'+docType.replace(/ /g,'_'));
+  if(!el)return;
+  el.classList.remove('sel');
+  el.classList.add('scanned');
+  /* Add checkmark if not already there */
+  if(!el.querySelector('.dtc-check')){
+    var ck=document.createElement('div');
+    ck.className='dtc-check';
+    ck.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l6 6L20 6" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
+    el.appendChild(ck);
+  }
 }
 
 /* ══════════════════════════════════
@@ -735,7 +768,7 @@ function _drawQuad(){
   var cv=document.getElementById('docOvCanvas');if(!cv||!cv.width)return;
   var ctx=cv.getContext('2d'),W=cv.width,H=cv.height;
   ctx.clearRect(0,0,W,H);
-  if(_quadAlpha<.02)return;
+  if(_quadAlpha<.03)return;  /* Don't draw until sufficiently visible */
   var tl={x:_quad.tl.x*W,y:_quad.tl.y*H},tr={x:_quad.tr.x*W,y:_quad.tr.y*H};
   var bl={x:_quad.bl.x*W,y:_quad.bl.y*H},br={x:_quad.br.x*W,y:_quad.br.y*H};
   /* Dim mask outside quad */
@@ -842,18 +875,48 @@ function startDetLoop(){
   },200);
 }
 
+/* ── _estimateDocPad: scan pixel rows/cols to find document edges ──
+   Returns {t,b,l,r} as fractional insets from each edge (0=edge, 0.5=center)
+   Used to position the animated quad corners onto the document ── */
 function _estimateDocPad(d,W,H,contrast){
-  /* Scan rows/cols for brightness edges to estimate doc boundary */
-  var thresh=Math.max(30,contrast*0.3);
-  var rowAvg=[];for(var row=0;row<H;row++){var s=0;for(var col=0;col<W;col++){var idx=(row*W+col)*4;s+=(.299*d[idx]+.587*d[idx+1]+.114*d[idx+2]);}rowAvg.push(s/W);}
-  var colAvg=[];for(var col=0;col<W;col++){var s=0;for(var row=0;row<H;row++){var idx=(row*W+col)*4;s+=(.299*d[idx]+.587*d[idx+1]+.114*d[idx+2]);}colAvg.push(s/H);}
-  /* Find edges */
-  function findEdge(arr,fwd){
-    var base=fwd?arr[0]:arr[arr.length-1];
-    for(var k=0;k<arr.length;k++){var i=fwd?k:arr.length-1-k;if(Math.abs(arr[i]-base)>thresh)return Math.min(.35,Math.max(.04,i/arr.length));}
-    return fwd?.06:.06;
+  var thresh=Math.max(25,contrast*0.25);
+
+  /* Build row and column average brightness arrays */
+  var rowAvg=[],colAvg=[];
+  for(var row=0;row<H;row++){
+    var s=0;
+    for(var col=0;col<W;col++){var idx=(row*W+col)*4;s+=.299*d[idx]+.587*d[idx+1]+.114*d[idx+2];}
+    rowAvg.push(s/W);
   }
-  return{t:findEdge(rowAvg,true),b:findEdge(rowAvg,false),l:findEdge(colAvg,true),r:findEdge(colAvg,false)};
+  for(var col=0;col<W;col++){
+    var s=0;
+    for(var row=0;row<H;row++){var idx=(row*W+col)*4;s+=.299*d[idx]+.587*d[idx+1]+.114*d[idx+2];}
+    colAvg.push(s/H);
+  }
+
+  /* Find first significant brightness change from each edge */
+  function findEdge(arr,fromStart){
+    var len=arr.length;
+    /* Sample base from the outer 15% */
+    var baseSamples=Math.max(1,Math.floor(len*0.15));
+    var base=0;
+    for(var k=0;k<baseSamples;k++) base+=arr[fromStart?k:len-1-k];
+    base/=baseSamples;
+    /* Walk inward to find the edge */
+    for(var k=0;k<len;k++){
+      var i=fromStart?k:len-1-k;
+      if(Math.abs(arr[i]-base)>thresh) return Math.min(0.38,Math.max(0.04,k/len));
+    }
+    /* Default: 7% inset if no edge found */
+    return 0.07;
+  }
+
+  return{
+    t:findEdge(rowAvg,true),
+    b:findEdge(rowAvg,false),
+    l:findEdge(colAvg,true),
+    r:findEdge(colAvg,false)
+  };
 }
 
 /* ── Torch / Grid ── */
@@ -1033,32 +1096,72 @@ function runOCR(url){
   });
 }
 
+/* ══════════════════════════════════════════════════
+   classifyText — Document type detector
+   Priority: Exact title match → Field keywords → Heuristics
+   Essay sheets: handwritten, no form structure, many long words
+   ECF/WSF/GCF: printed forms with structural keywords
+══════════════════════════════════════════════════ */
 function classifyText(text){
-  var t=text;
-  /* Tier 1: exact title */
-  if(t.indexOf('event completion')>=0)return{type:'ECF',confidence:'high'};
-  if(t.indexOf('essay collection form')>=0)return{type:'ECF',confidence:'high'};
-  if(t.indexOf('winner shortlisting')>=0||t.indexOf('shortlisting form')>=0)return{type:'WSF',confidence:'high'};
-  if(t.indexOf('gift distribution')>=0||t.indexOf('gifts distribution')>=0)return{type:'GCF',confidence:'high'};
-  if(t.indexOf('distribution confirmation')>=0)return{type:'GCF',confidence:'high'};
-  /* Tier 2: field-level */
-  var ecfScore=0,wsfScore=0,gcfScore=0,formScore=0,essayScore=0;
-  ['no. of essays','number of essays','essays collected','class teacher','date of event','total essays'].forEach(function(k){if(t.indexOf(k)>=0)ecfScore++;});
-  ['winner name','shortlisted','1st winner','2nd winner','prize','runner up','rank'].forEach(function(k){if(t.indexOf(k)>=0)wsfScore++;});
-  ['gift received','received by','acknowledgement','distributed','receipt'].forEach(function(k){if(t.indexOf(k)>=0)gcfScore++;});
-  ['tata building india','udise','school name','school code','head master','headmaster','principal','invigilator'].forEach(function(k){if(t.indexOf(k)>=0)formScore++;});
-  ['introduction','conclusion','therefore','however','because','furthermore','in my opinion','i believe','firstly','secondly','paragraph','topic'].forEach(function(k){if(t.indexOf(k)>=0)essayScore++;});
-  var words=t.split(' ').filter(function(w){return w.length>3;}).length;
-  if(words>50&&formScore===0)essayScore+=3;
-  else if(words>25&&formScore===0)essayScore+=2;
-  if(ecfScore>=2)return{type:'ECF',confidence:'high'};
-  if(wsfScore>=2)return{type:'WSF',confidence:'high'};
-  if(gcfScore>=2)return{type:'GCF',confidence:'high'};
-  if(ecfScore===1)return{type:'ECF',confidence:'medium'};
-  if(wsfScore===1)return{type:'WSF',confidence:'medium'};
-  if(gcfScore===1)return{type:'GCF',confidence:'medium'};
-  if(formScore>=2)return{type:'form',confidence:'medium'};
-  if(essayScore>=2)return{type:'essay',confidence:'medium'};
+  var t=text.toLowerCase().replace(/\s+/g,' ').trim();
+
+  /* ── TIER 1: Exact printed title (highest confidence) ── */
+  if(t.indexOf('event completion')>=0) return{type:'ECF',confidence:'high'};
+  if(t.indexOf('essay writing event')>=0) return{type:'ECF',confidence:'high'};
+  if(t.indexOf('essay collection form')>=0) return{type:'ECF',confidence:'high'};
+  if(t.indexOf('winner shortlisting')>=0) return{type:'WSF',confidence:'high'};
+  if(t.indexOf('shortlisting form')>=0) return{type:'WSF',confidence:'high'};
+  if(t.indexOf('gift distribution')>=0||t.indexOf('gifts distribution')>=0) return{type:'GCF',confidence:'high'};
+  if(t.indexOf('distribution confirmation')>=0) return{type:'GCF',confidence:'high'};
+
+  /* ── TIER 2: Structural field keywords ── */
+  var ecfKw=['no. of essays','number of essays','essays collected','date of event','total essays','event date','no of students'];
+  var wsfKw=['winner name','shortlisted','1st winner','2nd winner','3rd winner','runner up','rank','prize','award'];
+  var gcfKw=['gift received','received by','acknowledgement','distributed','receipt','signature of recipient'];
+  var formKw=['tata building india','udise code','school name','school code','head master','headmaster','principal','invigilator','class teacher','mandal','district','taluk'];
+
+  var ecfScore=0,wsfScore=0,gcfScore=0,formScore=0;
+  ecfKw.forEach(function(k){if(t.indexOf(k)>=0)ecfScore++;});
+  wsfKw.forEach(function(k){if(t.indexOf(k)>=0)wsfScore++;});
+  gcfKw.forEach(function(k){if(t.indexOf(k)>=0)gcfScore++;});
+  formKw.forEach(function(k){if(t.indexOf(k)>=0)formScore++;});
+
+  if(ecfScore>=2) return{type:'ECF',confidence:'high'};
+  if(wsfScore>=2) return{type:'WSF',confidence:'high'};
+  if(gcfScore>=2) return{type:'GCF',confidence:'high'};
+  if(ecfScore===1) return{type:'ECF',confidence:'medium'};
+  if(wsfScore===1) return{type:'WSF',confidence:'medium'};
+  if(gcfScore===1) return{type:'GCF',confidence:'medium'};
+  if(formScore>=2) return{type:'form',confidence:'medium'};
+
+  /* ── TIER 3: Essay heuristics ──
+     Essay sheets are handwritten answer papers.
+     Key signals: many long words, narrative vocabulary, NO form keywords.
+     Even 1 essay keyword with no form markers = likely essay.
+  ── */
+  var essayNarrative=['introduction','conclusion','therefore','however','because',
+    'furthermore','moreover','in my opinion','i believe','firstly','secondly',
+    'thirdly','paragraph','essay','dear','once upon','the importance','we should',
+    'people should','our country','india','government','students','education',
+    'society','environment','nature','water','trees','health','future'];
+
+  var essayScore=0;
+  essayNarrative.forEach(function(k){if(t.indexOf(k)>=0)essayScore++;});
+
+  /* Count meaningful words (>3 chars) — essays have many */
+  var words=t.split(/\s+/).filter(function(w){return w.length>3;}).length;
+
+  /* Key rule: If many words AND no form keywords → handwritten essay */
+  if(formScore===0){
+    if(words>60) essayScore+=4;       /* Long text, definitely essay */
+    else if(words>30) essayScore+=2;  /* Medium text, likely essay */
+    else if(words>15) essayScore+=1;  /* Short text, possibly essay */
+  }
+
+  /* Any essay keyword with no form context = essay */
+  if(essayScore>=1&&formScore===0) return{type:'essay',confidence:'medium'};
+  if(essayScore>=3) return{type:'essay',confidence:'high'};
+
   return{type:'unknown',confidence:'low'};
 }
 
@@ -1196,7 +1299,8 @@ function saveRecord(){
   var all=getScans();all.push(rec);saveScansStore(all);
   window._rec=rec;window._imgs=sessionImgs.slice();
   sessionScans.push({docType:selDocType,score:gradingResult?gradingResult.total:null,imgs:sessionImgs.slice(),rec:rec});
-  if(sessionImgs.length>0){try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=sessionImgs[sessionImgs.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}}
+  /* Mark doc type box green on S3 grid */
+  markDocScanned(selDocType);
 }
 
 function showRView(){
@@ -1215,9 +1319,28 @@ function showRView(){
   }
   var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType],['Pages',rec.pages||1]];
   h+='<div class="rv-meta">'+rows.map(function(r){return'<div class="rv-mr"><span class="rv-mk">'+r[0]+'</span><span class="rv-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
-  h+='<div class="br"><button class="bc" onclick="closeRView()">Done ✓</button></div>';
+  /* Result view footer: Back to session | Share this scan */
+  h+='<div class="br">';
+  h+='<button class="bb" onclick="closeRView()">← Session</button>';
+  h+='<button class="bc" onclick="shareCurrentScan()">Share 📤</button>';
+  h+='</div>';
   document.getElementById('rvBody').innerHTML=h;
   document.getElementById('rView').classList.add('active');
+}
+function shareCurrentScan(){
+  var imgs=window._imgs||[];
+  if(!imgs.length){showToast('No image to share.');return;}
+  var url=imgs[imgs.length-1];
+  if(navigator.share){
+    fetch(url).then(function(r){return r.blob();}).then(function(b){
+      var f=new File([b],'LUMIAI_'+(selDocType||'scan').replace(/ /g,'_')+'.jpg',{type:'image/jpeg'});
+      var d={title:'LUMIAI — '+(selDocType||'Scan'),files:[f]};
+      return(navigator.canShare&&navigator.canShare(d))?navigator.share(d):navigator.share({title:d.title,text:d.title});
+    }).catch(function(){downloadImg(url);});
+  }else{downloadImg(url);}
+}
+function downloadImg(url){
+  try{var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){showToast('Could not download image.');}
 }
 function closeRView(){
   document.getElementById('rView').classList.remove('active');
@@ -1260,15 +1383,20 @@ function openGrView(){
   document.getElementById('grBody').innerHTML=h;
   document.getElementById('grView').classList.add('active');
 }
+/* adj: adjust score for parameter l by delta d, update UI */
 function adj(l,d){
   gradeScores[l]=Math.max(0,Math.min(10,(gradeScores[l]||5)+d));
   var s=gradeScores[l];
+  /* Update score display */
   document.getElementById('sv-'+l).textContent=s;
+  /* Update colour bar: green ≥8, amber ≥6, red <6 */
   var pct=Math.round(s/10*100),fc=s>=8?'#30D158':s>=6?'#FF9F0A':'#FF453A';
   var sf=document.getElementById('sf-'+l);if(sf){sf.style.width=pct+'%';sf.style.background=fc;}
+  /* Recalculate total out of 50 */
   var tot=PARAMS.reduce(function(sum,p){return sum+(gradeScores[p.l]||5);},0);
   document.getElementById('totNum').textContent=tot;
-  var tp=document.getElementById('totPill');if(tp){tp.className='totpill '+(tot>=40?'gA':tot>=30?'gB':'gC');tp.textContent=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';}
+  var tp=document.getElementById('totPill');
+  if(tp){tp.className='totpill '+(tot>=40?'gA':tot>=30?'gB':'gC');tp.textContent=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';}
 }
 function acceptGrade(){
   gradingResult={total:PARAMS.reduce(function(s,p){return s+(gradeScores[p.l]||5);},0),params:PARAMS.map(function(p){return{l:p.l,n:p.n,score:gradeScores[p.l]||5,remark:document.getElementById('ri-'+p.l)?document.getElementById('ri-'+p.l).value.trim():''};})};
@@ -1292,13 +1420,29 @@ function buildS5(){
 }
 
 function viewSessImg(i){
-  var s=sessionScans[i];if(!s||!s.imgs||!s.imgs.length){showToast('No image available');return;}
-  selDocType=s.docType;gradingResult=s.rec.score!==undefined?{total:s.rec.score,params:[]}:null;window._imgs=s.imgs;window._rec=s.rec;
+  /* View a specific scan from this session */
+  var s=sessionScans[i];
+  if(!s||!s.imgs||!s.imgs.length){showToast('No image available for this scan.');return;}
+  selDocType=s.docType;
+  gradingResult=s.rec&&s.rec.score!==undefined?{total:s.rec.score,params:s.rec.params||[]}:null;
+  window._imgs=s.imgs;
+  window._rec=s.rec||{};
   showRView();
 }
 
 function viewLastScan(){
   if((window._imgs||[]).length>0)showRView();else showToast('No scan to view yet.');
+}
+
+/* Submit All — show result view for last scanned doc */
+function submitAll(){
+  if(sessionScans.length===0){showToast('No scans in this session yet.');return;}
+  /* Show result view for the most recent scan */
+  var last=sessionScans[sessionScans.length-1];
+  window._rec=last.rec;window._imgs=last.imgs;
+  selDocType=last.docType;
+  gradingResult=last.rec.score!==undefined?{total:last.rec.score,params:last.rec.params||[]}:null;
+  showRView();
 }
 
 function newScan(){capturedPages=[];sessionImgs=[];gradingResult=null;buildDocGrid();goTo(3);}
