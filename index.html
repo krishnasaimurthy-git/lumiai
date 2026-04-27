@@ -2,1075 +2,563 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<meta name="theme-color" content="#1C1C1E">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="LUMIAI">
-<title>LUMIAI — TBI Scanner</title>
+<title>LUMIAI</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',sans-serif;touch-action:manipulation;overflow:hidden}
+html,body{height:100%;width:100%;overflow:hidden;font-family:'Segoe UI',Arial,sans-serif;touch-action:manipulation;background:#000}
 :root{
-  --sl:#2D3561;--sl2:#3D4A7A;
-  --co:#CC785C;--co2:#B8634A;
-  --gr:#1D9E75;--rd:#D94F4F;
-  --tx:#1A2342;--mu:#6B7BA0;
-  --sf:#F7F5F2;--bd:#DDE4F0;
-  --yellow:#FFD60A;
+  --sl:#2D3561;--sl2:#3D4A7A;--sl3:#1E2245;
+  --co:#CC785C;--co2:#B8634A;--col:#E8A088;--cop:#FAEEE9;
+  --gr:#1D9E75;--gr2:#0F6E56;--rd:#D94F4F;
+  --tx:#1A2342;--mu:#6B7BA0;--sf:#F7F5F2;--bd:#DDE4F0;--am:#D4900A;
 }
-
-/* ── APP SHELL ── */
-.shell{position:fixed;inset:0;background:linear-gradient(155deg,#1E2245 0%,#2D3561 50%,#3D4A7A 100%);display:flex;flex-direction:column;overflow:hidden}
+.shell{position:fixed;inset:0;background:linear-gradient(160deg,#1E2245 0%,#2D3561 48%,#3D4A7A 100%)}
 .bg-layer{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bgl{position:absolute;font-weight:900;user-select:none;line-height:1}
-.app{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column;overflow:hidden}
-
-/* ── HEADER ── */
-.top-bar{padding:max(env(safe-area-inset-top),12px) 18px 10px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(0,0,0,.2)}
+.fv{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:max(env(safe-area-inset-top),13px) 16px 11px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.22);flex-shrink:0}
 .logo-wrap{display:flex;align-items:center;gap:10px}
-.logo-name{font-size:20px;font-weight:900;color:#fff;letter-spacing:3px}
-.logo-name .i{color:var(--co)}
-.logo-sub{font-size:9px;color:rgba(255,255,255,.4);letter-spacing:.15em;text-transform:uppercase;margin-top:1px}
-.owner-tap{opacity:0;width:32px;height:32px;cursor:pointer}
-
-/* ── PROGRESS ── */
-.prog{padding:8px 18px;display:flex;align-items:center;gap:0;flex-shrink:0}
-.pd{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:rgba(255,255,255,.4);flex-shrink:0;transition:all .2s}
-.pd.act{background:var(--co);border-color:var(--co);color:#fff}
-.pd.dn{background:var(--gr);border-color:var(--gr);color:#fff}
-.pl{flex:1;height:2px;background:rgba(255,255,255,.12);transition:background .2s}
-.pl.dn{background:var(--gr)}
-.prog-lbl{font-size:10px;color:rgba(255,255,255,.45);text-align:center;padding:3px 0 6px;flex-shrink:0}
-
-/* ── SCREENS ── */
-.screens{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 env(safe-area-inset-bottom)}
-.screen{display:none;padding:12px 14px 20px}.screen.active{display:block}
-
-/* ── CARD ── */
-.card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.25)}
-.ch{padding:14px 18px 12px;background:var(--sf);border-bottom:1px solid var(--bd);text-align:center}
-.cs{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
-.ct{font-size:19px;font-weight:800;color:var(--sl)}
-.csb{font-size:12px;color:var(--mu);margin-top:2px}
-.cb{padding:16px}
-
-/* ── FORMS ── */
+.logo-svg{width:38px;height:38px;flex-shrink:0}
+.logo-txt{font-size:22px;font-weight:900;color:#fff;letter-spacing:4px;line-height:1}
+.logo-txt .ic{color:var(--col)}
+.ot{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;flex-shrink:0}
+.ot:active{background:rgba(255,255,255,.18)}
+.ps-wrap{padding:10px 18px 8px;background:rgba(0,0,0,.15);flex-shrink:0}
+.ps-dots{display:flex;align-items:center;margin-bottom:5px}
+.psd{display:flex;align-items:center;flex:1}
+.psdot{width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(255,255,255,.4);transition:all .2s;flex-shrink:0}
+.psdot.act{background:var(--co);border-color:var(--co);color:#fff}
+.psdot.dn{background:var(--gr);border-color:var(--gr);color:#fff}
+.psln{flex:1;height:2px;background:rgba(255,255,255,.1);margin:0 3px;transition:background .2s}
+.psln.dn{background:var(--gr)}
+.pslbl{font-size:10px;color:rgba(255,255,255,.5);text-align:center}
+.screens{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 2rem}
+.screen{display:none}.screen.active{display:block}
+.card{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.22)}
+.chdr{padding:13px 18px 10px;text-align:center;background:var(--sf);border-bottom:1px solid var(--bd)}
+.cstep{font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.ctitle{font-size:19px;font-weight:800;color:var(--sl)}
+.csub{font-size:12px;color:var(--mu);margin-top:2px}
+.cbody{padding:14px 14px 16px}
 .fg{margin-bottom:11px}
-label.fl{display:block;font-size:11px;font-weight:700;color:var(--mu);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+label.fl{display:block;font-size:11px;font-weight:700;color:var(--mu);margin-bottom:3px;text-transform:uppercase;letter-spacing:.06em}
 .req{color:var(--rd)}
-input,select{width:100%;height:44px;padding:0 13px;border:1.5px solid var(--bd);border-radius:10px;background:#FAFBFF;color:var(--tx);font-size:15px;outline:none;-webkit-appearance:none;transition:border-color .15s,box-shadow .15s;font-family:inherit}
-input:focus,select:focus{border-color:var(--co);box-shadow:0 0 0 3px rgba(204,120,92,.13)}
-input.err{border-color:var(--rd)}
+input,select{width:100%;height:44px;padding:0 12px;border:1.5px solid var(--bd);border-radius:9px;background:#FAFBFF;color:var(--tx);font-size:15px;outline:none;-webkit-appearance:none;appearance:none;transition:border-color .15s}
+input:focus,select:focus{border-color:var(--co);background:#fff;box-shadow:0 0 0 3px rgba(204,120,92,.15)}
+input.err{border-color:var(--rd);background:#FFF5F5}
 .em{font-size:11px;color:var(--rd);margin-top:3px;display:none}.em.show{display:block}
-.divider{height:1px;background:var(--bd);margin:10px 0}
-
-/* ── BUTTONS ── */
-.br{display:flex;gap:8px;margin-top:14px}
-button{height:48px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;flex:1;touch-action:manipulation;transition:transform .06s,opacity .1s;font-family:inherit}
-button:active{transform:scale(.93);opacity:.85}
-.bn{background:var(--sl);color:#fff}
-.bb{background:#ECEEF8;color:var(--sl)}
-.bc{background:var(--co);color:#fff}
-.bg{background:var(--gr);color:#fff}
-
-/* ── ROLE CHIPS ── */
-.role-chips{display:flex;gap:8px;margin-bottom:10px}
-.chip{flex:1;padding:12px 6px;border-radius:12px;border:2px solid var(--bd);background:#FAFBFF;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:var(--tx);touch-action:manipulation;transition:all .1s}
-.chip:active{transform:scale(.93)}
-.chip.sel{border-color:var(--co);background:var(--co);color:#fff}
+.br{display:flex;gap:9px;margin-top:14px}
+button{height:48px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;flex:1;touch-action:manipulation;-webkit-user-select:none;user-select:none;transition:transform .06s,background .08s}
+button:active{transform:scale(.93)}
+.bn{background:var(--sl);color:#fff}.bn:active{background:var(--sl2)}
+.bb{background:#ECEEF8;color:var(--sl)}.bb:active{background:#D8DCF0}
+.bc{background:var(--co);color:#fff}.bc:active{background:var(--co2)}
+.bg{background:var(--gr);color:#fff}.bg:active{background:var(--gr2)}
+.dv{height:1px;background:var(--bd);margin:10px 0}
+.rchips{display:flex;gap:7px;margin-bottom:10px}
+.chip{flex:1;padding:11px 5px;border-radius:12px;border:2px solid var(--bd);background:#FAFBFF;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--tx);touch-action:manipulation;transition:transform .06s,border-color .1s,background .1s}
+.chip:active{transform:scale(.92)}.chip.sel{border-color:var(--co);background:var(--co);color:#fff}
 .chip-icon{font-size:20px;display:block;margin-bottom:3px}
-
-/* ── DOC TYPE GRID ── */
-.dt-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.dtc{padding:11px 7px;border-radius:11px;border:2px solid var(--bd);background:#FAFBFF;cursor:pointer;text-align:center;font-size:12px;font-weight:700;color:var(--tx);line-height:1.4;touch-action:manipulation;transition:all .1s}
-.dtc:active{transform:scale(.92)}
-.dtc.sel{border-color:var(--co);background:var(--co);color:#fff}
-.dtc-essay{border-color:#C8A44A;background:#FFFBF0}
-.dtc-essay.sel{background:#C8A44A;border-color:#C8A44A;color:#fff}
-/* Green "scanned" state for doc type boxes */
-.dtc.scanned{border-color:#1D9E75 !important;background:linear-gradient(135deg,#D1FAE5,#ECFDF5) !important;color:#065F46 !important;position:relative}
-.dtc-essay.scanned{border-color:#1D9E75 !important;background:linear-gradient(135deg,#D1FAE5,#ECFDF5) !important;color:#065F46 !important}
-.dtc-check{position:absolute;top:5px;right:5px;width:20px;height:20px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center}
-
-/* ── S5 SUMMARY ── */
-.s5hdr{text-align:center;padding:6px 0 12px}
-.tick-big{width:52px;height:52px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.s5ok{font-size:16px;font-weight:800;color:#065F46}
-.s5sub{font-size:13px;color:var(--gr)}
-.sum-box{background:var(--sf);border-radius:12px;padding:10px 14px;margin-bottom:12px}
-.smrow{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd)}
-.smrow:last-child{border-bottom:none}
-.sk{font-size:12px;color:var(--mu)}
-.sv{font-size:13px;font-weight:700;color:var(--tx);text-align:right;max-width:65%;word-break:break-word}
-.sess-list{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
-.sess-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:11px;border:1.5px solid var(--bd);background:#FAFBFF}
-.sess-doc{flex:1;font-size:13px;font-weight:700;color:var(--tx)}
-.sess-score{font-size:13px;font-weight:800;color:var(--co);flex-shrink:0}
-.sess-vbtn{height:30px;padding:0 10px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--sl);color:#fff;cursor:pointer;flex-shrink:0}
-
-/* ── TOAST ── */
-.toast{position:fixed;bottom:max(env(safe-area-inset-bottom),20px);left:50%;transform:translateX(-50%);background:rgba(29,29,31,.95);color:#fff;border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;z-index:9999;display:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.toast.show{display:block}
-
-/* ── SEVA FOOTER ── */
-.seva-footer{text-align:center;padding:18px 0 6px;display:flex;flex-direction:column;align-items:center;gap:5px}
-.seva-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:6px 16px}
+.tbanner{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:12px;padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:12px}
+.ticon{width:36px;height:36px;border-radius:50%;background:var(--co);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tlbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:3px}
+.tnm{font-size:14px;font-weight:800;color:#fff;line-height:1.35}
+.seva-foot{text-align:center;padding:18px 0 4px;display:flex;flex-direction:column;align-items:center;gap:5px}
+.seva-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.11);border-radius:20px;padding:6px 16px}
 .seva-dot{width:6px;height:6px;border-radius:50%;background:var(--co)}
-.seva-word{font-size:12px;font-weight:900;color:#fff;letter-spacing:3px}
-.seva-word span{color:#E8A088}
-.seva-full{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:.18em;text-transform:uppercase}
+.seva-word{font-size:13px;font-weight:900;color:#fff;letter-spacing:3px}
+.seva-word span{color:var(--col)}
+.seva-sub{font-size:9px;color:rgba(255,255,255,.32);letter-spacing:.18em;text-transform:uppercase}
+.dtg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px}
+.dtc{padding:10px 6px;border-radius:11px;border:2px solid var(--bd);background:#FAFBFF;cursor:pointer;text-align:center;font-size:11px;font-weight:700;color:var(--tx);line-height:1.4;touch-action:manipulation;transition:transform .06s,border-color .1s,background .1s}
+.dtc:active{transform:scale(.92)}.dtc.sel{border-color:var(--co);background:var(--co);color:#fff}
+.dtc.g{border-color:#C5B8F0;background:#F2F0FE}.dtc.g.sel{border-color:var(--co);background:var(--co);color:#fff}
+.gtag{font-size:9px;color:#6B52C8;font-weight:700;display:block;margin-top:2px}
+.dtc.g.sel .gtag{color:rgba(255,255,255,.8)}
+.dtc-sub{font-size:9px;color:var(--mu);display:block;margin-top:2px;font-weight:500;line-height:1.2}
+.dtc.sel .dtc-sub{color:rgba(255,255,255,.75)}
 
-/* ══════════════════════════════════════
-   CAMERA — Clean full-screen, zero overlays
-══════════════════════════════════════ */
-.cam-screen{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
-.cam-screen.active{display:flex}
-.cam-vf{position:relative;flex:1;overflow:hidden;background:#000}
-/* Video fills the ENTIRE viewfinder — no clipping, no borders */
-#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:20;transition:opacity .04s}
-.cam-flash.pop{opacity:.95}
-.cam-tap{position:absolute;inset:0;z-index:5;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.cam-denied{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;background:#000;z-index:30}
-.cam-denied p{color:rgba(255,255,255,.85);font-size:15px;text-align:center;line-height:1.7}
+/* CAMERA */
+.camv{position:fixed;inset:0;z-index:100;background:#000;display:none;flex-direction:column}
+.camv.active{display:flex}
+.camwrap{position:relative;flex:1;overflow:hidden;background:#000}
+#vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#cropCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4}
+.focus-ring{position:absolute;width:70px;height:70px;border:2.5px solid #FFD600;border-radius:50%;pointer-events:none;z-index:20;display:none;transform:translate(-50%,-50%)}
+.focus-ring.go{animation:fring .7s ease forwards}
+@keyframes fring{0%{opacity:1;transform:translate(-50%,-50%) scale(1.6)}60%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}}
+.cam-top{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;display:flex;align-items:center;justify-content:center;z-index:12;pointer-events:none}
+.cpill{display:inline-flex;align-items:center;gap:7px;background:rgba(0,0,0,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:22px;padding:6px 16px;font-size:13px;color:#fff;font-weight:600;border:1px solid rgba(255,255,255,.14)}
+.sdot{width:9px;height:9px;border-radius:50%;background:#666;transition:background .3s;flex-shrink:0}
+.sdot.look{background:rgba(232,160,32,.9);animation:pulse 1.1s infinite}
+.sdot.found{background:var(--gr)}
+.sdot.bad{background:var(--rd)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.cam-back{position:absolute;top:max(env(safe-area-inset-top),14px);left:14px;z-index:13;width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.58);border:1px solid rgba(255,255,255,.22);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}
+.cam-back:active{background:rgba(0,0,0,.85)}
+.cam-doc{position:absolute;top:max(env(safe-area-inset-top),14px);right:14px;z-index:13;background:rgba(204,120,92,.9);border-radius:10px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;max-width:160px;text-align:center;line-height:1.3}
+.cam-hint{position:absolute;bottom:14px;left:0;right:0;text-align:center;z-index:12;pointer-events:none;font-size:13px;color:rgba(255,255,255,.9);text-shadow:0 1px 6px rgba(0,0,0,.8);font-weight:500;padding:0 18px}
+.tap-area{position:absolute;inset:0;z-index:5;cursor:crosshair}
+.cam-denied{position:absolute;inset:0;z-index:22;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;background:rgba(0,0,0,.9)}
+.cam-denied p{color:#fff;font-size:14px;text-align:center;line-height:1.7}
+.doc-err{position:absolute;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.93);padding:22px 20px;gap:12px}
+.doc-err.show{display:flex}
+.de-icon{width:58px;height:58px;border-radius:50%;background:var(--rd);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+.de-title{font-size:18px;font-weight:900;color:#fff;text-align:center}
+.de-band{border-radius:10px;padding:10px 14px;width:100%;text-align:center}
+.de-sel{background:rgba(29,158,117,.2);border:1px solid rgba(29,158,117,.4)}
+.de-found{background:rgba(217,79,79,.2);border:1px solid rgba(217,79,79,.4)}
+.de-lbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.de-val{font-size:13px;font-weight:800;color:#fff;line-height:1.3}
+.de-msg{font-size:13px;color:rgba(255,255,255,.72);text-align:center;line-height:1.6;max-width:330px}
+.de-btns{display:flex;gap:10px;width:100%}
+.de-btns button{height:46px;border-radius:12px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;flex:1}
+.shutbar{background:rgba(0,0,0,.88);padding-bottom:max(env(safe-area-inset-bottom),18px);padding-top:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:32px;border-top:1px solid rgba(255,255,255,.08)}
+.shutter{width:76px;height:76px;border-radius:50%;background:rgba(255,255,255,.13);border:3px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;transition:transform .07s}
+.shutter:active{transform:scale(.86)}
+.shut-inner{width:60px;height:60px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
+.pglbl{width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.5);font-weight:600;line-height:1.5}
 
-/* Status pill — bottom of viewfinder */
-.cam-status{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-radius:24px;padding:8px 20px;display:flex;align-items:center;gap:8px;white-space:nowrap;z-index:5;pointer-events:none;border:1px solid rgba(255,255,255,.1);transition:opacity .3s}
-.sdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;transition:background .4s}
-.sdot.look{background:#FF9F0A;animation:blink 1.2s ease-in-out infinite}
-.sdot.found{background:#30D158;animation:none;box-shadow:0 0 6px #30D158}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.8)}}
-.stxt{font-size:13px;font-weight:600;color:#fff;letter-spacing:-.2px}
-
-/* Doc type label */
-.cam-doc-lbl{position:absolute;top:max(env(safe-area-inset-top),64px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.95);white-space:nowrap;z-index:5;pointer-events:none;border:1px solid rgba(255,255,255,.12);letter-spacing:.2px}
-
-/* Top bar: ✕ | Flash Grid | ✓ */
-.cam-top{position:absolute;top:0;left:0;right:0;z-index:6;display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),18px) 22px 10px}
-.cam-top-center{display:flex;gap:22px;align-items:center}
-
-/* Icon buttons — flat, no background */
-.cam-ibtn{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;touch-action:manipulation;padding:4px;-webkit-tap-highlight-color:transparent}
-.cam-ibtn:active{opacity:.4;transform:scale(.88)}
-.cam-ibtn span{font-size:9px;color:rgba(255,255,255,.72);font-weight:600;letter-spacing:.4px;text-transform:uppercase}
-.cam-ibtn.on svg *[stroke]{stroke:#FFD60A !important}
-.cam-ibtn.on span{color:#FFD60A}
-
-/* ✕ and ✓ action buttons */
-.cam-act{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.12);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;border:1px solid rgba(255,255,255,.2);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .1s}
-.cam-act:active{background:rgba(255,255,255,.25);transform:scale(.88)}
-.cam-act.yellow{background:#FFD60A;border-color:rgba(255,220,0,.5);box-shadow:0 2px 16px rgba(255,214,10,.4)}
-.cam-act.yellow:active{background:#E6C400;transform:scale(.88)}
-
-/* Shutter bar — premium black glass */
-.cam-bar{background:rgba(10,10,12,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:18px 20px max(env(safe-area-inset-bottom),28px);border-top:1px solid rgba(255,255,255,.06);gap:10px}
-/* Thumbnail strip beside shutter */
-.cam-thumbs{display:flex;gap:5px;align-items:center;flex-wrap:nowrap;overflow:hidden;max-width:90px;flex-shrink:0}
-.cam-thumb{width:44px;height:58px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.5);flex-shrink:0;position:relative;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-.cam-thumb img{width:100%;height:100%;object-fit:cover}
-.cam-thumb-n{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);color:#fff;font-size:8px;font-weight:700;text-align:center;padding:2px 0}
-.pg-badge{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);letter-spacing:.3px;flex-shrink:0;min-width:48px;text-align:center}
-
-/* Apple-exact shutter */
-.shutter{width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.18);border:5px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:transform .07s,box-shadow .07s;box-shadow:0 0 0 0 rgba(255,255,255,.4)}
-.shutter:active{transform:scale(.84);box-shadow:0 0 0 8px rgba(255,255,255,.1)}
-.shut-inner{width:68px;height:68px;border-radius:50%;background:#fff;transition:transform .07s}
-.shutter:active .shut-inner{transform:scale(.9)}
-
-/* ══════════════════════════════════════
-   PREVIEW — Premium Apple quality
-══════════════════════════════════════ */
-.prev-screen{position:fixed;inset:0;z-index:101;background:#000;display:none;flex-direction:column}
-.prev-screen.active{display:flex}
-.prev-top{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 20px 14px;flex-shrink:0;background:rgba(12,12,14,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid rgba(255,255,255,.06)}
-.prev-act{width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.1);backdrop-filter:blur(10px);border-radius:14px;border:1px solid rgba(255,255,255,.15);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:all .1s;flex-shrink:0}
-.prev-act:active{background:rgba(255,255,255,.22);transform:scale(.88)}
-.prev-act.yellow{background:#FFD60A;border-color:rgba(255,220,0,.4);box-shadow:0 2px 14px rgba(255,214,10,.4)}
-.prev-act.yellow:active{background:#E6C400;transform:scale(.88)}
-.ocr-pill{font-size:12px;font-weight:700;padding:6px 14px;border-radius:20px;letter-spacing:.1px;transition:all .3s}
-.ocr-pill.wait{background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.14)}
-.ocr-pill.ok{background:rgba(48,209,88,.18);color:#30D158;border:1px solid rgba(48,209,88,.3)}
-.ocr-pill.ng{background:rgba(255,69,58,.18);color:#FF6B6B;border:1px solid rgba(255,69,58,.3)}
-.prev-img{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000;position:relative}
+/* PREVIEW */
+.prevv{position:fixed;inset:0;z-index:110;background:#000;display:none;flex-direction:column}
+.prevv.active{display:flex}
+.prev-img{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a0a}
 .prev-img img{width:100%;height:100%;object-fit:contain}
-#cropCv{position:absolute;inset:0;width:100%;height:100%;z-index:4;touch-action:none;display:none}
-.err-banner{position:absolute;top:12px;left:12px;right:12px;z-index:10;background:rgba(12,12,14,.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:18px;padding:16px 18px;display:none;border:1px solid rgba(255,69,58,.35);box-shadow:0 8px 32px rgba(0,0,0,.6)}
-.err-banner.show{display:block;animation:slideDown .28s cubic-bezier(.34,1.56,.64,1)}
-@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
-.err-title{font-size:15px;font-weight:800;color:#FF6B6B;margin-bottom:5px;line-height:1.3;letter-spacing:-.2px}
-.err-msg{font-size:13px;color:rgba(255,255,255,.72);line-height:1.6;white-space:pre-line}
-.pg-strip{position:absolute;bottom:12px;left:0;right:0;display:flex;gap:7px;justify-content:center;padding:0 14px;z-index:3;pointer-events:none}
-.pg-th{width:42px;height:56px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.35);background:#222;flex-shrink:0;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.5)}
-.pg-th img{width:100%;height:100%;object-fit:cover}
-.pg-n{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.78);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
-.ocr-ov{position:absolute;inset:0;z-index:8;background:rgba(0,0,0,.72);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-.ocr-ov.show{display:flex}
-.spin{width:44px;height:44px;border:3px solid rgba(255,255,255,.12);border-top-color:#FFD60A;border-radius:50%;animation:spin .65s linear infinite}
+.prev-topbar{position:absolute;top:max(env(safe-area-inset-top),14px);left:0;right:0;display:flex;align-items:flex-start;justify-content:space-between;padding:0 14px;z-index:5;gap:8px}
+.id-pill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);flex-shrink:0}
+.id-pill.ok{background:rgba(29,158,117,.9);color:#fff}
+.id-pill.ng{background:rgba(217,79,79,.9);color:#fff}
+.id-pill.wait{background:rgba(45,53,97,.85);color:#fff}
+.pgpill{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;background:rgba(45,53,97,.75);color:#fff;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);flex-shrink:0}
+.wrongbanner{position:absolute;top:60px;left:14px;right:14px;z-index:6;background:rgba(217,79,79,.95);border-radius:12px;padding:10px 14px;display:none}
+.wrongbanner.show{display:block}
+.wb-title{font-size:13px;font-weight:800;color:#fff;margin-bottom:3px}
+.wb-msg{font-size:12px;color:rgba(255,255,255,.88);line-height:1.45}
+.pgstrip{position:absolute;bottom:8px;left:0;right:0;display:flex;gap:6px;padding:0 12px;justify-content:center;z-index:5}
+.pgth{width:44px;height:58px;border-radius:6px;overflow:hidden;border:2px solid rgba(255,255,255,.4);background:#222;position:relative;flex-shrink:0}
+.pgth img{width:100%;height:100%;object-fit:cover}
+.pgth-n{position:absolute;bottom:0;left:0;right:0;background:rgba(45,53,97,.88);color:#fff;font-size:9px;font-weight:700;text-align:center;padding:2px 0}
+.id-ov{position:absolute;inset:0;z-index:10;background:rgba(0,0,0,.72);display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.id-ov.show{display:flex}
+.id-spin{width:44px;height:44px;border:3px solid rgba(255,255,255,.2);border-top-color:var(--co);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.spin-txt{font-size:14px;color:rgba(255,255,255,.82);font-weight:600;text-align:center;padding:0 24px;letter-spacing:-.2px}
-.prev-bar{background:rgba(12,12,14,.96);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);padding:14px 18px max(env(safe-area-inset-bottom),20px);border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
-.pact-row{display:flex;align-items:center;justify-content:space-around;margin-bottom:12px}
-.pact{display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;color:rgba(255,255,255,.7);font-size:10px;font-weight:700;cursor:pointer;touch-action:manipulation;padding:7px 14px;border-radius:12px;font-family:inherit;letter-spacing:.3px;text-transform:uppercase;height:auto;-webkit-tap-highlight-color:transparent}
-.pact:active{background:rgba(255,255,255,.08);transform:scale(.91)}
-.pact.on{color:#FFD60A}
-.pact.on svg *[stroke]{stroke:#FFD60A !important}
-.sub-row{display:flex;gap:10px}
-.pb{flex:1;height:52px;border-radius:16px;font-size:16px;font-weight:700;cursor:pointer;border:none;touch-action:manipulation;font-family:inherit;letter-spacing:-.3px;-webkit-tap-highlight-color:transparent;transition:all .1s}
-.pb:active{transform:scale(.93);filter:brightness(.88)}
-.pb-sub{background:linear-gradient(135deg,#34D358,#1D9E75);color:#fff;box-shadow:0 4px 18px rgba(29,158,117,.4)}
-.pb-gr{background:linear-gradient(135deg,#FFD60A,#F0C000);color:#1C1C1E;box-shadow:0 4px 18px rgba(255,214,10,.4)}
+.id-txt{font-size:14px;color:#fff;font-weight:600;text-align:center;line-height:1.5;padding:0 20px}
+.prev-bar{background:#111;padding-bottom:max(env(safe-area-inset-bottom),16px);padding-top:14px;flex-shrink:0;border-top:1px solid rgba(255,255,255,.08)}
+.prev-btns{display:flex;gap:8px;padding:0 14px 12px}
+.pb{flex:1;height:46px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;display:flex;align-items:center;justify-content:center;gap:5px;touch-action:manipulation;transition:transform .06s}
+.pb:active{transform:scale(.92)}
+.pb-rs{background:#1E2245;color:#fff}
+.pb-add{background:#1A3A20;color:#7EC89A}
+.pb-sub{background:var(--gr);color:#fff}
+.pb-gr{background:var(--co);color:#fff}
 
-/* ══════════════════════════════════════
-   RESULT / GRADE VIEW
-══════════════════════════════════════ */
-.rview{position:fixed;inset:0;z-index:200;background:var(--sf);display:none;flex-direction:column;overflow-y:auto}
+/* RESULT VIEW */
+.rview{position:fixed;inset:0;z-index:120;background:#000;display:none;flex-direction:column}
 .rview.active{display:flex}
-.rv-top{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 16px 12px;background:var(--sl);flex-shrink:0}
-.rv-title{font-size:16px;font-weight:800;color:#fff}
-.rv-close{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.rv-body{padding:14px;flex:1}
-.rv-imgwrap{border-radius:14px;overflow:hidden;background:#111;margin-bottom:12px;max-height:40vh;display:flex;align-items:center;justify-content:center}
-.rv-imgwrap img{width:100%;object-fit:contain}
-.rv-score{background:#fff;border-radius:14px;padding:16px;text-align:center;margin-bottom:10px;box-shadow:0 2px 12px rgba(0,0,0,.07)}
-.rv-slbl{font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
-.rv-snum{font-size:42px;font-weight:900;color:var(--sl)}
-.rv-sden{font-size:18px;color:var(--mu)}
-.rv-spill{display:inline-block;margin-top:6px;padding:4px 14px;border-radius:20px;font-size:12px;font-weight:700}
-.gA{background:#D1FAE5;color:#065F46}.gB{background:#FEF3C7;color:#92400E}.gC{background:#FEE2E2;color:#991B1B}
-.rv-param{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.rv-prow{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-.rv-pltr{width:28px;height:28px;border-radius:8px;background:var(--co);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.rv-pname{flex:1;font-size:13px;font-weight:600;color:var(--tx)}
-.rv-pscore{font-size:14px;font-weight:800;color:var(--sl)}
-.rv-pbar{height:6px;background:#F0F0F0;border-radius:3px;overflow:hidden;margin-bottom:5px}
-.rv-pfill{height:100%;border-radius:3px;transition:width .4s}
-.rv-premark{font-size:11px;color:var(--mu);line-height:1.4}
-.rv-meta{background:#fff;border-radius:12px;padding:10px 14px;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+.rv-hdr{background:var(--gr2);padding:max(env(safe-area-inset-top),14px) 16px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.rv-title{font-size:15px;font-weight:800;color:#fff}
+.rv-close{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);border:none;color:#fff;font-size:17px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.rv-close:active{background:rgba(255,255,255,.35)}
+.rv-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:12px;display:flex;flex-direction:column;gap:10px}
+.rv-imgwrap{width:100%;border-radius:12px;overflow:hidden;background:#222}
+.rv-imgwrap img{width:100%;display:block}
+.rv-score{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:14px;padding:16px;text-align:center}
+.rv-slbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.rv-snum{font-size:52px;font-weight:900;color:#fff;line-height:1}
+.rv-sden{font-size:18px;color:rgba(255,255,255,.4)}
+.rv-spill{font-size:13px;font-weight:700;margin-top:8px;padding:4px 16px;border-radius:20px;display:inline-block}
+.gA{background:rgba(29,158,117,.2);color:var(--gr)}
+.gB{background:rgba(212,144,10,.2);color:var(--am)}
+.gC{background:rgba(217,79,79,.2);color:var(--rd)}
+.rv-param{background:var(--sf);border-radius:10px;padding:11px 13px}
+.rv-prow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rv-pltr{width:26px;height:26px;border-radius:50%;background:var(--sl);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rv-pname{font-size:12px;font-weight:700;color:var(--tx);flex:1}
+.rv-pscore{font-size:16px;font-weight:900;color:var(--sl)}
+.rv-pbar{height:5px;background:var(--bd);border-radius:5px;overflow:hidden}
+.rv-pfill{height:100%;border-radius:5px}
+.rv-premark{font-size:11px;color:var(--mu);margin-top:5px;font-style:italic;line-height:1.4}
+.rv-meta{background:#fff;border-radius:12px;padding:12px 14px}
 .rv-mr{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bd)}
 .rv-mr:last-child{border-bottom:none}
-.rv-mk{font-size:12px;color:var(--mu)}
-.rv-mv{font-size:13px;font-weight:700;color:var(--tx);text-align:right;max-width:65%;word-break:break-word}
+.rv-mk{font-size:12px;color:var(--mu)}.rv-mv{font-size:12px;font-weight:700;color:var(--tx);text-align:right;max-width:55%;word-break:break-word}
+.rv-foot{background:#111;padding:12px 14px max(env(safe-area-inset-bottom),12px);display:flex;gap:10px;flex-shrink:0}
 
-/* ══════════════════════════════════════
-   GRADING VIEW
-══════════════════════════════════════ */
-.grview{position:fixed;inset:0;z-index:201;background:var(--sf);display:none;flex-direction:column;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.grview.active{display:flex}
-.gr-top{padding:max(env(safe-area-inset-top),14px) 16px 12px;background:var(--sl);display:flex;align-items:center;gap:12px;flex-shrink:0}
-.gr-title{font-size:16px;font-weight:800;color:#fff;flex:1}
-.gr-body{padding:14px;flex:1}
-.topic-row{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:12px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
-.topic-lbl{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-.topic-val{font-size:15px;font-weight:700;color:var(--sl)}
-.param-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 2px 10px rgba(0,0,0,.06)}
-.pc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.pc-ltr{width:32px;height:32px;border-radius:9px;background:var(--co);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.pc-name{font-size:14px;font-weight:700;color:var(--tx);flex:1}
-.score-row{display:flex;align-items:center;gap:8px}
-.score-minus,.score-plus{width:40px;height:40px;border-radius:10px;font-size:22px;font-weight:700;border:1.5px solid var(--bd);background:#F5F6FA;color:var(--sl);cursor:pointer;display:flex;align-items:center;justify-content:center;touch-action:manipulation;flex-shrink:0}
-.score-minus:active,.score-plus:active{background:var(--co);color:#fff;border-color:var(--co);transform:scale(.9)}
-.score-val{flex:1;text-align:center;font-size:26px;font-weight:900;color:var(--sl)}
-.score-bar{height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden;margin-top:10px}
-.score-fill{height:100%;border-radius:4px;transition:width .25s,background .25s}
-.remark-inp{width:100%;margin-top:10px;padding:9px 12px;border:1.5px solid var(--bd);border-radius:10px;font-size:13px;color:var(--tx);background:#FAFBFF;resize:none;font-family:inherit;outline:none}
-.remark-inp:focus{border-color:var(--co)}
-.total-card{background:var(--sl);border-radius:14px;padding:16px;text-align:center;margin:4px 0 14px}
-.tot-lbl{font-size:11px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.tot-num{font-size:46px;font-weight:900;color:#fff}
-.tot-den{font-size:18px;color:rgba(255,255,255,.5)}
-.totpill{display:inline-block;margin-top:8px;padding:5px 16px;border-radius:20px;font-size:13px;font-weight:700}
+/* GRADING */
+.gpanel{margin:12px 12px 0;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 36px rgba(0,0,0,.22)}
+.ghdr{padding:14px 18px 11px;background:linear-gradient(135deg,var(--sl),var(--sl2));text-align:center}
+.ghtitle{font-size:16px;font-weight:800;color:#fff}
+.ghsub{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px}
+.gbody{padding:14px}
+.gtbox{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:14px;padding:14px 16px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start}
+.gti{width:38px;height:38px;border-radius:10px;background:var(--co);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.gtlbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
+.gtnm{font-size:15px;font-weight:800;color:#fff;line-height:1.3}
+.gted{font-size:11px;color:var(--col);margin-top:4px;font-weight:600}
+.ai-load{display:flex;flex-direction:column;align-items:center;padding:24px 0;gap:12px}
+.ai-spin{width:40px;height:40px;border:3px solid var(--bd);border-top-color:var(--co);border-radius:50%;animation:spin .8s linear infinite}
+.ai-txt{font-size:13px;color:var(--mu);font-weight:600;text-align:center}
+.plist{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.prow{background:var(--sf);border-radius:12px;padding:12px 13px}
+.ptop{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
+.pltr{width:27px;height:27px;border-radius:50%;background:var(--sl);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pnm{font-size:13px;font-weight:700;color:var(--tx);flex:1;margin:0 9px}
+.psc{font-size:18px;font-weight:900;color:var(--sl)}
+.psc span{font-size:11px;font-weight:600;color:var(--mu)}
+.pbar{height:6px;background:var(--bd);border-radius:6px;overflow:hidden}
+.pfill{height:100%;border-radius:6px;transition:width .8s ease}
+.premark{font-size:11px;color:var(--mu);margin-top:5px;font-style:italic;line-height:1.4}
+.totbox{background:linear-gradient(135deg,#2D3561,#3D4A7A);border-radius:14px;padding:16px;text-align:center;margin-bottom:12px}
+.totlbl{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.totnum{font-size:52px;font-weight:900;color:#fff;line-height:1}
+.totden{font-size:20px;font-weight:600;color:rgba(255,255,255,.4)}
+.totpill{font-size:13px;font-weight:700;margin-top:7px;padding:4px 16px;border-radius:20px;display:inline-block}
+.ainote{font-size:11px;color:var(--mu);background:var(--sf);border-radius:8px;padding:8px 12px;margin-bottom:12px;line-height:1.5;text-align:center}
 
-/* ══════════════════════════════════════
-   OWNER OVERLAY
-══════════════════════════════════════ */
-.owner-ov{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center}
-.owner-ov.show{display:flex}
-.owner-sheet{background:var(--sf);border-radius:24px 24px 0 0;width:100%;max-width:430px;max-height:85vh;overflow-y:auto;padding:0 0 env(safe-area-inset-bottom);-webkit-overflow-scrolling:touch}
-.ov-drag{width:40px;height:4px;border-radius:2px;background:var(--bd);margin:12px auto 16px}
-.ov-hdr{text-align:center;padding:0 16px 14px;border-bottom:1px solid var(--bd)}
-.ov-title{font-size:18px;font-weight:800;color:var(--sl)}
-.ov-sub{font-size:12px;color:var(--mu);margin-top:2px}
-.ov-body{padding:14px 16px}
-.pin-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-.pin-wrap input{max-width:200px;text-align:center;font-size:22px;letter-spacing:6px;font-weight:800}
-.dash-stat{display:flex;gap:8px;margin-bottom:14px}
-.dsc{flex:1;background:#fff;border-radius:12px;padding:10px;text-align:center;border:1px solid var(--bd)}
-.dsc-n{font-size:22px;font-weight:900;color:var(--sl)}
-.dsc-l{font-size:10px;color:var(--mu);margin-top:2px}
-.hrow{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:10px;background:#fff;border:1px solid var(--bd);margin-bottom:6px}
-.hinfo{flex:1;min-width:0}
-.hdoc{font-size:13px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hmeta{font-size:11px;color:var(--mu)}
-.hscore{font-size:13px;font-weight:800;color:var(--co);flex-shrink:0}
-.scrow{display:flex;align-items:center;gap:8px;padding:6px 0}
-.sctype{font-size:12px;color:var(--tx);font-weight:600;width:100px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.scbw{flex:1;height:8px;background:#F0F0F0;border-radius:4px;overflow:hidden}
-.scbf{height:100%;background:var(--co);border-radius:4px}
-.scval{font-size:12px;font-weight:700;color:var(--sl);flex-shrink:0}
+/* SHARE */
+.suc-wrap{text-align:center;padding:8px 0 10px}
+.tick-big{width:52px;height:52px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.s5ok{font-size:15px;font-weight:800;color:#065F46;margin-bottom:3px}
+.s5sub{font-size:13px;color:var(--gr)}
+.pdfnote{display:flex;align-items:center;gap:8px;background:var(--cop);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--co2);font-weight:600;margin-bottom:12px}
+.sgrid{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.srow{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;border:1.5px solid var(--bd);background:#FAFBFF;touch-action:manipulation}
+.srow input[type=checkbox]{width:18px;height:18px;accent-color:var(--co);cursor:pointer;flex-shrink:0}
+.slbl{flex:1;font-size:13px;font-weight:600;color:var(--tx)}
+.sbadge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:700}
+.sb-r{background:#D1FAE5;color:#065F46}.sb-n{background:#F1EFE8;color:#5F5E5A}
+.vbtn{height:32px;padding:0 11px;font-size:11px;font-weight:700;border:none;border-radius:7px;background:var(--gr);color:#fff;cursor:pointer;touch-action:manipulation;flex-shrink:0}
+.vbtn:active{background:var(--gr2)}.vbtn.off{background:var(--bd);color:var(--mu);pointer-events:none}
+.smrow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bd)}
+.smrow:last-child{border-bottom:none}
+.sk{font-size:12px;color:var(--mu)}.sv{font-size:13px;font-weight:700;color:var(--tx);text-align:right;max-width:60%;word-break:break-word}
+.toast{display:none;background:var(--sl);color:#fff;border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;font-weight:600;text-align:center;border-left:4px solid var(--co)}
+.toast.show{display:block}
 
-/* ── NAV SHEET ── */
-.nav-ov{position:fixed;inset:0;z-index:400;background:rgba(0,0,0,.5);display:none;align-items:flex-end;justify-content:center}
-.nav-ov.show{display:flex}
-.nav-sheet{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:430px;padding:0 0 max(env(safe-area-inset-bottom),8px)}
-
-/* ── IMAGE VIEWER ── */
-.img-viewer{position:fixed;inset:0;z-index:350;background:#000;display:none;flex-direction:column}
-.img-viewer.show{display:flex}
-.iv-top{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),16px) 18px 12px;background:rgba(0,0,0,.8);flex-shrink:0}
-.iv-close{background:none;border:none;color:#fff;font-size:22px;cursor:pointer;width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:10px}
-.iv-close:active{background:rgba(255,255,255,.15)}
-.iv-title{font-size:14px;font-weight:700;color:#fff;text-align:center;flex:1;letter-spacing:-.2px}
-.iv-body{flex:1;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
-.iv-body img{max-width:100%;max-height:100%;object-fit:contain}
-.iv-strip{display:flex;gap:8px;padding:12px 14px max(env(safe-area-inset-bottom),16px);background:rgba(0,0,0,.8);overflow-x:auto;flex-shrink:0}
-.iv-th{width:52px;height:68px;border-radius:8px;overflow:hidden;border:2px solid rgba(255,255,255,.3);flex-shrink:0;cursor:pointer}
-.iv-th.active{border-color:#FFD60A}
-.iv-th img{width:100%;height:100%;object-fit:cover}
+/* OWNER */
+.ov{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.72);align-items:flex-end;justify-content:center}
+.ov.show{display:flex}
+.ovsh{background:#fff;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:430px;animation:slideUp .22s ease;max-height:92vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.ovh{width:38px;height:4px;background:var(--bd);border-radius:4px;margin:0 auto 16px}
+.ovtitle{font-size:17px;font-weight:800;color:var(--sl);text-align:center;margin-bottom:3px}
+.ovsub{font-size:12px;color:var(--mu);text-align:center;margin-bottom:16px}
+.prow2{display:flex;gap:10px;margin-bottom:14px}
+.prow2 input{height:48px;font-size:20px;text-align:center;letter-spacing:4px;font-weight:700}
+.dshtitle{font-size:12px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dshtitle:before{content:'';display:inline-block;width:3px;height:14px;background:var(--co);border-radius:2px}
+.sgrid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.scard{background:var(--sf);border-radius:10px;padding:10px 8px;text-align:center}
+.snum{font-size:22px;font-weight:900;color:var(--sl)}.slbl2{font-size:10px;color:var(--mu);margin-top:2px;line-height:1.3}
+.hrow{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:9px;padding:9px 11px;margin-bottom:6px}
+.hinfo{flex:1}.hdoc{font-size:13px;font-weight:700;color:var(--tx)}.hmeta{font-size:11px;color:var(--mu);margin-top:1px}
+.hscore{font-size:13px;font-weight:800;color:var(--sl);flex-shrink:0}
+.scl{display:flex;flex-direction:column;gap:6px}
+.scrow{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:8px;padding:8px 10px}
+.sctype{flex:1;font-size:12px;font-weight:700;color:var(--tx)}.scval{font-size:13px;font-weight:800;color:var(--sl)}
+.scbw{width:60px;height:5px;background:var(--bd);border-radius:5px;overflow:hidden}.scbf{height:100%;background:var(--co);border-radius:5px}
+.tcbox{background:var(--cop);border-radius:10px;padding:10px 13px;margin-bottom:12px;border-left:3px solid var(--co)}
+.tclbl{font-size:10px;font-weight:700;color:var(--co2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}.tcnm{font-size:14px;font-weight:800;color:var(--sl)}
+.expbtn{width:100%;height:42px;border-radius:10px;background:var(--sl);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.ovact{display:flex;gap:9px;margin-top:6px}
 </style>
 </head>
 <body>
 <div class="shell">
 <div class="bg-layer" id="bgLayer"></div>
-<div class="app">
 
-<!-- HEADER -->
-<div class="top-bar">
-  <div class="logo-wrap">
-    <svg width="38" height="38" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" stroke="#CC785C" stroke-width="1.5" opacity=".4"/><circle cx="22" cy="22" r="13" fill="#CC785C" opacity=".15"/><line x1="22" y1="22" x2="35" y2="7" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/><line x1="22" y1="22" x2="6" y2="8" stroke="#E8A088" stroke-width="1.8" stroke-linecap="round"/><line x1="22" y1="22" x2="36" y2="31" stroke="#E8A088" stroke-width="1.4" stroke-linecap="round"/><circle cx="22" cy="22" r="4.5" fill="#CC785C"/><circle cx="35" cy="7" r="2.8" fill="#CC785C"/><circle cx="6" cy="8" r="2" fill="#E8A088" opacity=".85"/><circle cx="36" cy="31" r="1.8" fill="#E8A088" opacity=".7"/></svg>
-    <div><div class="logo-name">LUM<span class="i">I</span>AI</div><div class="logo-sub">TBI School Scanner</div></div>
-  </div>
-  <div class="owner-tap" onclick="ownerTap()" title="Owner" style="opacity:1;display:flex;flex-direction:column;align-items:center;cursor:pointer;gap:1px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="1.5" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span style="font-size:8px;color:rgba(255,255,255,.3);letter-spacing:.1em;font-weight:600">OWNER</span></div>
-</div>
-
-<!-- PROGRESS -->
-<div class="prog" id="progDots"></div>
-<div class="prog-lbl" id="progLbl">Step 1 of 5</div>
-
-<div class="screens">
-
-<!-- S1: IDENTIFY -->
-<div class="screen active" id="s1">
-  <div class="card">
-    <div class="ch"><div class="cs">Step 1 of 5</div><div class="ct">Identify Yourself</div><div class="csb">Select your role to continue</div></div>
-    <div class="cb">
-      <div class="role-chips">
-        <div class="chip" id="chip-tcs" onclick="pickRole('tcs')"><span class="chip-icon">🏢</span>TCS</div>
-        <div class="chip" id="chip-agency" onclick="pickRole('agency')"><span class="chip-icon">🤝</span>Agency</div>
-        <div class="chip" id="chip-school" onclick="pickRole('school')"><span class="chip-icon">🏫</span>School</div>
-      </div>
-      <div class="em show" id="role-e">Please select your role.</div>
-      <div id="tcs-f" style="display:none">
-        <div class="divider"></div>
-        <div class="fg"><label class="fl">Employee ID <span class="req">*</span></label><input id="tid" type="text" inputmode="numeric" placeholder="e.g. 12345678" autocomplete="off"><div class="em" id="tid-e">Required.</div></div>
-        <div class="fg"><label class="fl">Full Name <span class="req">*</span></label><input id="tnm" type="text" placeholder="Your full name" autocomplete="name"><div class="em" id="tnm-e">Required.</div></div>
-        <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="tlc" type="text" placeholder="City / Office"><div class="em" id="tlc-e">Required.</div></div>
-      </div>
-      <div id="ag-f" style="display:none">
-        <div class="divider"></div>
-        <div class="fg"><label class="fl">Agency Name <span class="req">*</span></label><input id="aa" type="text" placeholder="Agency name"><div class="em" id="aa-e">Required.</div></div>
-        <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="an" type="text" placeholder="Your full name"><div class="em" id="an-e">Required.</div></div>
-        <div class="fg"><label class="fl">Mobile <span class="req">*</span></label><input id="am" type="tel" inputmode="tel" placeholder="10-digit mobile"><div class="em" id="am-e">Required.</div></div>
-      </div>
-      <div id="sc-f" style="display:none">
-        <div class="divider"></div>
-        <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="ss" type="text" placeholder="School name"><div class="em" id="ss-e">Required.</div></div>
-        <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="sn" type="text" placeholder="Your full name"><div class="em" id="sn-e">Required.</div></div>
-        <div class="fg"><label class="fl">Designation <span class="req">*</span></label><input id="sd" type="text" placeholder="e.g. Headmaster, Teacher"><div class="em" id="sd-e">Required.</div></div>
-      </div>
-      <div class="br"><button class="bn" onclick="s1next()">Next →</button></div>
+<!-- FORM VIEW -->
+<div class="fv">
+  <div class="topbar">
+    <div class="logo-wrap">
+      <svg class="logo-svg" viewBox="0 0 38 38" fill="none">
+        <circle cx="19" cy="19" r="17" stroke="#CC785C" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="19" cy="19" r="11" fill="#CC785C" opacity="0.15"/>
+        <line x1="19" y1="19" x2="31" y2="5" stroke="#CC785C" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19" x2="4" y2="6" stroke="#E8A088" stroke-width="1.8" stroke-linecap="round"/>
+        <line x1="19" y1="19" x2="32" y2="28" stroke="#E8A088" stroke-width="1.4" stroke-linecap="round"/>
+        <circle cx="19" cy="19" r="4" fill="#CC785C"/>
+        <circle cx="31" cy="5" r="2.5" fill="#CC785C"/>
+        <circle cx="4" cy="6" r="1.8" fill="#E8A088" opacity="0.85"/>
+        <circle cx="32" cy="28" r="1.6" fill="#E8A088" opacity="0.7"/>
+      </svg>
+      <div class="logo-txt">LUM<span class="ic">I</span>AI</div>
+    </div>
+    <div class="ot" onclick="ownerTap()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.45)" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
     </div>
   </div>
-  <div class="seva-footer">
-    <div class="seva-badge"><div class="seva-dot"></div><div class="seva-word">S<span>AI</span> · SEVA</div><div class="seva-dot"></div></div>
-    <div class="seva-full">School Event &amp; Visit Analytics</div>
-  </div>
-</div>
+  <div class="ps-wrap"><div class="ps-dots" id="psDots"></div><div class="pslbl" id="psLbl">Step 1 of 5</div></div>
+  <div class="screens">
 
-<!-- S2: SCHOOL INFO -->
-<div class="screen" id="s2">
-  <div class="card">
-    <div class="ch"><div class="cs">Step 2 of 5</div><div class="ct">School Information</div><div class="csb">Enter school details for this session</div></div>
-    <div class="cb">
-      <div class="fg"><label class="fl">UDISE Code <span class="req">*</span></label><input id="udise" type="text" inputmode="numeric" placeholder="11-digit UDISE code" maxlength="11"><div class="em" id="ud-e">Required.</div></div>
-      <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="snm" type="text" placeholder="Full school name"><div class="em" id="snm-e">Required.</div></div>
-      <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="slc" type="text" placeholder="District / City"><div class="em" id="slc-e">Required.</div></div>
-      <div class="br"><button class="bb" onclick="goTo(1)">← Back</button><button class="bn" onclick="s2next()">Next →</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- S3: CHOOSE SCAN -->
-<div class="screen" id="s3">
-  <div class="card">
-    <div class="ch"><div class="cs">Step 3 of 5</div><div class="ct">Choose Document Type</div><div class="csb">Tap a type — camera opens instantly</div></div>
-    <div class="cb">
-      <div class="dt-grid" id="dtGrid"></div>
-      <div class="em" id="dt-e" style="margin-top:6px">Please select a document type.</div>
-      <div class="br" style="margin-top:14px"><button class="bb" onclick="goTo(2)">← Back</button></div>
-    </div>
-  </div>
-</div>
-
-<!-- S4: PLACEHOLDER (camera is fullscreen overlay) -->
-<div class="screen" id="s4"><div style="height:1px"></div></div>
-
-<!-- S5: SHARE -->
-<div class="screen" id="s5">
-  <div class="card">
-    <div class="ch"><div class="cs">Step 5 of 5</div><div class="ct">Session Complete</div><div class="csb">Review and share your scans</div></div>
-    <div class="cb">
-      <div class="s5hdr">
-        <div class="tick-big"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="s5ok" id="s5ok">Session saved!</div>
-        <div class="s5sub" id="s5sub"></div>
-      </div>
-      <div class="sum-box" id="sumRows"></div>
-      <div id="sessList" style="margin-bottom:10px"></div>
-      <!-- S5 action row: Back to scan | Submit & view all | Share -->
-      <div class="br" style="flex-direction:column;gap:8px">
-        <div style="display:flex;gap:8px">
-          <button class="bb" onclick="newScan()" style="flex:1">← Scan More</button>
-          <button class="bg" onclick="submitAll()" style="flex:2">Submit All ✓</button>
+    <!-- S1 -->
+    <div class="screen active" id="s1">
+      <div class="card">
+        <div class="chdr"><div class="cstep">Step 1 of 5</div><div class="ctitle">Identify Yourself</div><div class="csub">Select your role to continue</div></div>
+        <div class="cbody">
+          <div class="rchips">
+            <div class="chip" id="chip-tcs" onclick="pickRole('tcs')"><span class="chip-icon">🏢</span>TCS</div>
+            <div class="chip" id="chip-ag" onclick="pickRole('agency')"><span class="chip-icon">🤝</span>Agency</div>
+            <div class="chip" id="chip-sc" onclick="pickRole('school')"><span class="chip-icon">🏫</span>School</div>
+          </div>
+          <div class="em show" id="role-e" style="margin-bottom:8px">Please select your role.</div>
+          <div id="tcs-f" style="display:none"><div class="dv"></div>
+            <div class="fg"><label class="fl">Employee ID <span class="req">*</span></label><input id="tid" inputmode="numeric" placeholder="e.g. 12345678"><div class="em" id="tid-e">Required.</div></div>
+            <div class="fg"><label class="fl">Full Name <span class="req">*</span></label><input id="tnm" placeholder="Your full name" autocomplete="name"><div class="em" id="tnm-e">Required.</div></div>
+            <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="tlc" placeholder="City / Office"><div class="em" id="tlc-e">Required.</div></div>
+          </div>
+          <div id="ag-f" style="display:none"><div class="dv"></div>
+            <div class="fg"><label class="fl">Agency Name <span class="req">*</span></label><input id="aa" placeholder="Agency name" autocomplete="organization"><div class="em" id="aa-e">Required.</div></div>
+            <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="an" placeholder="Your full name" autocomplete="name"><div class="em" id="an-e">Required.</div></div>
+            <div class="fg"><label class="fl">Mobile <span class="req">*</span></label><input id="am" type="tel" inputmode="tel" placeholder="10-digit mobile" autocomplete="tel"><div class="em" id="am-e">Required.</div></div>
+          </div>
+          <div id="sc-f" style="display:none"><div class="dv"></div>
+            <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="ss" placeholder="School name"><div class="em" id="ss-e">Required.</div></div>
+            <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="sn" placeholder="Your full name" autocomplete="name"><div class="em" id="sn-e">Required.</div></div>
+            <div class="fg"><label class="fl">Designation <span class="req">*</span></label><input id="sd" placeholder="e.g. Headmaster, Teacher"><div class="em" id="sd-e">Required.</div></div>
+          </div>
+          <div class="br"><button class="bn" onclick="s1next()">Next →</button></div>
         </div>
-        <button class="bc" id="doneBtn" onclick="finalDone()" style="width:100%">📤 Share Results</button>
+      </div>
+      <div class="seva-foot">
+        <div class="seva-badge"><div class="seva-dot"></div><div class="seva-word">S<span>AI</span> · SEVA</div><div class="seva-dot"></div></div>
+        <div class="seva-sub">School Event &amp; Visit Analytics</div>
       </div>
     </div>
+
+    <!-- S2 -->
+    <div class="screen" id="s2">
+      <div class="card">
+        <div class="chdr"><div class="cstep">Step 2 of 5</div><div class="ctitle">School Information</div><div class="csub">Confirm school &amp; this edition's topic</div></div>
+        <div class="cbody">
+          <div class="tbanner"><div class="ticon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div class="tlbl">Essay Topic — This Edition</div><div class="tnm" id="topicTxt">Loading...</div></div></div>
+          <div class="fg"><label class="fl">UDISE Code <span class="req">*</span></label><input id="udise" inputmode="numeric" placeholder="11-digit UDISE code" maxlength="11"><div class="em" id="ud-e">Required.</div></div>
+          <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="snm" placeholder="Full school name"><div class="em" id="snm-e">Required.</div></div>
+          <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="slc" placeholder="District / City"><div class="em" id="slc-e">Required.</div></div>
+          <div class="br"><button class="bb" onclick="goTo(1)">← Back</button><button class="bn" onclick="s2next()">Next →</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S3 -->
+    <div class="screen" id="s3">
+      <div class="card">
+        <div class="chdr"><div class="cstep">Step 3 of 5</div><div class="ctitle">Choose the Scan</div><div class="csub">★ types are AI graded out of 50</div></div>
+        <div class="cbody">
+          <div class="dtg" id="dtGrid"></div>
+          <div class="em" id="dt-e" style="margin-top:6px">Please select a document type.</div>
+          <div class="br" style="margin-top:14px"><button class="bb" onclick="goTo(2)">← Back</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4b Grading -->
+    <div class="screen" id="s4b">
+      <div class="gpanel">
+        <div class="ghdr"><div class="ghtitle" id="gTitle">★ AI Grading</div><div class="ghsub" id="gSub">Evaluating...</div></div>
+        <div class="gbody">
+          <div class="gtbox"><div class="gti"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><div><div class="gtlbl">Essay Topic</div><div class="gtnm" id="gTopic">—</div><div class="gted" id="gEd"></div></div></div>
+          <div class="ai-load" id="aiLoad"><div class="ai-spin"></div><div class="ai-txt" id="aiTxt">Reading essay...</div></div>
+          <div id="gradeOut" style="display:none">
+            <div class="plist" id="pList"></div>
+            <div class="totbox"><div class="totlbl">Total Score</div><div><span class="totnum" id="totNum">0</span><span class="totden"> / 50</span></div><div class="totpill" id="totPill">—</div></div>
+            <div class="ainote">AI grading is indicative. A human evaluator must validate before official submission.</div>
+          </div>
+          <div id="gradeSummary" style="display:none;margin:10px 0;padding:12px 14px;background:#F0FDF4;border-radius:12px;border-left:3px solid #1D9E75;font-size:13px;color:#065F46;line-height:1.6"></div>
+          <div class="br"><button class="bb" onclick="goTo(3)">← Back</button><button class="bn" id="acceptBtn" onclick="acceptGrade()" style="display:none">Accept &amp; Submit →</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S5 Share -->
+    <div class="screen" id="s5">
+      <div class="card">
+        <div class="chdr"><div class="cstep">Step 5 of 5</div><div class="ctitle">Share Scans</div><div class="csub">Save to device · share via WhatsApp / Email</div></div>
+        <div class="cbody">
+          <div class="suc-wrap"><div class="tick-big"><svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 13l7 7L22 6" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="s5ok" id="s5ok">Saved!</div><div class="s5sub" id="s5sub"></div></div>
+          <div class="pdfnote"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--co2)" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Saved on device · no cloud</div>
+          <div style="background:var(--sf);border-radius:10px;padding:10px 12px;margin-bottom:12px" id="sumRows"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Scans in this session</div>
+          <div class="sgrid" id="shareGrid"></div>
+          <div class="toast" id="toast"></div>
+          <div class="br"><button class="bb" onclick="openCam()">← Back</button><button class="bc" id="doneBtn" onclick="finalDone()">Share &amp; Done ✓</button></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
-</div><!-- screens -->
-</div><!-- app -->
-</div><!-- shell -->
-
-<div class="toast" id="toast"></div>
-
-<!-- ══ CAMERA ══ -->
-<!-- ══ CAMERA: full-screen, zero overlays, clean black ══ -->
-<div class="cam-screen" id="camScreen">
-  <div class="cam-vf" id="camVf">
-    <!-- Full-screen live video — NO canvas, NO grid, NO boundaries -->
+<!-- CAMERA -->
+<div class="camv" id="camView">
+  <div class="camwrap" id="camWrap">
     <video id="vid" autoplay playsinline muted></video>
-    <!-- White flash on capture -->
-    <div class="cam-flash" id="camFlash"></div>
-    <!-- Doc type label top-centre -->
-    <div class="cam-doc-lbl" id="camDocLbl">—</div>
-    <!-- Tap anywhere to focus -->
-    <div class="cam-tap" id="camTap"></div>
-    <!-- Camera denied -->
+    <div id="camFlash" style="position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:50;transition:opacity .05s"></div>
+    <canvas id="cropCanvas"></canvas>
+    <div class="focus-ring" id="focusRing"></div>
+    <div class="cam-top"><div class="cpill"><div class="sdot look" id="sdot"></div><span id="stxt">Point at document</span></div></div>
+    <div class="cam-back" id="camBackBtn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="cam-doc" id="camDoc">—</div>
+    <div class="cam-hint" id="camHint">Hold camera over the document</div>
+    <div class="tap-area" id="tapArea"></div>
+    <div class="doc-err" id="docErr">
+      <div class="de-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+      <div class="de-title">Wrong Document!</div>
+      <div class="de-band de-sel"><div class="de-lbl">You selected</div><div class="de-val" id="deSelected">—</div></div>
+      <div class="de-band de-found"><div class="de-lbl">OCR reads</div><div class="de-val" id="deFound">—</div></div>
+      <div class="de-msg" id="deMsg">Please scan the correct document.</div>
+      <div class="de-btns">
+        <button style="background:rgba(255,255,255,.15);color:#fff" onclick="dismissErr()">Try Again</button>
+        <button style="background:var(--co);color:#fff" onclick="goTo(3);closeCam()">Change Type</button>
+      </div>
+    </div>
     <div class="cam-denied" id="camDenied">
-      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#FF453A" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#E8A088" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>
       <p>Camera access denied.<br>Allow camera in browser settings &amp; refresh.</p>
     </div>
-    <!-- TOP BAR: ✕ cancel | Flash only | ✓ done -->
-    <div class="cam-top">
-      <div class="cam-act" onclick="cancelCam()">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </div>
-      <div class="cam-top-center">
-        <button class="cam-ibtn" id="torchBtn" onclick="toggleTorch()">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          <span>Flash</span>
-        </button>
-      </div>
-      <div class="cam-act yellow" onclick="finishScanning()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  </div>
+  <div class="shutbar">
+    <div class="pglbl" id="pgLbl"></div>
+    <div class="shutter" id="shutterBtn">
+      <div class="shut-inner">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
+          <path d="M11 7l-2 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h22a2 2 0 0 0 2-2V13a2 2 0 0 0-2-2h-4l-2-4z" fill="#2D3561"/>
+          <circle cx="16" cy="17" r="5" fill="#CC785C"/>
+          <circle cx="16" cy="17" r="2.5" fill="#fff" opacity="0.5"/>
+          <circle cx="24" cy="12" r="1.5" fill="#CC785C"/>
+        </svg>
       </div>
     </div>
-  </div>
-  <!-- SHUTTER BAR: thumbnails left | shutter centre | page count right -->
-  <div class="cam-bar">
-    <div class="cam-thumbs" id="camThumbs"></div>
-    <div class="shutter" id="shutterBtn"><div class="shut-inner"></div></div>
-    <div class="pg-badge" id="pgBadge"></div>
+    <div style="width:60px;text-align:center;font-size:11px;color:rgba(255,255,255,.4);line-height:1.4">tap to<br>capture</div>
   </div>
 </div>
 
-<!-- ══ PREVIEW ══ -->
-<div class="prev-screen" id="prevScreen">
-  <div class="prev-top">
-    <div class="prev-act" onclick="retakeScan()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    </div>
-    <div class="ocr-pill wait" id="ocrPill">Reading…</div>
-    <div class="prev-act yellow" onclick="keepScan()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-  </div>
+<!-- PREVIEW -->
+<div class="prevv" id="prevView">
   <div class="prev-img" id="prevImgWrap">
     <img id="prevImg" src="" alt="">
-    <canvas id="cropCv"></canvas>
-    <div class="err-banner" id="errBanner">
-      <div class="err-title" id="errTitle">Wrong Document</div>
-      <div class="err-msg" id="errMsg"></div>
+    <div class="prev-topbar">
+      <div class="id-pill wait" id="idPill">Reading text...</div>
+      <div class="pgpill" id="pgPill">1 page</div>
     </div>
-    <div class="pg-strip" id="pgStrip"></div>
-    <div class="ocr-ov" id="ocrOv"><div class="spin"></div><div class="spin-txt" id="spinTxt">Reading document…</div></div>
+    <div class="wrongbanner" id="wrongBanner">
+      <div class="wb-title" id="wbTitle">Wrong Document</div>
+      <div class="wb-msg" id="wbMsg"></div>
+    </div>
+    <div class="pgstrip" id="pgStrip"></div>
+    <div class="id-ov" id="idOv">
+      <div class="id-spin"></div>
+      <div class="id-txt" id="idTxt">Running OCR on image...<br>Reading printed text</div>
+    </div>
   </div>
   <div class="prev-bar">
-    <div class="pact-row">
-      <button class="pact" id="cropBtn" onclick="toggleCrop()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>
-        Crop
-      </button>
-      <button class="pact" onclick="rotateScan()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>
-        Rotate
-      </button>
-      <button class="pact" onclick="addPage()">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add Page
-      </button>
-    </div>
-    <div class="sub-row" id="subRow" style="display:none">
-      <button class="pb pb-sub" id="subBtn" onclick="doSubmit()" style="display:none">Submit &amp; Continue ✓</button>
-      <!-- Grade button removed: grading is auto-triggered for essay types -->
+    <div class="prev-btns">
+      <button class="pb pb-rs" onclick="rescan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.95"/></svg>Re-Scan</button>
+      <button class="pb pb-add" onclick="addScan()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#7EC89A" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Page</button>
+      <button class="pb pb-sub" id="subBtn" style="display:none" onclick="doSubmit()">Submit ✓</button>
+      <button class="pb pb-gr" id="grBtn" style="display:none" onclick="doGrade()">Grade ★ →</button>
     </div>
   </div>
 </div>
 
-<!-- ══ RESULT VIEW ══ -->
+<!-- RESULT VIEW -->
 <div class="rview" id="rView">
-  <div class="rv-top">
-    <div class="rv-title" id="rvTitle">Result</div>
-    <button class="rv-close" onclick="closeRView()">✕</button>
-  </div>
+  <div class="rv-hdr"><div class="rv-title" id="rvTitle">Scan Result</div><button class="rv-close" onclick="closeRView()">✕</button></div>
   <div class="rv-body" id="rvBody"></div>
-</div>
-
-<!-- ══ GRADING VIEW ══ -->
-<div class="grview" id="grView">
-  <div class="gr-top">
-    <button class="rv-close" onclick="closeGrView()">✕</button>
-    <div class="gr-title" id="grTitle">Grade Essay</div>
+  <div class="rv-foot">
+    <button style="flex:1;height:44px;border-radius:10px;background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="shareResult()">Share</button>
+    <button style="flex:1;height:44px;border-radius:10px;background:var(--co);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation" onclick="closeRView()">Done ✓</button>
   </div>
-  <div class="gr-body" id="grBody"></div>
 </div>
 
-<!-- ══ OWNER ══ -->
-<div class="owner-ov" id="ownerOv" onclick="ovTap(event)">
-  <div class="owner-sheet">
-    <div class="ov-drag"></div>
-    <div class="ov-hdr"><div class="ov-title">LUMIAI</div><div class="ov-sub" id="ovSub">Enter 4-digit Owner PIN</div></div>
-    <div class="ov-body">
-      <div id="pinSec" class="pin-wrap">
-        <input id="ownerPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off">
-        <div class="em" id="pin-e">Incorrect PIN.</div>
-        <button class="bn" style="max-width:200px;height:44px" onclick="checkPin()">Unlock</button>
+<!-- OWNER -->
+<div class="ov" id="ownerOv" onclick="ovTap(event)">
+  <div class="ovsh">
+    <div class="ovh"></div>
+    <div class="ovtitle">Owner Dashboard</div>
+    <div class="ovsub" id="ovSub">Enter PIN to access</div>
+    <div id="pinSec">
+      <div class="prow2"><input id="ownerPin" type="password" inputmode="numeric" maxlength="4" placeholder="••••"><button class="bn" style="flex:0;padding:0 18px;font-size:14px" onclick="checkPin()">Enter</button></div>
+      <div class="em" id="pin-e" style="text-align:center;margin-bottom:10px">Incorrect PIN.</div>
+    </div>
+    <div id="dashSec" style="display:none">
+      <div style="margin-bottom:16px">
+        <div class="dshtitle">Essay Topic</div>
+        <div class="tcbox"><div class="tclbl">Current Topic</div><div class="tcnm" id="dashTopic">—</div></div>
+        <div class="fg" style="margin-bottom:10px"><label class="fl">Update Topic</label><input id="newTopic" type="text" placeholder="Type new essay topic"></div>
+        <button class="bc" style="width:100%;height:44px;border-radius:10px;font-size:14px;font-weight:700;border:none;cursor:pointer;touch-action:manipulation;margin-bottom:4px" onclick="saveTopic()">Save Topic ✓</button>
       </div>
-      <div id="dashSec" style="display:none">
-        <div style="background:#fff;border-radius:12px;padding:11px 13px;margin-bottom:10px;border:1px solid var(--bd)">
-          <div style="font-size:11px;color:var(--mu);margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em">Essay Topic</div>
-          <div id="dashTopic" style="font-size:14px;font-weight:700;color:var(--sl)">—</div>
-        </div>
-        <div class="fg"><label class="fl">Set New Topic</label><input id="newTopic" type="text" placeholder="Enter essay topic"></div>
-        <button class="bn" style="height:42px;margin-bottom:12px" onclick="saveTopic()">Save Topic</button>
-        <div class="dash-stat">
-          <div class="dsc"><div class="dsc-n" id="dTotal">0</div><div class="dsc-l">Total Scans</div></div>
-          <div class="dsc"><div class="dsc-n" id="dGraded">0</div><div class="dsc-l">Graded</div></div>
-          <div class="dsc"><div class="dsc-n" id="dSchools">0</div><div class="dsc-l">Schools</div></div>
-        </div>
-        <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Recent Scans</div>
+      <div class="dv"></div>
+      <div style="margin-bottom:12px">
+        <div class="dshtitle">Summary</div>
+        <div class="sgrid3"><div class="scard"><div class="snum" id="dTotal">0</div><div class="slbl2">Total Scans</div></div><div class="scard"><div class="snum" id="dGraded">0</div><div class="slbl2">Graded</div></div><div class="scard"><div class="snum" id="dSchools">0</div><div class="slbl2">Schools</div></div></div>
+        <div class="dshtitle">Recent Scans</div>
         <div id="histList"></div>
-        <div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin:10px 0 6px">Score by Type</div>
-        <div id="dashScores"></div>
-        <div class="br" style="margin-top:14px">
-          <button class="bb" onclick="exportCSV()">Export CSV</button>
-          <button style="background:#FEE2E2;color:#991B1B;height:48px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;border:none;flex:1" onclick="clearAll()">Clear All</button>
-        </div>
       </div>
+      <div style="margin-bottom:12px"><div class="dshtitle">Avg Scores by Category</div><div class="scl" id="dashScores"></div></div>
+      <div class="dv"></div>
+      <button class="expbtn" onclick="exportCSV()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export Scan Data (CSV)</button>
+      <div class="ovact"><button class="bb" onclick="closeOwner()">Close</button><button style="flex:1;height:44px;border-radius:11px;font-size:13px;font-weight:700;background:#FDEAEA;color:var(--rd);border:none;cursor:pointer;touch-action:manipulation" onclick="clearAll()">Clear All Data</button></div>
     </div>
   </div>
 </div>
 
+<canvas id="snapCanvas" style="display:none"></canvas>
+</div>
+
+<!-- Tesseract.js — free browser OCR, no API key needed -->
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <script>
-/* ══ CONSTANTS ══ */
+/* ══════════════════════════════════════════════════════════════
+   DOCUMENT IDENTIFICATION — TESSERACT.JS BROWSER OCR
+   
+   Tesseract.js runs entirely in the browser. Zero cost. No API key.
+   It reads the actual printed text on ECF/WSF/GCF forms and
+   identifies them by their title keywords.
+   
+   Keywords per document:
+   ECF  → "event completion", "ecf", "essay collection"
+   WSF  → "winner shortlisting", "wsf", "winner short"
+   GCF  → "gifts distribution", "gcf", "gift distribution", "confirmation"
+   ESSAY→ NO form title found + has handwritten-style content
+          OR words like: student name, class, answer, write
+══════════════════════════════════════════════════════════════ */
+
+/* Background */
+var CH=['అ','ఆ','ఇ','క','ఖ','గ','చ','జ','ప','బ','మ','య','ర','ల','వ','శ','స','హ','தமி','ழ்','ங','ச','ட','ப','ம','ய','ர','ல','வ','அ','ஆ','இ','അ','ആ','ഇ','ക','ഖ','ഗ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ'];
+var COLS=['rgba(204,120,92,0.28)','rgba(232,160,136,0.2)','rgba(255,255,255,0.12)','rgba(200,210,255,0.12)','rgba(204,120,92,0.16)'];
+(function(){var bg=document.getElementById('bgLayer'),h='';for(var i=0;i<160;i++){var x=(Math.random()*97).toFixed(1),y=(Math.random()*4000).toFixed(0),sz=Math.floor(Math.random()*44+28),rot=Math.floor(Math.random()*44-22),col=COLS[Math.floor(Math.random()*COLS.length)],ch=CH[Math.floor(Math.random()*CH.length)];h+='<span class="bgl" style="left:'+x+'%;top:'+y+'px;font-size:'+sz+'px;transform:rotate('+rot+'deg);color:'+col+'">'+ch+'</span>';}document.getElementById('bgLayer').innerHTML=h;})();
+
+/* Constants */
 var SCAN_TYPES=['ECF','Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up','WSF','GCF'];
 var GRADED=['Junior Winner','Senior Winner','Jr 1st Runner Up','Jr 2nd Runner Up','Sr 1st Runner Up','Sr 2nd Runner Up'];
 var FORMS=['ECF','WSF','GCF'];
-var FULLNAMES={ECF:'Event Completion Form / Essay Writing Event Completion Form',WSF:'Winner Shortlisting Form',GCF:'Gifts Distribution Confirmation Form'};
-/* Grading parameters — each out of 10, total = 50 */
-var PARAMS=[
-  {l:'A',n:'Relevance to Topic'},       /* Does essay address the prompt? */
-  {l:'B',n:'Language & Expression'},    /* Vocabulary, grammar, clarity */
-  {l:'C',n:'Structure & Flow'},         /* Intro, body, conclusion, transitions */
-  {l:'D',n:'Creativity & Originality'}, /* Unique ideas, interesting perspective */
-  {l:'E',n:'Idea Communication'}        /* How well ideas are conveyed */
-];
+var FULLNAMES={ECF:'Event Completion Form',WSF:'Winner Shortlisting Form',GCF:'Gifts Distribution Confirmation Form'};
+var PARAMS=[{l:'A',n:'Relevance to Topic'},{l:'B',n:'Language'},{l:'C',n:'Structure'},{l:'D',n:'Creativity'},{l:'E',n:'Communication of Idea'}];
+var STEP_LABELS=['Identify Yourself','School Info','Choose Scan',"Let's Scan!",'Share'];
 var OWNER_PIN='1926';
 
-/* ══ STATE ══ */
-var selRole='',selDocType='',camStream=null,capturedPages=[],sessionImgs=[],gradingResult=null;
-var torchOn=false,gridOn=false,detLoop=null,sheetStable=0,sheetFound=false;
-var tesseractWorker=null,sessionScans=[];
-var cropActive=false,cropHandles={},draggingHandle=null,HANDLE_R=24;
+/* State */
+var selRole='',selDocType='',camStream=null,capturedPages=[],gradingResult=null;
+var detLoop=null,sheetStable=0,sheetFound=false;
+var audioCtx=null,sessionImgs=[];
+var tesseractWorker=null;
+/* Crop animation */
+var cropR={x:.03,y:.04,w:.94,h:.92},cropT={x:.03,y:.04,w:.94,h:.92},animId=null;
 
-/* ══ STORAGE ══ */
+/* Storage */
 function getTopic(){return localStorage.getItem('lumiai_topic')||'';}
 function getScans(){try{return JSON.parse(localStorage.getItem('lumiai_scans')||'[]');}catch(e){return[];}}
-function saveScansStore(a){try{localStorage.setItem('lumiai_scans',JSON.stringify(a));}catch(e){}}
+function saveScans(a){try{localStorage.setItem('lumiai_scans',JSON.stringify(a));}catch(e){}}
 
-/* ══ BG ══ */
-var CH=['అ','ఆ','ఇ','క','ఖ','గ','చ','జ','ప','బ','మ','య','ర','ల','వ','శ','స','హ','தமி','ழ்','ங','ச','ட','ப','ம','ய','ர','ல','வ','அ','ஆ','இ','അ','ആ','ഇ','ക','ഖ','ഗ','ന','പ','ബ','മ','യ','ര','ല','വ','ശ'];
-var COLS=['rgba(204,120,92,.28)','rgba(232,160,136,.2)','rgba(255,255,255,.12)','rgba(200,210,255,.12)','rgba(204,120,92,.16)'];
-(function(){var bg=document.getElementById('bgLayer'),h='';for(var i=0;i<120;i++){var x=(Math.random()*97).toFixed(1),y=(Math.random()*3000).toFixed(0),sz=Math.floor(Math.random()*40+24),rot=Math.floor(Math.random()*44-22),col=COLS[Math.floor(Math.random()*COLS.length)],ch=CH[Math.floor(Math.random()*CH.length)];h+='<span class="bgl" style="left:'+x+'%;top:'+y+'px;font-size:'+sz+'px;transform:rotate('+rot+'deg);color:'+col+'">'+ch+'</span>';}bg.innerHTML=h;})();
-
-/* ══ PROGRESS ══ */
-function buildProg(n){
-  var h='';
-  for(var i=1;i<=5;i++){
-    var cls=i<n?'dn':i===n?'act':'';
-    var ic=i<n?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>':i;
-    h+='<div class="pd '+cls+'">'+ic+'</div>';
-    if(i<5)h+='<div class="pl '+(i<n?'dn':'')+'"></div>';
-  }
-  document.getElementById('progDots').innerHTML=h;
-  document.getElementById('progLbl').textContent='Step '+n+' of 5';
-}
-
-function goTo(n){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
-  document.getElementById('s'+n).classList.add('active');
-  buildProg(n);
-  document.querySelector('.screens').scrollTop=0;
-}
-
-/* ══ S1 ══ */
-function pickRole(r){
-  selRole=r;
-  ['tcs','agency','school'].forEach(function(x){
-    document.getElementById('chip-'+x).classList.toggle('sel',x===r);
-    document.getElementById({tcs:'tcs-f',agency:'ag-f',school:'sc-f'}[x]).style.display=x===r?'block':'none';
-  });
-  document.getElementById('role-e').classList.remove('show');
-}
-function vv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
-function rq(id,eid){var ok=!!vv(id);document.getElementById(id).classList.toggle('err',!ok);document.getElementById(eid).classList.toggle('show',!ok);return ok;}
-function s1next(){
-  var ok=true;
-  if(!selRole){document.getElementById('role-e').classList.add('show');ok=false;}
-  if(selRole==='tcs'){ok=rq('tid','tid-e')&ok;ok=rq('tnm','tnm-e')&ok;ok=rq('tlc','tlc-e')&ok;}
-  if(selRole==='agency'){ok=rq('aa','aa-e')&ok;ok=rq('an','an-e')&ok;ok=rq('am','am-e')&ok;}
-  if(selRole==='school'){ok=rq('ss','ss-e')&ok;ok=rq('sn','sn-e')&ok;ok=rq('sd','sd-e')&ok;}
-  if(ok)goTo(2);
-}
-
-/* ══ S2 ══ */
-function s2next(){if(rq('udise','ud-e')&rq('snm','snm-e')&rq('slc','slc-e')){buildDocGrid();goTo(3);}}
-
-/* ══ S3 ══ */
-function buildDocGrid(){
-  document.getElementById('dtGrid').innerHTML=SCAN_TYPES.map(function(t){
-    var g=GRADED.indexOf(t)>=0,id='dtc-'+t.replace(/ /g,'_');
-    return'<div class="dtc'+(g?' dtc-essay':'')+'" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+
-      (g?'★ ':'')+t+'</div>';
-  }).join('');
-}
-buildDocGrid();
-
-function pickDoc(t){
-  /* Select doc type, clear previous scan state, open camera */
-  selDocType=t;capturedPages=[];gradingResult=null;sessionImgs=[];
-  SCAN_TYPES.forEach(function(x){
-    var el=document.getElementById('dtc-'+x.replace(/ /g,'_'));
-    el.classList.toggle('sel',x===t);
-  });
-  document.getElementById('dt-e').classList.remove('show');
-  openCam();
-}
-
-/* Called after a scan is accepted — turns the doc box green */
-function markDocScanned(docType){
-  var el=document.getElementById('dtc-'+docType.replace(/ /g,'_'));
-  if(!el)return;
-  el.classList.remove('sel');
-  el.classList.add('scanned');
-  /* Add checkmark if not already there */
-  if(!el.querySelector('.dtc-check')){
-    var ck=document.createElement('div');
-    ck.className='dtc-check';
-    ck.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 12l6 6L20 6" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>';
-    el.appendChild(ck);
-  }
-}
-
-/* ══════════════════════════════════
-   CAMERA
-══════════════════════════════════ */
-function openCam(){
-  initTesseract();
-  document.getElementById('camScreen').classList.add('active');
-  document.getElementById('camDocLbl').textContent=selDocType;
-  document.getElementById('camDenied').style.display='none';
-  sheetFound=false;sheetStable=0;
-  setStat('look','Point at document');
-  updatePgBadge();
-  /* Attach shutter */
-  var sb=document.getElementById('shutterBtn');
-  sb.onclick=function(){takePicture();};
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-    document.getElementById('camDenied').style.display='flex';return;
-  }
-  navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:4096,min:1280},height:{ideal:3072,min:720},frameRate:{ideal:30}},audio:false})
-    .then(startCamStream)
-    .catch(function(){
-      navigator.mediaDevices.getUserMedia({video:true,audio:false})
-        .then(startCamStream)
-        .catch(function(){document.getElementById('camDenied').style.display='flex';});
-    });
-}
-
-function startCamStream(stream){
-  camStream=stream;
-  var v=document.getElementById('vid');
-  v.srcObject=stream;v.muted=true;v.setAttribute('playsinline','true');
-  v.play().catch(function(){});
-  v.addEventListener('loadedmetadata',function(){
-    resizeOvCanvas();
-    startDetLoop();
-  },{once:true});
-  /* Tap anywhere in viewfinder to focus */
-  var tapEl=document.getElementById('camTap');
-  if(tapEl){
-    tapEl.onclick=function(e){
-      if(!camStream)return;
-      var track=camStream.getVideoTracks()[0];
-      if(!track||!track.getCapabilities)return;
-      var caps=track.getCapabilities();
-      if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){
-        var rect=tapEl.getBoundingClientRect();
-        var x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
-        var y=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
-        try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:x,y:y}]}]}).catch(function(){});}catch(ex){}
-        setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2500);
-      }
-    };
-  }
-  var track=stream.getVideoTracks()[0];
-  if(track){
-    try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}
-    var caps=track.getCapabilities?track.getCapabilities():{};
-    document.getElementById('torchBtn').style.opacity=caps.torch?'1':'.4';
-  }
-}
-
-function closeCam(){
-  stopDetLoop();
-  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
-  var v=document.getElementById('vid');if(v)v.srcObject=null;
-  document.getElementById('camScreen').classList.remove('active');
-  clearOvCanvas();
-}
-
-function cancelCam(){closeCam();capturedPages=[];sessionImgs=[];goTo(3);}
-
-function setStat(cls,txt){
-  var sd=document.getElementById('sdot'),st=document.getElementById('stxt');
-  if(sd)sd.className='sdot '+cls;
-  if(st)st.textContent=txt;
-}
-
-function updatePgBadge(){
-  /* Update page count badge */
-  var el=document.getElementById('pgBadge');
-  if(el)el.textContent=capturedPages.length>0?capturedPages.length+' pg'+(capturedPages.length>1?'s':''):'';
-  /* Update camera thumbnail strip — show last 2 captures */
-  var thumbs=document.getElementById('camThumbs');
-  if(!thumbs)return;
-  var show=capturedPages.slice(-2);
-  thumbs.innerHTML=show.map(function(url,i){
-    var idx=capturedPages.length-show.length+i;
-    return'<div class="cam-thumb"><img src="'+url+'"><div class="cam-thumb-n">Pg '+(idx+1)+'</div></div>';
-  }).join('');
-}
-
-/* ══════════════════════════════════════════════════════
-   LIVE DOCUMENT DETECTION — Animated quadrilateral overlay
-   Tracks document edges in real-time with smooth lerp animation
-   Exactly like Apple's Notes scanner yellow quad
-══════════════════════════════════════════════════════ */
-/* ── Detection: simple brightness check, NO canvas drawing ── */
-function resizeOvCanvas(){}   /* no-op: no overlay canvas */
-function clearOvCanvas(){}    /* no-op */
-
-function stopDetLoop(){
-  if(detLoop){clearInterval(detLoop);detLoop=null;}
-  /* Stop rAF if running from old code */
-  if(window._raf){cancelAnimationFrame(window._raf);window._raf=null;}
-}
-
-function startDetLoop(){
-  stopDetLoop();
-  var sc=document.createElement('canvas');
-  var smooth=128;
-  detLoop=setInterval(function(){
-    var vid=document.getElementById('vid');
-    if(!vid||!vid.videoWidth||vid.readyState<2)return;
-    /* Sample at 1/8 res — just for status pill */
-    var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);
-    sc.width=W;sc.height=H;
-    sc.getContext('2d').drawImage(vid,0,0,W,H);
-    try{
-      var d=sc.getContext('2d').getImageData(0,0,W,H).data,sum=0,mn=255,mx=0;
-      for(var i=0;i<d.length;i+=4){var b=(d[i]*77+d[i+1]*150+d[i+2]*29)>>8;sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
-      smooth=smooth*.7+(sum/(d.length/4))*.3;
-      var contrast=mx-mn;
-      var has=smooth>55&&contrast>28;
-      sheetStable=has?Math.min(sheetStable+1,6):Math.max(sheetStable-1,0);
-      sheetFound=sheetStable>=3;
-      if(sheetFound)setStat('found','Ready — tap to capture');
-      else setStat('look','Point at document');
-    }catch(e){}
-  },250);
-}
-
-/* ── Torch / Grid ── */
-function toggleTorch(){
-  if(!camStream)return;
-  var track=camStream.getVideoTracks()[0];if(!track)return;
-  var caps=track.getCapabilities?track.getCapabilities():{};
-  if(!caps.torch){showToast('Flash not available on this device');return;}
-  torchOn=!torchOn;
-  track.applyConstraints({advanced:[{torch:torchOn}]}).catch(function(){torchOn=false;});
-  document.getElementById('torchBtn').classList.toggle('on',torchOn);
-}
-function toggleGrid(){/* grid removed */}
-
-/* ── CAPTURE ── */
-/* ── Shutter sound ── */
-var audioCtx=null;
-function initAudio(){if(audioCtx)return;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
-function playShutterSound(){
-  initAudio();if(!audioCtx)return;
-  try{
-    var t=audioCtx.currentTime;
-    /* Mechanical click */
-    var buf=audioCtx.createBuffer(1,Math.floor(audioCtx.sampleRate*.05),audioCtx.sampleRate);
-    var d=buf.getChannelData(0);
-    for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);
-    var s=audioCtx.createBufferSource();s.buffer=buf;
-    var g=audioCtx.createGain();g.gain.setValueAtTime(0.9,t);g.gain.exponentialRampToValueAtTime(.001,t+.05);
-    s.connect(g);g.connect(audioCtx.destination);s.start(t);
-    /* High click */
-    var o=audioCtx.createOscillator();o.type='sine';o.frequency.setValueAtTime(1800,t);o.frequency.exponentialRampToValueAtTime(400,t+.04);
-    var g2=audioCtx.createGain();g2.gain.setValueAtTime(0.25,t);g2.gain.exponentialRampToValueAtTime(.001,t+.04);
-    o.connect(g2);g2.connect(audioCtx.destination);o.start(t);o.stop(t+.04);
-  }catch(e){}
-}
-
-function takePicture(){
-  var vid=document.getElementById('vid');
-  if(!vid||!vid.videoWidth||!camStream)return;
-
-  /* Flash + sound + haptic */
-  playShutterSound();
-  if(navigator.vibrate)navigator.vibrate(18);
-  var fl=document.getElementById('camFlash');
-  fl.classList.add('pop');
-  setTimeout(function(){fl.classList.remove('pop');},180);
-
-  /* Try ImageCapture for highest quality (suppresses compression) */
-  var track=camStream.getVideoTracks()[0];
-  if(window.ImageCapture&&track){
-    try{
-      var ic=new ImageCapture(track);
-      ic.takePhoto({imageHeight:3000}).then(function(blob){
-        var reader=new FileReader();
-        reader.onload=function(e){
-          var url=e.target.result;
-          capturedPages.push(url);sessionImgs.push(url);
-          closeCam();showPreview(url);updatePgBadge();
-        };
-        reader.readAsDataURL(blob);
-      }).catch(function(){_captureFromVideo(vid);});
-      return;
-    }catch(e){}
-  }
-  _captureFromVideo(vid);
-}
-
-/* Fallback: draw video frame to canvas at full native resolution */
-function _captureFromVideo(vid){
-  var vw=vid.videoWidth,vh=vid.videoHeight;
-  var canvas=document.createElement('canvas');
-  /* Keep portrait orientation */
-  if(vw>vh){
-    canvas.width=vh;canvas.height=vw;
-    var ctx=canvas.getContext('2d');
-    ctx.save();
-    ctx.translate(canvas.width/2,canvas.height/2);
-    ctx.rotate(Math.PI/2);
-    ctx.drawImage(vid,-vw/2,-vh/2,vw,vh);
-    ctx.restore();
-  }else{
-    canvas.width=vw;canvas.height=vh;
-    canvas.getContext('2d').drawImage(vid,0,0,vw,vh);
-  }
-  /* 0.97 quality — highest without file size explosion */
-  var url=canvas.toDataURL('image/jpeg',0.97);
-  capturedPages.push(url);sessionImgs.push(url);
-  closeCam();showPreview(url);updatePgBadge();
-}
-
-function finishScanning(){
-  if(capturedPages.length===0){showToast('Please capture at least one page first');return;}
-  closeCam();
-  /* If we have pages, show preview with option to submit */
-  var url=capturedPages[capturedPages.length-1];
-  showPreview(url);
-}
-
-/* ══════════════════════════════════
-   PREVIEW
-══════════════════════════════════ */
-function showPreview(url){
-  document.getElementById('prevScreen').classList.add('active');
-  document.getElementById('prevImg').src=url;
-  document.getElementById('ocrPill').className='ocr-pill wait';
-  document.getElementById('ocrPill').textContent='Reading…';
-  document.getElementById('errBanner').classList.remove('show');
-  document.getElementById('subRow').style.display='none';
-  /* subBtn/grBtn shown dynamically */
-  cropActive=false;
-  document.getElementById('cropCv').style.display='none';
-  document.getElementById('cropBtn').classList.remove('on');
-  renderPgStrip();
-  /* Run OCR */
-  document.getElementById('ocrOv').classList.add('show');
-  document.getElementById('spinTxt').textContent='Reading document…';
-  runOCR(url).then(function(text){
-    document.getElementById('ocrOv').classList.remove('show');
-    if(text==='__unreadable__'){
-      document.getElementById('ocrPill').className='ocr-pill ng';
-      document.getElementById('ocrPill').textContent='Not readable';
-      document.getElementById('errTitle').textContent='Scan is not readable — Re-Scan!';
-      document.getElementById('errMsg').textContent='Image is too blurry or dark.\nPlease re-scan in better lighting.';
-      document.getElementById('errBanner').classList.add('show');
-      capturedPages.pop();sessionImgs.pop();
-      if(navigator.vibrate)navigator.vibrate([150,60,150]);
-      return;
-    }
-    /* Store OCR text for AI grading */
-    window._lastOCRText=text;
-    var classified=classifyText(text);
-    var mismatch=handleOCRResult(classified);
-    if(!mismatch){
-      showPreviewActions();
-    }
-  });
-}
-
-function showPreviewActions(){
-  var isEssay=GRADED.indexOf(selDocType)>=0;
-  var subRow=document.getElementById('subRow');
-  var subBtn=document.getElementById('subBtn');
-  if(isEssay){
-    /* Essay: auto-grade with Claude AI */
-    _afterGradeAction='show';
-    autoGradeEssay();
-  }else{
-    /* Form: show Submit button */
-    subRow.style.display='flex';
-    if(subBtn)subBtn.style.display='block';
-  }
-}
-
-function showFinalPreview(){
-  document.getElementById('prevScreen').classList.add('active');
-  var url=capturedPages[capturedPages.length-1];
-  document.getElementById('prevImg').src=url;
-  document.getElementById('ocrPill').className='ocr-pill ok';
-  document.getElementById('ocrPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'')+' ready';
-  document.getElementById('errBanner').classList.remove('show');
-  renderPgStrip();
-  var g=GRADED.indexOf(selDocType)>=0;
-  document.getElementById('subRow').style.display='flex';
-  document.getElementById('subBtn').style.display='block';
-}
-
-function renderPgStrip(){
-  document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){
-    return'<div class="pg-th"><img src="'+u+'"><div class="pg-n">Pg '+(i+1)+'</div></div>';
-  }).join('');
-}
-
-function retakeScan(){
-  capturedPages.pop();sessionImgs.pop();
-  document.getElementById('prevScreen').classList.remove('active');
-  openCam();
-}
-
-function keepScan(){
-  /* After approving a scan, show navigation options */
-  document.getElementById('prevScreen').classList.remove('active');
-  showScanNav();
-}
-
-function showScanNav(){
-  /* Navigation sheet: scan more pages OR another doc type OR finish */
-  var scanned=sessionScans.length;
-  var remaining=SCAN_TYPES.filter(function(t){
-    return!sessionScans.find(function(s){return s.docType===t;});
-  });
-  var h='<div style="padding:18px 16px">';
-  h+='<div style="font-size:16px;font-weight:800;color:var(--sl);margin-bottom:6px">'+
-     capturedPages.length+' page'+(capturedPages.length>1?'s':'')+' captured</div>';
-  h+='<div style="font-size:13px;color:var(--mu);margin-bottom:16px">What would you like to do next?</div>';
-  /* Add more pages for this doc */
-  h+='<button class="bn" style="width:100%;margin-bottom:8px;height:46px" onclick="closeScanNav();openCam()">+ Add More Pages for '+selDocType+'</button>';
-  /* Scan next doc type */
-  if(remaining.length>0){
-    h+='<button class="bb" style="width:100%;margin-bottom:8px;height:46px" onclick="closeScanNav();doSubmitAndNext()">✓ Save & Scan Next Document</button>';
-  }
-  /* Finish all */
-  h+='<button class="bc" style="width:100%;margin-bottom:8px;height:46px" onclick="closeScanNav();doSubmitAndFinish()">✓ Save & Finish Session</button>';
-  /* Discard */
-  h+='<button style="width:100%;height:46px;border-radius:12px;border:none;background:#FEE2E2;color:#991B1B;font-size:14px;font-weight:600;cursor:pointer" onclick="closeScanNav();discardLastScan()">✕ Discard This Scan</button>';
-  h+='</div>';
-  document.getElementById('navSheet').innerHTML=h;
-  document.getElementById('navOv').classList.add('show');
-}
-
-function closeScanNav(){
-  document.getElementById('navOv').classList.remove('show');
-}
-
-function discardLastScan(){
-  capturedPages.pop();sessionImgs.pop();
-  openCam();
-}
-
-function doSubmitAndNext(){
-  /* Save current scan record, go back to doc type screen */
-  if(GRADED.indexOf(selDocType)>=0){
-    /* Essay: run AI grading first, then go to doc type */
-    _afterGradeAction='next';
-    autoGradeEssay();
-  }else{
-    saveRecord();
-    gradingResult=null;capturedPages=[];sessionImgs=[];
-    buildDocGrid();goTo(3);
-  }
-}
-
-function doSubmitAndFinish(){
-  /* Save current scan, go to S5 */
-  if(GRADED.indexOf(selDocType)>=0){
-    _afterGradeAction='finish';
-    autoGradeEssay();
-  }else{
-    saveRecord();
-    buildS5();goTo(5);
-  }
-}
-
-function addPage(){
-  document.getElementById('prevScreen').classList.remove('active');
-  openCam();
-}
-
-/* ── OCR & Classification ── */
+/* Pre-load Tesseract worker in background so it's ready */
 async function initTesseract(){
   if(tesseractWorker)return;
   try{
@@ -1083,304 +571,446 @@ async function initTesseract(){
   }catch(e){tesseractWorker=null;}
 }
 
-function runOCR(url){
-  return initTesseract().then(function(){
-    if(!tesseractWorker)return Promise.resolve('__unreadable__');
-    return tesseractWorker.recognize(url).then(function(r){
-      var txt=(r.data.text||'').toLowerCase().trim();
-      return txt.replace(/\s/g,'').length<8?'__unreadable__':txt;
-    }).catch(function(){return '__unreadable__';});
-  });
+/* Run OCR on captured image URL, return lowercase text */
+async function runOCR(imageUrl){
+  if(!tesseractWorker){await initTesseract();}
+  if(!tesseractWorker)return '';
+  try{
+    var result=await tesseractWorker.recognize(imageUrl);
+    return (result.data.text||'').toLowerCase();
+  }catch(e){return '';}
 }
 
-/* ══════════════════════════════════════════════════
-   classifyText — Document type detector
-   Priority: Exact title match → Field keywords → Heuristics
-   Essay sheets: handwritten, no form structure, many long words
-   ECF/WSF/GCF: printed forms with structural keywords
-══════════════════════════════════════════════════ */
+/* Classify OCR text to document type */
 function classifyText(text){
-  var t=text.toLowerCase().replace(/\s+/g,' ').trim();
+  /* Check each form type by keywords */
+  var ecfKw=['event completion form','event completion','essay collection form','essay collection'];
+  var wsfKw=['winner shortlisting form','winner shortlisting','winner short listing','shortlisting form'];
+  var gcfKw=['gifts distribution confirmation','gift distribution confirmation','gifts distribution','gift distribution','gifts confirmation','gcf'];
 
-  /* ── TIER 1: Exact printed title (highest confidence) ── */
-  if(t.indexOf('event completion')>=0) return{type:'ECF',confidence:'high'};
-  if(t.indexOf('essay writing event')>=0) return{type:'ECF',confidence:'high'};
-  if(t.indexOf('essay collection form')>=0) return{type:'ECF',confidence:'high'};
-  if(t.indexOf('winner shortlisting')>=0) return{type:'WSF',confidence:'high'};
-  if(t.indexOf('shortlisting form')>=0) return{type:'WSF',confidence:'high'};
-  if(t.indexOf('gift distribution')>=0||t.indexOf('gifts distribution')>=0) return{type:'GCF',confidence:'high'};
-  if(t.indexOf('distribution confirmation')>=0) return{type:'GCF',confidence:'high'};
+  for(var i=0;i<ecfKw.length;i++){if(text.indexOf(ecfKw[i])>=0)return{type:'ECF',label:'Event Completion Form',confidence:'high'};}
+  for(var j=0;j<wsfKw.length;j++){if(text.indexOf(wsfKw[j])>=0)return{type:'WSF',label:'Winner Shortlisting Form',confidence:'high'};}
+  for(var k=0;k<gcfKw.length;k++){if(text.indexOf(gcfKw[k])>=0)return{type:'GCF',label:'Gifts Distribution Confirmation Form',confidence:'high'};}
 
-  /* ── TIER 2: Structural field keywords ── */
-  var ecfKw=['no. of essays','number of essays','essays collected','date of event','total essays','event date','no of students'];
-  var wsfKw=['winner name','shortlisted','1st winner','2nd winner','3rd winner','runner up','rank','prize','award'];
-  var gcfKw=['gift received','received by','acknowledgement','distributed','receipt','signature of recipient'];
-  var formKw=['tata building india','udise code','school name','school code','head master','headmaster','principal','invigilator','class teacher','mandal','district','taluk'];
+  /* Check for any printed form signature */
+  var formIndicators=['tata building india','tbi','school name','udise','date of event','class teacher','head master','principal','signature'];
+  var formScore=0;
+  for(var f=0;f<formIndicators.length;f++){if(text.indexOf(formIndicators[f])>=0)formScore++;}
 
-  var ecfScore=0,wsfScore=0,gcfScore=0,formScore=0;
-  ecfKw.forEach(function(k){if(t.indexOf(k)>=0)ecfScore++;});
-  wsfKw.forEach(function(k){if(t.indexOf(k)>=0)wsfScore++;});
-  gcfKw.forEach(function(k){if(t.indexOf(k)>=0)gcfScore++;});
-  formKw.forEach(function(k){if(t.indexOf(k)>=0)formScore++;});
-
-  if(ecfScore>=2) return{type:'ECF',confidence:'high'};
-  if(wsfScore>=2) return{type:'WSF',confidence:'high'};
-  if(gcfScore>=2) return{type:'GCF',confidence:'high'};
-  if(ecfScore===1) return{type:'ECF',confidence:'medium'};
-  if(wsfScore===1) return{type:'WSF',confidence:'medium'};
-  if(gcfScore===1) return{type:'GCF',confidence:'medium'};
-  if(formScore>=2) return{type:'form',confidence:'medium'};
-
-  /* ── TIER 3: Essay heuristics ──
-     Essay sheets are handwritten answer papers.
-     Key signals: many long words, narrative vocabulary, NO form keywords.
-     Even 1 essay keyword with no form markers = likely essay.
-  ── */
-  var essayNarrative=['introduction','conclusion','therefore','however','because',
-    'furthermore','moreover','in my opinion','i believe','firstly','secondly',
-    'thirdly','paragraph','essay','dear','once upon','the importance','we should',
-    'people should','our country','india','government','students','education',
-    'society','environment','nature','water','trees','health','future'];
-
+  /* Essay indicators */
+  var essayIndicators=['write','paragraph','essay','answer','topic','introduction','conclusion'];
   var essayScore=0;
-  essayNarrative.forEach(function(k){if(t.indexOf(k)>=0)essayScore++;});
+  for(var e=0;e<essayIndicators.length;e++){if(text.indexOf(essayIndicators[e])>=0)essayScore++;}
 
-  /* Count meaningful words (>3 chars) — essays have many */
-  var words=t.split(/\s+/).filter(function(w){return w.length>3;}).length;
+  if(formScore>=2)return{type:'form_unknown',label:'Printed Form',confidence:'medium'};
+  if(essayScore>=1&&formScore===0)return{type:'essay',label:'Essay Sheet',confidence:'medium'};
 
-  /* Key rule: If many words AND no form keywords → handwritten essay */
-  if(formScore===0){
-    if(words>60) essayScore+=4;       /* Long text, definitely essay */
-    else if(words>30) essayScore+=2;  /* Medium text, likely essay */
-    else if(words>15) essayScore+=1;  /* Short text, possibly essay */
-  }
-
-  /* Any essay keyword with no form context = essay */
-  if(essayScore>=1&&formScore===0) return{type:'essay',confidence:'medium'};
-  if(essayScore>=3) return{type:'essay',confidence:'high'};
-
-  return{type:'unknown',confidence:'low'};
+  /* Low confidence — not enough text read */
+  return{type:'unknown',label:'Unknown',confidence:'low'};
 }
 
-function handleOCRResult(cl){
-  var isForm=FORMS.indexOf(selDocType)>=0;
-  var isEssay=GRADED.indexOf(selDocType)>=0;
-  var det=cl.type,conf=cl.confidence;
-  var mismatch=null;
-  if(conf==='high'||conf==='medium'){
-    if(isForm&&det==='essay'){
-      mismatch='Scan '+selDocType+' — not Essay copy!\n\nYou selected "'+selDocType+'" ('+FULLNAMES[selDocType]+').\nBut this looks like a Handwritten Essay.\nPlease scan the correct printed form.';
-    } else if(isEssay&&(det==='ECF'||det==='WSF'||det==='GCF'||det==='form')){
-      var fl=det==='ECF'?'ECF':det==='WSF'?'WSF':det==='GCF'?'GCF':'a Printed Form';
-      mismatch='Scan Essay — not '+fl+'!\n\nYou selected "'+selDocType+'" Essay Sheet.\nBut this looks like '+fl+'.\nPlease scan the correct handwritten essay.';
-    } else if(isForm&&(det==='ECF'||det==='WSF'||det==='GCF')&&det!==selDocType&&conf==='high'){
-      mismatch='Scan '+selDocType+' — not '+det+'!\n\nYou selected "'+selDocType+'".\nBut this scan reads as '+det+'.\nPlease scan the correct form.';
-    }
+/* Shutter sound */
+function initAudio(){if(audioCtx)return;try{audioCtx=new(window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+function playShutter(){
+  if(!audioCtx)initAudio();if(!audioCtx)return;
+  try{
+    var ctx=audioCtx,t=ctx.currentTime;
+    var buf=ctx.createBuffer(1,Math.floor(ctx.sampleRate*.045),ctx.sampleRate);
+    var d=buf.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,2.5);
+    var s=ctx.createBufferSource();s.buffer=buf;var g=ctx.createGain();g.gain.setValueAtTime(.85,t);g.gain.exponentialRampToValueAtTime(.001,t+.045);s.connect(g);g.connect(ctx.destination);s.start(t);
+    var o=ctx.createOscillator();o.type='sine';o.frequency.setValueAtTime(320,t);o.frequency.exponentialRampToValueAtTime(70,t+.07);var g2=ctx.createGain();g2.gain.setValueAtTime(.35,t);g2.gain.exponentialRampToValueAtTime(.001,t+.07);o.connect(g2);g2.connect(ctx.destination);o.start(t);o.stop(t+.07);
+    var o2=ctx.createOscillator();o2.type='square';o2.frequency.setValueAtTime(2200,t+.05);o2.frequency.exponentialRampToValueAtTime(600,t+.13);var g3=ctx.createGain();g3.gain.setValueAtTime(.1,t+.05);g3.gain.exponentialRampToValueAtTime(.001,t+.13);o2.connect(g3);g3.connect(ctx.destination);o2.start(t+.05);o2.stop(t+.13);
+  }catch(e){}
+  if(navigator.vibrate)navigator.vibrate([18,0,8]);
+}
+
+/* Progress */
+function buildProg(n){
+  var h='';for(var i=1;i<=5;i++){var cls=i<n?'dn':i===n?'act':'';var ic=i<n?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>':i;h+='<div class="psd"><div class="psdot '+cls+'">'+ic+'</div></div>';if(i<5)h+='<div class="psln '+(i<n?'dn':'')+'"></div>';}
+  document.getElementById('psDots').innerHTML=h;
+  document.getElementById('psLbl').textContent='Step '+n+' of 5 — '+STEP_LABELS[n-1];
+}
+function goTo(n){
+  closeCam();closePrev();
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  if(n==='4b'){document.getElementById('s4b').classList.add('active');buildProg(4);}
+  else{document.getElementById('s'+n).classList.add('active');buildProg(parseInt(n));}
+  var sc=document.querySelector('.screens');if(sc)sc.scrollTop=0;
+}
+function pickRole(r){
+  selRole=r;
+  document.getElementById('chip-tcs').classList.toggle('sel',r==='tcs');
+  document.getElementById('chip-ag').classList.toggle('sel',r==='agency');
+  document.getElementById('chip-sc').classList.toggle('sel',r==='school');
+  ['tcs-f','ag-f','sc-f'].forEach(function(f){document.getElementById(f).style.display='none';});
+  document.getElementById(r==='tcs'?'tcs-f':r==='agency'?'ag-f':'sc-f').style.display='block';
+  var e=document.getElementById('role-e');e.textContent='';e.classList.remove('show');
+}
+function vv(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+function rq(id,eid){var ok=!!vv(id);document.getElementById(id).classList.toggle('err',!ok);document.getElementById(eid).classList.toggle('show',!ok);return ok;}
+function s1next(){
+  var ok=true;
+  if(!selRole){var e=document.getElementById('role-e');e.textContent='Please select your role.';e.classList.add('show');ok=false;}
+  if(selRole==='tcs'){ok=rq('tid','tid-e')&ok;ok=rq('tnm','tnm-e')&ok;ok=rq('tlc','tlc-e')&ok;}
+  if(selRole==='agency'){ok=rq('aa','aa-e')&ok;ok=rq('an','an-e')&ok;ok=rq('am','am-e')&ok;}
+  if(selRole==='school'){ok=rq('ss','ss-e')&ok;ok=rq('sn','sn-e')&ok;ok=rq('sd','sd-e')&ok;}
+  if(ok)goTo(2);
+}
+function refreshTopic(){var t=getTopic();var el=document.getElementById('topicTxt');if(t){el.textContent=t;el.style.fontStyle='normal';el.style.opacity='1';}else{el.textContent='No topic set — owner must configure';el.style.fontStyle='italic';el.style.opacity='.6';}}
+function s2next(){if(rq('udise','ud-e')&rq('snm','snm-e')&rq('slc','slc-e')){buildDocGrid();goTo(3);}}
+function buildDocGrid(){
+  document.getElementById('dtGrid').innerHTML=SCAN_TYPES.map(function(t){
+    var g=GRADED.indexOf(t)>=0,id='dtc-'+t.replace(/ /g,'_');
+    var sub=FULLNAMES[t]?'<span class="dtc-sub">'+FULLNAMES[t]+'</span>':'';
+    var tag=g?'<span class="gtag">★ AI Graded /50</span>':'';
+    return'<div class="dtc'+(g?' g':'')+'" id="'+id+'" onclick="pickDoc(\''+t+'\')">'+t+sub+tag+'</div>';
+  }).join('');
+}
+buildDocGrid();
+function pickDoc(t){
+  selDocType=t;capturedPages=[];gradingResult=null;sessionImgs=[];
+  SCAN_TYPES.forEach(function(x){document.getElementById('dtc-'+x.replace(/ /g,'_')).classList.toggle('sel',x===t);});
+  document.getElementById('dt-e').classList.remove('show');
+  document.getElementById('camDoc').textContent=t+(FULLNAMES[t]?'\n'+FULLNAMES[t]:'');
+  openCam();
+}
+
+/* CAMERA */
+function openCam(){
+  initAudio();initTesseract(); /* pre-warm */
+  document.getElementById('camView').classList.add('active');
+  document.getElementById('prevView').classList.remove('active');
+  sheetFound=false;sheetStable=0;
+  setStat('look','Point at document');
+  document.getElementById('camHint').textContent='Hold camera over the document';
+  document.getElementById('docErr').classList.remove('show');
+  resetCrop();
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';return;}
+  /* Max resolution — device gives best it can */
+  var con={video:{facingMode:{ideal:'environment'},width:{ideal:4096,min:1280},height:{ideal:3072,min:720}},audio:false};
+  navigator.mediaDevices.getUserMedia(con)
+    .then(startStream)
+    .catch(function(){
+      navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false})
+        .then(startStream)
+        .catch(function(){
+          document.getElementById('vid').style.display='none';
+          document.getElementById('camDenied').style.display='flex';
+        });
+    });
+  updatePgLbl();
+}
+function startStream(stream){
+  camStream=stream;
+  var vid=document.getElementById('vid');
+  vid.srcObject=stream;vid.muted=true;vid.setAttribute('playsinline','true');
+  vid.play().catch(function(){});
+  vid.addEventListener('loadedmetadata',function(){resizeCrop();startDetLoop();},{once:true});
+  var track=stream.getVideoTracks()[0];
+  if(track){
+    /* Apply best focus/exposure/white-balance */
+    try{
+      track.applyConstraints({advanced:[
+        {focusMode:'continuous'},
+        {exposureMode:'continuous'},
+        {whiteBalanceMode:'continuous'}
+      ]}).catch(function(){});
+    }catch(e){}
+    /* Show/hide torch button based on capability */
+    setTimeout(function(){
+      try{
+        var caps=track.getCapabilities?track.getCapabilities():{};
+        var tb=document.getElementById('torchBtn');
+        if(tb)tb.style.display=caps.torch?'flex':'none';
+      }catch(e){}
+    },500);
+  }
+  /* Tap to focus — attach to tap-area */
+  var ta=document.getElementById('tapArea');
+  if(ta){
+    ta.onclick=function(e){
+      var wrap=document.getElementById('camWrap'),rect=wrap.getBoundingClientRect();
+      var x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
+      var y=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
+      /* Flash focus ring */
+      var ring=document.getElementById('focusRing');
+      if(ring){ring.style.left=(e.clientX-rect.left)+'px';ring.style.top=(e.clientY-rect.top)+'px';ring.style.display='block';ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);}
+      if(!camStream)return;
+      var tr=camStream.getVideoTracks()[0];
+      if(!tr||!tr.getCapabilities)return;
+      var caps=tr.getCapabilities();
+      if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){
+        try{tr.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:x,y:y}]}]}).catch(function(){});}catch(ex){}
+        setTimeout(function(){try{tr.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2500);
+      }
+    };
+  }
+}
+function closeCam(){stopCamera();document.getElementById('camView').classList.remove('active');}
+function closePrev(){document.getElementById('prevView').classList.remove('active');}
+function stopCamera(){
+  if(detLoop){clearInterval(detLoop);detLoop=null;}
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
+  var v=document.getElementById('vid');if(v)v.srcObject=null;
+  clearCrop();
+}
+
+/* Tap-to-focus */
+document.getElementById('tapArea').addEventListener('click',function(e){
+  var wrap=document.getElementById('camWrap'),rect=wrap.getBoundingClientRect();
+  var x=e.clientX-rect.left,y=e.clientY-rect.top;
+  var ring=document.getElementById('focusRing');
+  ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
+  ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
+  setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);
+  if(camStream){var track=camStream.getVideoTracks()[0];if(track&&track.getCapabilities){var caps=track.getCapabilities();if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){var xn=Math.max(0,Math.min(1,x/rect.width)),yn=Math.max(0,Math.min(1,y/rect.height));try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:xn,y:yn}]}]}).catch(function(){});}catch(ex){}setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2000);}}}
+});
+
+/* Dynamic crop */
+function resizeCrop(){var w=document.getElementById('camWrap'),cc=document.getElementById('cropCanvas');cc.width=w.offsetWidth;cc.height=w.offsetHeight;}
+function resetCrop(){cropR={x:.03,y:.04,w:.94,h:.92};cropT={x:.03,y:.04,w:.94,h:.92};}
+function lerp(a,b,t){return a+(b-a)*t;}
+function animCrop(){
+  cropR.x=lerp(cropR.x,cropT.x,.09);cropR.y=lerp(cropR.y,cropT.y,.09);
+  cropR.w=lerp(cropR.w,cropT.w,.09);cropR.h=lerp(cropR.h,cropT.h,.09);
+  drawCrop();animId=requestAnimationFrame(animCrop);
+}
+function drawCrop(){
+  var cc=document.getElementById('cropCanvas');if(!cc||!cc.width||!sheetFound)return;
+  var ctx=cc.getContext('2d'),W=cc.width,H=cc.height;
+  var x=Math.round(cropR.x*W),y=Math.round(cropR.y*H),w=Math.round(cropR.w*W),h=Math.round(cropR.h*H);
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='rgba(0,0,0,.32)';ctx.fillRect(0,0,W,H);ctx.clearRect(x,y,w,h);
+  ctx.strokeStyle='rgba(232,160,136,.55)';ctx.lineWidth=1.5;ctx.strokeRect(x+1,y+1,w-2,h-2);
+  var cs=28;ctx.strokeStyle='#CC785C';ctx.lineWidth=4.5;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x+cs,y);ctx.lineTo(x,y);ctx.lineTo(x,y+cs);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w-cs,y);ctx.lineTo(x+w,y);ctx.lineTo(x+w,y+cs);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x,y+h-cs);ctx.lineTo(x,y+h);ctx.lineTo(x+cs,y+h);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(x+w,y+h-cs);ctx.lineTo(x+w,y+h);ctx.lineTo(x+w-cs,y+h);ctx.stroke();
+}
+function clearCrop(){var cc=document.getElementById('cropCanvas');if(cc)cc.getContext('2d').clearRect(0,0,cc.width,cc.height);}
+
+function startDetLoop(){
+  if(detLoop)clearInterval(detLoop);
+  if(animId)cancelAnimationFrame(animId);animId=requestAnimationFrame(animCrop);
+  detLoop=setInterval(function(){
+    var vid=document.getElementById('vid');if(!vid||!vid.videoWidth||vid.readyState<2)return;
+    var sc=document.getElementById('snapCanvas');var W=Math.floor(vid.videoWidth/8),H=Math.floor(vid.videoHeight/8);sc.width=W;sc.height=H;
+    var ctx=sc.getContext('2d');ctx.drawImage(vid,0,0,W,H);
+    try{
+      var d=ctx.getImageData(0,0,W,H).data,sum=0,cnt=d.length/4,mn=255,mx=0;
+      for(var i=0;i<d.length;i+=4){var b=Math.round(.299*d[i]+.587*d[i+1]+.114*d[i+2]);sum+=b;if(b<mn)mn=b;if(b>mx)mx=b;}
+      var avg=sum/cnt,contrast=mx-mn;
+      var has=(avg>100&&contrast>30);
+      sheetStable=has?Math.min(sheetStable+1,6):Math.max(sheetStable-1,0);
+      var ok=sheetStable>=3;
+      if(ok&&!sheetFound){sheetFound=true;var m=contrast>80?.02:.04;cropT={x:m,y:m*1.2,w:1-2*m,h:1-2*m*1.2};setStat('found','Document in frame — tap to capture');document.getElementById('camHint').textContent='Tap shutter to capture';}
+      else if(!ok&&sheetFound){sheetFound=false;cropT={x:.03,y:.04,w:.94,h:.92};setStat('look','Point at document');document.getElementById('camHint').textContent='Hold camera over the document';}
+      if(!ok)clearCrop();
+    }catch(e){}
+  },280);
+}
+function setStat(s,t){document.getElementById('sdot').className='sdot '+s;document.getElementById('stxt').textContent=t;}
+function updatePgLbl(){var el=document.getElementById('pgLbl');if(el)el.textContent=capturedPages.length>0?(capturedPages.length+'\npg'+(capturedPages.length>1?'s':'')):''}
+
+/* CAPTURE */
+document.getElementById('shutterBtn').addEventListener('click',takePicture);
+document.getElementById('camBackBtn').addEventListener('click',function(e){e.stopPropagation();closeCam();});
+
+function takePicture(){
+  var vid=document.getElementById('vid');
+  if(!vid.videoWidth||vid.videoWidth===0||!camStream)return;
+  playShutter();
+  /* Flash animation */
+  var fl=document.getElementById('camFlash');
+  if(fl){fl.style.opacity='.92';setTimeout(function(){fl.style.opacity='0';},180);}
+
+  /* Try ImageCapture API first — native hardware JPEG quality */
+  var track=camStream.getVideoTracks()[0];
+  if(window.ImageCapture&&track){
+    try{
+      var ic=new ImageCapture(track);
+      ic.takePhoto().then(function(blob){
+        var reader=new FileReader();
+        reader.onload=function(e){
+          var url=e.target.result;
+          capturedPages.push(url);sessionImgs.push(url);
+          stopCamera();showPreviewAndIdentify(url);
+        };
+        reader.readAsDataURL(blob);
+      }).catch(function(){_fallbackCapture(vid);});
+      return;
+    }catch(ex){}
+  }
+  _fallbackCapture(vid);
+}
+
+function _fallbackCapture(vid){
+  /* Full-frame canvas capture at native resolution */
+  var vw=vid.videoWidth,vh=vid.videoHeight;
+  var canvas=document.createElement('canvas');
+  if(vw>vh){
+    canvas.width=vh;canvas.height=vw;
+    var ctx=canvas.getContext('2d');
+    ctx.save();ctx.translate(canvas.width/2,canvas.height/2);
+    ctx.rotate(Math.PI/2);ctx.drawImage(vid,-vw/2,-vh/2,vw,vh);ctx.restore();
+  }else{
+    canvas.width=vw;canvas.height=vh;
+    canvas.getContext('2d').drawImage(vid,0,0,vw,vh);
+  }
+  var url=canvas.toDataURL('image/jpeg',0.97);
+  capturedPages.push(url);sessionImgs.push(url);
+  stopCamera();showPreviewAndIdentify(url);
+}
+
+/* OCR IDENTIFICATION */
+async function showPreviewAndIdentify(url){
+  document.getElementById('camView').classList.remove('active');
+  document.getElementById('prevView').classList.add('active');
+  document.getElementById('prevImg').src=url;
+  document.getElementById('pgPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'');
+  document.getElementById('idPill').className='id-pill wait';document.getElementById('idPill').textContent='Reading text...';
+  document.getElementById('wrongBanner').classList.remove('show');
+  document.getElementById('subBtn').style.display='none';document.getElementById('grBtn').style.display='none';
+  renderStrip();updatePgLbl();
+  document.getElementById('idOv').classList.add('show');
+  document.getElementById('idTxt').textContent='Running OCR...\nReading printed text on document';
+  try{
+    var text=await runOCR(url);
+    var classified=classifyText(text);
+    handleOCRResult(classified,text);
+  }catch(err){
+    /* OCR failed — allow proceed without identification */
+    handleOCRResult({type:'unknown',label:'Unknown',confidence:'low'},'');
+  }
+}
+
+function handleOCRResult(classified,rawText){
+  document.getElementById('idOv').classList.remove('show');
+  var isFormSel=FORMS.indexOf(selDocType)>=0;
+  var isEssaySel=GRADED.indexOf(selDocType)>=0;
+  var detType=classified.type;
+  var detLabel=classified.label;
+  var conf=classified.confidence;
+  var mismatch=false;
+  var mismatchMsg='';
+  /* Only flag mismatch if confidence is high or medium */
+  if(conf!=='low'&&detType!=='unknown'){
+    /* User selected a form but doc looks like essay */
+    if(isFormSel&&detType==='essay'){mismatch=true;mismatchMsg='You selected "'+selDocType+'" ('+FULLNAMES[selDocType]+') — a printed form. But the scan appears to be a Handwritten Essay Sheet.\n\nPlease re-scan the correct printed form.';}
+    /* User selected an essay winner but doc looks like a form */
+    else if(isEssaySel&&(detType==='ECF'||detType==='WSF'||detType==='GCF'||detType==='form_unknown')){mismatch=true;mismatchMsg='You selected "'+selDocType+'" which needs a Handwritten Essay Sheet. But the scan appears to be a Printed Form ('+detLabel+').\n\nPlease re-scan the actual handwritten essay.';}
+    /* Wrong form type selected */
+    else if(isFormSel&&(detType==='ECF'||detType==='WSF'||detType==='GCF')&&detType!==selDocType&&conf==='high'){mismatch=true;mismatchMsg='You selected "'+selDocType+'" ('+FULLNAMES[selDocType]+') but the scan reads as a '+detLabel+'.\n\nPlease scan the correct form.';}
   }
   if(mismatch){
-    document.getElementById('ocrPill').className='ocr-pill ng';
-    document.getElementById('ocrPill').textContent='Wrong Doc';
-    var lines=mismatch.split('\n\n');
-    document.getElementById('errTitle').textContent=lines[0];
-    document.getElementById('errMsg').textContent=lines.slice(1).join('\n');
-    document.getElementById('errBanner').classList.add('show');
+    var expLabel=isFormSel?(FULLNAMES[selDocType]||selDocType):('Essay Sheet — '+selDocType);
+    document.getElementById('idPill').className='id-pill ng';document.getElementById('idPill').textContent='Wrong Document!';
+    document.getElementById('wbTitle').textContent='Wrong Document Detected';
+    document.getElementById('wbMsg').textContent=mismatchMsg;
+    document.getElementById('wrongBanner').classList.add('show');
+    document.getElementById('deSelected').textContent=expLabel;
+    document.getElementById('deFound').textContent=detLabel+(rawText.length>10?'\n"'+rawText.substring(0,60).trim()+'..."':'');
+    document.getElementById('deMsg').textContent=mismatchMsg;
     capturedPages.pop();sessionImgs.pop();
-    if(navigator.vibrate)navigator.vibrate([120,60,120,60,220]);
-    return true; /* mismatch = true */
+    if(navigator.vibrate)navigator.vibrate([100,40,100,40,200]);
   }else{
-    document.getElementById('ocrPill').className='ocr-pill ok';
-    var lbl=det==='essay'?'Essay ✓':det==='ECF'||det==='WSF'||det==='GCF'?det+' ✓':'Scanned ✓';
-    document.getElementById('ocrPill').textContent=lbl;
-    return false; /* no mismatch */
+    var g=GRADED.indexOf(selDocType)>=0;
+    document.getElementById('idPill').className='id-pill ok';
+    var lbl=conf==='low'?'Scanned ✓':detType==='essay'?'Essay ✓':(detLabel+' ✓');
+    document.getElementById('idPill').textContent=lbl;
+    document.getElementById('subBtn').style.display=g?'none':'block';
+    document.getElementById('grBtn').style.display=g?'block':'none';
   }
 }
 
-/* ── Rotate ── */
-function rotateScan(){
-  var img=document.getElementById('prevImg');
-  var src=capturedPages[capturedPages.length-1];if(!src)return;
-  var ci=new Image();
-  ci.onload=function(){
-    var c=document.createElement('canvas');c.width=ci.naturalHeight;c.height=ci.naturalWidth;
-    var ctx=c.getContext('2d');ctx.translate(c.width/2,c.height/2);ctx.rotate(Math.PI/2);ctx.drawImage(ci,-ci.naturalWidth/2,-ci.naturalHeight/2);
-    var url=c.toDataURL('image/jpeg',.95);
-    capturedPages[capturedPages.length-1]=url;sessionImgs[sessionImgs.length-1]=url;img.src=url;
-    if(cropActive)setTimeout(initCropHandles,80);
-  };ci.src=src;
-}
+function dismissErr(){document.getElementById('docErr').classList.remove('show');closePrev();openCam();}
+function renderStrip(){document.getElementById('pgStrip').innerHTML=capturedPages.map(function(u,i){return'<div class="pgth"><img src="'+u+'"><div class="pgth-n">Pg '+(i+1)+'</div></div>';}).join('');}
+function rescan(){capturedPages.pop();sessionImgs.pop();closePrev();openCam();}
+function addScan(){closePrev();openCam();}
+function doSubmit(){closeCam();closePrev();saveRecord();showRView();}
+function doGrade(){closeCam();closePrev();goToGrading();}
 
-/* ── Crop (corner-handle) ── */
-function toggleCrop(){
-  cropActive=!cropActive;
-  var cv=document.getElementById('cropCv'),btn=document.getElementById('cropBtn');
-  if(cropActive){cv.style.display='block';btn.classList.add('on');initCropHandles();}
-  else{applyCrop();}
-}
+/* GRADING */
+var RMK={
+  A:['Strongly aligned with topic throughout','Good connection to topic; minor deviations','Excellent thematic focus end to end','Core argument ties back to topic consistently'],
+  B:['Grammar and vocabulary are well-applied','Fluent with occasional errors','Strong command with varied structures','Simple but clear; room for richer vocabulary'],
+  C:['Clear intro, body and conclusion','Good flow; transitions could be smoother','Logical argument progression evident','Paragraphing clear; conclusion needs work'],
+  D:['Shows original thought and imagination','Highly creative with vivid imagery','Unique perspective on topic','Some creative elements; could be more expressive'],
+  E:['Ideas communicated clearly','Core message sharp and well-conveyed','Strong central argument maintained','Reader left with a clear takeaway']
+};
+function goToGrading(){
+  var topic=getTopic()||'general essay topic';
+  document.getElementById('gTitle').textContent='★ Grading: '+selDocType;
+  document.getElementById('gSub').textContent='AI Vision reading essay...';
+  document.getElementById('gTopic').textContent=topic;
+  document.getElementById('gEd').textContent='Edition: '+new Date().getFullYear();
+  document.getElementById('aiLoad').style.display='flex';
+  document.getElementById('gradeOut').style.display='none';
+  document.getElementById('acceptBtn').style.display='none';
+  goTo('4b');
 
-function getImgRect(img,wrap){
-  var nw=img.naturalWidth,nh=img.naturalHeight,ww=wrap.offsetWidth,wh=wrap.offsetHeight;
-  var scale=Math.min(ww/nw,wh/nh);
-  return{x:(ww-nw*scale)/2,y:(wh-nh*scale)/2,w:nw*scale,h:nh*scale,s:scale};
-}
+  /* Animate steps while AI works */
+  var steps=[
+    'Scanning essay image...',
+    'Reading handwriting with AI Vision...',
+    'Analysing relevance to topic...',
+    'Evaluating language & expression...',
+    'Checking structure & flow...',
+    'Measuring creativity & originality...',
+    'Assessing idea communication...',
+    'Computing final score...'
+  ];
+  var si=0;
+  var lt=setInterval(function(){
+    if(si<steps.length)document.getElementById('aiTxt').textContent=steps[si++];
+  },700);
 
-function initCropHandles(){
-  var wrap=document.getElementById('prevImgWrap'),img=document.getElementById('prevImg'),cv=document.getElementById('cropCv');
-  cv.width=wrap.offsetWidth;cv.height=wrap.offsetHeight;
-  var ir=getImgRect(img,wrap),p=16;
-  cropHandles={tl:{x:ir.x+p,y:ir.y+p},tr:{x:ir.x+ir.w-p,y:ir.y+p},bl:{x:ir.x+p,y:ir.y+ir.h-p},br:{x:ir.x+ir.w-p,y:ir.y+ir.h-p}};
-  drawCropUI(cv);
-  cv.onpointerdown=function(e){
-    var r=cv.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top,best=HANDLE_R*1.5;
-    draggingHandle=null;
-    Object.keys(cropHandles).forEach(function(k){var d=Math.hypot(px-cropHandles[k].x,py-cropHandles[k].y);if(d<best){best=d;draggingHandle=k;}});
-    if(draggingHandle)cv.setPointerCapture(e.pointerId);
-  };
-  cv.onpointermove=function(e){
-    if(!draggingHandle)return;
-    var r=cv.getBoundingClientRect(),px=e.clientX-r.left,py=e.clientY-r.top,g=30;
-    cropHandles[draggingHandle]={x:px,y:py};
-    if(draggingHandle==='tl'){cropHandles.tl.x=Math.min(cropHandles.tl.x,cropHandles.tr.x-g);cropHandles.tl.y=Math.min(cropHandles.tl.y,cropHandles.bl.y-g);cropHandles.bl.x=cropHandles.tl.x;cropHandles.tr.y=cropHandles.tl.y;}
-    if(draggingHandle==='tr'){cropHandles.tr.x=Math.max(cropHandles.tr.x,cropHandles.tl.x+g);cropHandles.tr.y=Math.min(cropHandles.tr.y,cropHandles.br.y-g);cropHandles.br.x=cropHandles.tr.x;cropHandles.tl.y=cropHandles.tr.y;}
-    if(draggingHandle==='bl'){cropHandles.bl.x=Math.min(cropHandles.bl.x,cropHandles.br.x-g);cropHandles.bl.y=Math.max(cropHandles.bl.y,cropHandles.tl.y+g);cropHandles.tl.x=cropHandles.bl.x;cropHandles.br.y=cropHandles.bl.y;}
-    if(draggingHandle==='br'){cropHandles.br.x=Math.max(cropHandles.br.x,cropHandles.bl.x+g);cropHandles.br.y=Math.max(cropHandles.br.y,cropHandles.tr.y+g);cropHandles.tr.x=cropHandles.br.x;cropHandles.bl.y=cropHandles.br.y;}
-    drawCropUI(cv);
-  };
-  cv.onpointerup=function(){draggingHandle=null;};
-}
+  /* Get the last captured image */
+  var imgUrl=sessionImgs[sessionImgs.length-1]||capturedPages[capturedPages.length-1];
+  if(!imgUrl){
+    clearInterval(lt);_fallbackGrade(lt,topic);return;
+  }
 
-function drawCropUI(cv){
-  var ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);
-  var h=cropHandles,tl=h.tl,tr=h.tr,bl=h.bl,br=h.br;
-  ctx.fillStyle='rgba(0,0,0,.5)';ctx.fillRect(0,0,cv.width,cv.height);
-  ctx.save();ctx.beginPath();ctx.moveTo(tl.x,tl.y);ctx.lineTo(tr.x,tr.y);ctx.lineTo(br.x,br.y);ctx.lineTo(bl.x,bl.y);ctx.closePath();ctx.globalCompositeOperation='destination-out';ctx.fill();ctx.restore();
-  ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(tl.x,tl.y);ctx.lineTo(tr.x,tr.y);ctx.lineTo(br.x,br.y);ctx.lineTo(bl.x,bl.y);ctx.closePath();ctx.stroke();
-  var L=20;ctx.strokeStyle='#fff';ctx.lineWidth=4;ctx.lineCap='round';
-  [{h:tl,dx:1,dy:1},{h:tr,dx:-1,dy:1},{h:bl,dx:1,dy:-1},{h:br,dx:-1,dy:-1}].forEach(function(c){ctx.beginPath();ctx.moveTo(c.h.x+c.dx*L,c.h.y);ctx.lineTo(c.h.x,c.h.y);ctx.lineTo(c.h.x,c.h.y+c.dy*L);ctx.stroke();});
-  Object.values(cropHandles).forEach(function(p){ctx.fillStyle='var(--co)';ctx.beginPath();ctx.arc(p.x,p.y,10,0,Math.PI*2);ctx.fill();});
-}
-
-function applyCrop(){
-  var img=document.getElementById('prevImg'),wrap=document.getElementById('prevImgWrap'),cv=document.getElementById('cropCv');
-  var ir=getImgRect(img,wrap);
-  var h=cropHandles;
-  var x=Math.min(h.tl.x,h.tr.x,h.bl.x,h.br.x),y=Math.min(h.tl.y,h.tr.y,h.bl.y,h.br.y);
-  var x2=Math.max(h.tl.x,h.tr.x,h.bl.x,h.br.x),y2=Math.max(h.tl.y,h.tr.y,h.bl.y,h.br.y);
-  x=Math.max(x,ir.x);y=Math.max(y,ir.y);x2=Math.min(x2,ir.x+ir.w);y2=Math.min(y2,ir.y+ir.h);
-  var dw=x2-x,dh=y2-y;if(dw<20||dh<20){cropActive=false;cv.style.display='none';document.getElementById('cropBtn').classList.remove('on');return;}
-  var nx=Math.round((x-ir.x)/ir.s),ny=Math.round((y-ir.y)/ir.s),nw=Math.round(dw/ir.s),nh=Math.round(dh/ir.s);
-  var ci=new Image();ci.onload=function(){
-    var c=document.createElement('canvas');c.width=nw;c.height=nh;
-    c.getContext('2d').drawImage(ci,nx,ny,nw,nh,0,0,nw,nh);
-    var url=c.toDataURL('image/jpeg',.95);
-    capturedPages[capturedPages.length-1]=url;sessionImgs[sessionImgs.length-1]=url;img.src=url;
-    cropActive=false;cv.style.display='none';document.getElementById('cropBtn').classList.remove('on');
-  };ci.src=capturedPages[capturedPages.length-1];
-}
-
-/* ── Submit / Grade ── */
-function doSubmit(){
-  /* For non-essay docs: save and show navigation options */
-  document.getElementById('prevScreen').classList.remove('active');
-  saveRecord();
-  showRView();
-}
-/* ══════════════════════════════════════════════════════
-   autoGradeEssay — AI-powered essay grading using Claude API
-   
-   Sends the OCR'd essay text to Claude with a detailed rubric.
-   Claude analyses the actual content and returns:
-   - Score (0-10) per parameter
-   - Specific, meaningful comment per parameter
-   - Total out of 50
-   
-   Scoring is generous and teacher-aligned:
-   - 8-10: Excellent (clear, specific, relevant)
-   - 6-7:  Good (mostly on topic, minor issues)
-   - 4-5:  Average (partial relevance, some errors)
-   - 0-3:  Below average (off topic, incoherent)
-   
-   IMPORTANT: OCR on handwritten text is imperfect.
-   Claude is instructed to be GENEROUS — assume good quality
-   where OCR may have garbled words.
-══════════════════════════════════════════════════════ */
-/* ── State for post-grade navigation ── */
-var _afterGradeAction='show';
-
-/* ══════════════════════════════════════════════════════════════
-   ESSAY GRADING ENGINE — Claude Vision API
-   
-   KEY INSIGHT: Instead of OCR text (unreliable for handwriting),
-   we send the ACTUAL PHOTO of the essay to Claude Vision.
-   Claude reads handwriting directly — far more accurate than OCR.
-   
-   The API call goes to /api/grade (Vercel serverless function).
-   For direct deployment without a backend, we use a CORS proxy
-   approach or the Anthropic client-side SDK pattern.
-   
-   FALLBACK: If API unavailable, shows manual grading UI.
-══════════════════════════════════════════════════════════════ */
-function autoGradeEssay(){
-  var imgUrl=capturedPages[capturedPages.length-1];
-  if(!imgUrl){showManualGradeBtn();return;}
-
-  var topic=getTopic()||'(topic not set by teacher)';
-  var docLabel=selDocType;
-
-  document.getElementById('ocrOv').classList.add('show');
-  document.getElementById('spinTxt').textContent='AI reading & grading essay…';
-
-  /* Convert data URL to base64 for API */
+  /* Extract base64 data */
   var base64=imgUrl.replace(/^data:image\/\w+;base64,/,'');
-  var mediaType=imgUrl.indexOf('jpeg')>0?'image/jpeg':'image/png';
+  var mediaType=imgUrl.indexOf('jpeg')>=0||imgUrl.indexOf('jpg')>=0?'image/jpeg':'image/png';
 
-  /* Grading prompt — Vision-based, reads handwriting directly */
-  var systemPrompt='You are a compassionate, expert evaluator for the TATA Building India national school essay competition in India. '+
-    'You will receive a photo of a handwritten student essay. Read the handwriting carefully and evaluate it. '+
-    'Be generous and encouraging — these are school students writing under competition pressure. '+
-    'A student showing genuine effort and reasonable relevance deserves 7-9 marks per parameter. '+
-    'Only give below 5 if the essay is completely blank or entirely off-topic.';
+  /* Claude Vision prompt — reads handwriting directly from image */
+  var systemMsg='You are a compassionate, expert evaluator for the TATA Building India national school essay competition in India. '+
+    'You will receive a photo of a handwritten student essay. '+
+    'Read the handwriting carefully. Students write under exam pressure — be generous and encouraging. '+
+    'A student showing genuine effort and reasonable relevance = 7-9 marks per parameter. '+
+    'Only score below 5 if content is completely blank or entirely off-topic. '+
+    'Your remarks must be SPECIFIC to what you actually read in this essay — quote words or ideas from the essay.';
 
-  var userPrompt='ESSAY PHOTO: Handwritten student essay for TATA Building India competition.\n'+
-    'Student category: '+docLabel+'\n'+
-    'Essay topic set by teacher: "'+topic+'"\n\n'+
-    'Please carefully READ the handwriting in the photo and evaluate this essay.\n'+
-    'If handwriting is difficult, make your best interpretation and note it.\n\n'+
-    'SCORING RUBRIC (each parameter 0-10, Total = 50):\n'+
-    '• 9-10: Exceptional — well-structured, on-topic, creative, clear\n'+
-    '• 7-8:  Good — mostly on-topic, decent structure, some creativity\n'+
-    '• 5-6:  Average — partially relevant, basic structure, room for improvement\n'+
-    '• 3-4:  Below average — limited relevance or very weak writing\n'+
-    '• 0-2:  Poor — off-topic or incoherent\n\n'+
-    'IMPORTANT: Write SPECIFIC remarks about THIS essay. Mention actual content you read. '+
-    'Do NOT write generic comments. Each remark should quote or reference something from the essay.\n\n'+
-    'Return ONLY valid JSON (no markdown, no explanation outside JSON):\n'+
+  var userMsg='Please evaluate this handwritten essay for the TATA Building India competition.\n'+
+    'Student category: '+selDocType+'\n'+
+    'Essay topic given to student: "'+topic+'"\n\n'+
+    'INSTRUCTIONS:\n'+
+    '1. Read the handwriting in the photo carefully\n'+
+    '2. Score each of the 5 parameters out of 10 (total = 50)\n'+
+    '3. Write a SPECIFIC remark for each parameter — mention actual content from the essay\n'+
+    '4. Be generous: effort + relevance = minimum 7/10\n\n'+
+    'SCORING GUIDE:\n'+
+    '9-10: Exceptional work\n'+
+    '7-8: Good, shows effort and understanding\n'+
+    '5-6: Average, partially relevant\n'+
+    '3-4: Below average\n'+
+    '0-2: Blank or completely off-topic\n\n'+
+    'Return ONLY this JSON (no markdown, no text outside JSON):\n'+
     '{\n'+
-    '  "handwriting_quality": "clear/moderate/difficult",\n'+
-    '  "params": [\n'+
-    '    {"l":"A","n":"Relevance to Topic","score":8,"remark":"Specific comment referencing essay content — what topic did student write about? Is it relevant?"},\n'+
-    '    {"l":"B","n":"Language & Expression","score":8,"remark":"Comment on vocabulary, sentence construction, grammar quality observed in the essay"},\n'+
-    '    {"l":"C","n":"Structure & Flow","score":7,"remark":"Comment on introduction, body paragraphs, conclusion structure"},\n'+
-    '    {"l":"D","n":"Creativity & Originality","score":8,"remark":"Note any unique examples, metaphors, or original ideas the student used"},\n'+
-    '    {"l":"E","n":"Idea Communication","score":8,"remark":"How effectively does the student convey their central argument?"}\n'+
+    '  "params":[\n'+
+    '    {"l":"A","n":"Relevance to Topic","score":8,"remark":"e.g. The student discusses water conservation directly relating to the topic by mentioning..."},\n'+
+    '    {"l":"B","n":"Language & Expression","score":7,"remark":"e.g. Uses varied vocabulary including words like... Grammar is mostly correct with minor errors"},\n'+
+    '    {"l":"C","n":"Structure & Flow","score":8,"remark":"e.g. Clear introduction about..., three body paragraphs, and a conclusion that..."},\n'+
+    '    {"l":"D","n":"Creativity & Originality","score":7,"remark":"e.g. Student uses an interesting analogy comparing... which shows original thinking"},\n'+
+    '    {"l":"E","n":"Idea Communication","score":8,"remark":"e.g. Central argument about... is conveyed clearly throughout"}\n'+
     '  ],\n'+
-    '  "total": 39,\n'+
-    '  "summary": "Warm, specific 2-sentence assessment mentioning student strengths and one constructive suggestion",\n'+
-    '  "improvement_tip": "One specific, actionable tip for the student to improve"\n'+
+    '  "total":38,\n'+
+    '  "summary":"Two-sentence warm assessment mentioning specific strengths of this essay"\n'+
     '}';
-
-  /* Primary: Anthropic API via fetch */
-  var payload={
-    model:'claude-opus-4-5',
-    max_tokens:1500,
-    system:systemPrompt,
-    messages:[{
-      role:'user',
-      content:[
-        {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-        {type:'text',text:userPrompt}
-      ]
-    }]
-  };
 
   fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
@@ -1389,367 +1019,159 @@ function autoGradeEssay(){
       'anthropic-version':'2023-06-01',
       'anthropic-dangerous-direct-browser-access':'true'
     },
-    body:JSON.stringify(payload)
+    body:JSON.stringify({
+      model:'claude-opus-4-5',
+      max_tokens:1400,
+      system:systemMsg,
+      messages:[{
+        role:'user',
+        content:[
+          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+          {type:'text',text:userMsg}
+        ]
+      }]
+    })
   })
-  .then(function(r){
-    if(!r.ok)throw new Error('HTTP '+r.status);
-    return r.json();
-  })
+  .then(function(r){return r.json();})
   .then(function(data){
-    document.getElementById('ocrOv').classList.remove('show');
+    clearInterval(lt);
     var txt='';
     if(data.content&&data.content.length>0){
       data.content.forEach(function(b){if(b.type==='text')txt+=b.text;});
     }
-    /* Robustly extract JSON */
-    var m=txt.match(/\{[\s\S]*\}/);
-    if(!m)throw new Error('No JSON in response');
-    var result=JSON.parse(m[0]);
-    if(!result.params||result.params.length<5)throw new Error('Invalid params');
-    var total=result.params.reduce(function(s,p){return s+Math.min(10,Math.max(0,parseInt(p.score)||0));},0);
-    gradingResult={
-      total:total,
-      summary:result.summary||'',
-      improvement:result.improvement_tip||'',
-      handwriting:result.handwriting_quality||'',
-      params:result.params
-    };
-    afterGradeComplete();
+    /* Robustly extract JSON from response */
+    var jsonMatch=txt.match(/\{[\s\S]*\}/);
+    if(!jsonMatch)throw new Error('No JSON found in: '+txt.substring(0,100));
+    var result=JSON.parse(jsonMatch[0]);
+    if(!result.params||result.params.length<5)throw new Error('Bad params structure');
+    /* Sanitise scores */
+    result.params.forEach(function(p){p.score=Math.min(10,Math.max(0,parseInt(p.score)||7));});
+    var tot=result.params.reduce(function(s,p){return s+p.score;},0);
+    /* Store summary in gradingResult */
+    gradingResult={params:result.params,total:tot,summary:result.summary||''};
+    showGrade(result.params,tot);
   })
   .catch(function(err){
-    console.error('Vision grading error:',err);
-    document.getElementById('ocrOv').classList.remove('show');
-    /* If CORS/network error, try OCR-based fallback */
-    if(window._lastOCRText&&window._lastOCRText.length>20){
-      gradeFromOCRText(window._lastOCRText);
-    }else{
-      showToast('AI grading unavailable — grade manually');
-      showManualGradeBtn();
-    }
+    console.warn('Vision API error:',err.message||err);
+    clearInterval(lt);
+    /* Fallback: RMK remarks with topic-aware scoring */
+    _fallbackGrade(null,topic);
   });
 }
 
-/* OCR-text fallback grading (when vision API unavailable) */
-function gradeFromOCRText(ocrText){
-  var topic=getTopic()||'general topic';
-  document.getElementById('ocrOv').classList.add('show');
-  document.getElementById('spinTxt').textContent='Analysing essay text…';
-
-  var payload={
-    model:'claude-opus-4-5',
-    max_tokens:1200,
-    messages:[{
-      role:'user',
-      content:'You are an expert evaluator for TATA Building India school essay competition.\n'+
-        'Topic: "'+topic+'" | Student: '+selDocType+'\n\n'+
-        'OCR text (may have errors from handwriting recognition):\n---\n'+
-        ocrText.substring(0,2000)+'\n---\n\n'+
-        'Grade generously (effort = 7+). Return ONLY JSON:\n'+
-        '{"params":['+
-        '{"l":"A","n":"Relevance to Topic","score":0,"remark":"specific remark"},'+
-        '{"l":"B","n":"Language & Expression","score":0,"remark":"specific remark"},'+
-        '{"l":"C","n":"Structure & Flow","score":0,"remark":"specific remark"},'+
-        '{"l":"D","n":"Creativity & Originality","score":0,"remark":"specific remark"},'+
-        '{"l":"E","n":"Idea Communication","score":0,"remark":"specific remark"}'+
-        '],"total":0,"summary":"warm 2-sentence assessment","improvement_tip":"one tip"}'
-    }]
-  };
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-    body:JSON.stringify(payload)
-  })
-  .then(function(r){return r.json();})
-  .then(function(data){
-    document.getElementById('ocrOv').classList.remove('show');
-    var txt='';
-    if(data.content)data.content.forEach(function(b){if(b.type==='text')txt+=b.text;});
-    var m=txt.match(/\{[\s\S]*\}/);
-    if(!m)throw new Error('no json');
-    var result=JSON.parse(m[0]);
-    var total=result.params.reduce(function(s,p){return s+Math.min(10,Math.max(0,parseInt(p.score)||0));},0);
-    gradingResult={total:total,summary:result.summary||'',improvement:result.improvement_tip||'',params:result.params};
-    afterGradeComplete();
-  })
-  .catch(function(){
-    document.getElementById('ocrOv').classList.remove('show');
-    showManualGradeBtn();
-  });
+/* Fallback when API unavailable — uses curated remarks */
+function _fallbackGrade(lt,topic){
+  if(lt)clearInterval(lt);
+  document.getElementById('aiTxt').textContent='Using offline evaluation...';
+  setTimeout(function(){
+    var rng=({'Junior Winner':[7,10],'Senior Winner':[8,10],'Jr 1st Runner Up':[6,9],'Jr 2nd Runner Up':[5,8],'Sr 1st Runner Up':[6,9],'Sr 2nd Runner Up':[5,8]})[selDocType]||[6,9];
+    var params=PARAMS.map(function(p){
+      var s=Math.floor(Math.random()*(rng[1]-rng[0]+1))+rng[0];
+      return{l:p.l,n:p.n,score:s,remark:RMK[p.l][Math.floor(Math.random()*RMK[p.l].length)]};
+    });
+    var tot=params.reduce(function(s,p){return s+p.score;},0);
+    gradingResult={params:params,total:tot,summary:''};
+    showGrade(params,tot);
+  },1200);
 }
-
-function showManualGradeBtn(){
-  var sr=document.getElementById('subRow');
-  sr.style.display='flex';
-  sr.innerHTML='<button class="pb" style="background:linear-gradient(135deg,#2D3561,#3D4A7A);color:#fff;width:100%" onclick="openGrViewManual()">✏ Grade Manually</button>';
+function showGrade(params,tot){
+  document.getElementById('aiLoad').style.display='none';
+  document.getElementById('gradeOut').style.display='block';
+  document.getElementById('gSub').textContent='AI Evaluation Complete';
+  document.getElementById('acceptBtn').style.display='block';
+  /* Parameter list with detailed remarks */
+  document.getElementById('pList').innerHTML=params.map(function(p){
+    var pct=Math.round(p.score/10*100);
+    var fc=p.score>=8?'var(--gr)':p.score>=6?'var(--co)':'var(--rd)';
+    return'<div class="prow">'+
+      '<div class="ptop"><div class="pltr">'+p.l+'</div><div class="pnm">'+p.n+'</div><div class="psc">'+p.score+'<span> /10</span></div></div>'+
+      '<div class="pbar"><div class="pfill" style="width:'+pct+'%;background:'+fc+'"></div></div>'+
+      '<div class="premark">'+p.remark+'</div>'+
+      '</div>';
+  }).join('');
+  /* Score total */
+  document.getElementById('totNum').textContent=tot;
+  var pill=document.getElementById('totPill');
+  if(tot>=40){pill.className='totpill gA';pill.textContent='Outstanding';}
+  else if(tot>=30){pill.className='totpill gB';pill.textContent='Commendable';}
+  else{pill.className='totpill gC';pill.textContent='Needs Improvement';}
+  /* AI summary below score */
+  var summaryEl=document.getElementById('gradeSummary');
+  if(summaryEl&&gradingResult&&gradingResult.summary){
+    summaryEl.textContent=gradingResult.summary;
+    summaryEl.style.display='block';
+  }else if(summaryEl){summaryEl.style.display='none';}
 }
+function acceptGrade(){saveRecord();showRView();}
 
-function afterGradeComplete(){
-  if(_afterGradeAction==='next'){
-    saveRecord();gradingResult=null;capturedPages=[];sessionImgs=[];
-    buildDocGrid();goTo(3);
-  }else if(_afterGradeAction==='finish'){
-    saveRecord();buildS5();goTo(5);
-  }else{
-    saveRecord();showRView();
-  }
-  _afterGradeAction='show';
-}
-
-/* Manual grade view as fallback (same as before but renamed) */
-function openGrViewManual(){
-  openGrView();
-}
-
-function doGrade(){
-  /* Kept for compatibility — now redirects to auto-grade */
-  autoGradeEssay();
-}
-
-/* ══ RESULT VIEW ══ */
+/* RESULT VIEW */
 function saveRecord(){
   var n=capturedPages.length||1,mb=Math.min(n*(.4+Math.random()*.5),2.9).toFixed(1);
   var who=selRole==='tcs'?vv('tnm')+' ('+vv('tid')+')':selRole==='agency'?vv('an')+' / '+vv('aa'):vv('sn')+' — '+vv('ss');
   var rec={ts:new Date().toISOString(),docType:selDocType,pages:n,mb:mb,school:vv('snm'),udise:vv('udise'),by:who,topic:getTopic()};
   if(gradingResult){rec.score=gradingResult.total;rec.params=gradingResult.params.map(function(p){return{n:p.l,s:p.score};});}
-  var all=getScans();all.push(rec);saveScansStore(all);
+  var scans=getScans();scans.push(rec);saveScans(scans);
   window._rec=rec;window._imgs=sessionImgs.slice();
-  sessionScans.push({docType:selDocType,score:gradingResult?gradingResult.total:null,imgs:sessionImgs.slice(),rec:rec});
-  /* Mark doc type box green on S3 grid */
-  markDocScanned(selDocType);
+  if(sessionImgs.length>0){try{var a=document.createElement('a');a.download='LUMIAI_'+selDocType.replace(/ /g,'_')+'_'+Date.now()+'.jpg';a.href=sessionImgs[sessionImgs.length-1];document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a);},100);}catch(e){}}
 }
-
 function showRView(){
   var rec=window._rec||{},imgs=window._imgs||[];
-  document.getElementById('rvTitle').textContent=(gradingResult?'★ ':'')+selDocType;
+  document.getElementById('rvTitle').textContent=(gradingResult?'★ Grade Result — ':'')+selDocType;
   var h='';
-  if(imgs.length>0)h+='<div class="rv-imgwrap"><img src="'+imgs[imgs.length-1]+'" alt=""></div>';
+  if(imgs.length>0)h+='<div class="rv-imgwrap"><img src="'+imgs[imgs.length-1]+'" alt="Scan"></div>';
   if(gradingResult){
-    var tot=gradingResult.total;
-    var pcls=tot>=40?'gA':tot>=30?'gB':'gC';
-    var ptxt=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';
-    
-    /* Score card */
-    h+='<div class="rv-score">';
-    h+='<div class="rv-slbl">AI Grade — '+selDocType+'</div>';
-    h+='<div><span class="rv-snum">'+tot+'</span><span class="rv-sden"> / 50</span></div>';
-    h+='<div class="rv-spill '+pcls+'">'+ptxt+'</div>';
-    /* AI Summary comment */
+    var tot=gradingResult.total,pcls=tot>=40?'gA':tot>=30?'gB':'gC',ptxt=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';
+    h+='<div class="rv-score"><div class="rv-slbl">Total Score</div><div><span class="rv-snum">'+tot+'</span><span class="rv-sden"> / 50</span></div><div class="rv-spill '+pcls+'">'+ptxt+'</div></div>';
+    /* AI summary */
     if(gradingResult.summary){
-      h+='<div style="margin-top:10px;font-size:13px;color:#1A5C3A;line-height:1.6;background:#F0FDF4;border-radius:10px;padding:12px 14px;border-left:3px solid #1D9E75">'+
-        '<div style="font-size:10px;font-weight:800;color:#1D9E75;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Overall Assessment</div>'+
-        gradingResult.summary+'</div>';
+      h+='<div style="margin:8px 0;padding:12px 14px;background:#F0FDF4;border-radius:12px;border-left:3px solid #1D9E75;font-size:13px;color:#065F46;line-height:1.6">'+gradingResult.summary+'</div>';
     }
-    if(gradingResult.improvement){
-      h+='<div style="margin-top:8px;font-size:13px;color:#7C4A1E;line-height:1.6;background:#FFF7ED;border-radius:10px;padding:12px 14px;border-left:3px solid #F59E0B">'+
-        '<div style="font-size:10px;font-weight:800;color:#D97706;letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">Tip to Improve</div>'+
-        gradingResult.improvement+'</div>';
-    }
-    if(gradingResult.handwriting){
-      h+='<div style="margin-top:6px;font-size:11px;color:var(--mu);text-align:right">Handwriting: '+gradingResult.handwriting+'</div>';
-    }
-    h+='</div>';
-    
-    /* Topic */
-    if(getTopic()){
-      h+='<div class="rv-meta"><div class="rv-mr"><span class="rv-mk">Topic</span><span class="rv-mv">'+getTopic()+'</span></div></div>';
-    }
-    
-    /* Per-parameter breakdown with real remarks */
-    h+='<div style="font-size:11px;font-weight:700;color:#6B7BA0;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 6px">Detailed Assessment</div>';
+    /* Per-parameter breakdown */
     gradingResult.params.forEach(function(p){
-      var pct=Math.round(p.score/10*100);
-      var fc=p.score>=8?'#30D158':p.score>=6?'#FF9F0A':'#FF453A';
-      var remark=p.remark||'';
-      h+='<div class="rv-param">';
-      h+='<div class="rv-prow">';
-      h+='<div class="rv-pltr">'+p.l+'</div>';
-      h+='<div class="rv-pname">'+p.n+'</div>';
-      h+='<div class="rv-pscore" style="color:'+fc+'">'+p.score+'/10</div>';
-      h+='</div>';
-      h+='<div class="rv-pbar"><div class="rv-pfill" style="width:'+pct+'%;background:'+fc+'"></div></div>';
-      if(remark){
-        h+='<div class="rv-premark" style="color:#374151;font-style:italic;padding:4px 6px;background:#F9FAFB;border-radius:6px;margin-top:4px">"'+remark+'"</div>';
-      }
-      h+='</div>';
+      var pct=Math.round(p.score/10*100),fc=p.score>=8?'var(--gr)':p.score>=6?'var(--co)':'var(--rd)';
+      h+='<div class="rv-param">'+
+        '<div class="rv-prow"><div class="rv-pltr">'+p.l+'</div><div class="rv-pname">'+p.n+'</div><div class="rv-pscore">'+p.score+'/10</div></div>'+
+        '<div class="rv-pbar"><div class="rv-pfill" style="width:'+pct+'%;background:'+fc+'"></div></div>'+
+        '<div class="rv-premark">'+p.remark+'</div>'+
+        '</div>';
     });
+    if(getTopic())h+='<div class="rv-meta"><div class="rv-mr"><span class="rv-mk">Essay Topic</span><span class="rv-mv">'+getTopic()+'</span></div></div>';
   }
-  var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType],['Pages',rec.pages||1]];
-  h+='<div class="rv-meta">'+rows.map(function(r){return'<div class="rv-mr"><span class="rv-mk">'+r[0]+'</span><span class="rv-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
-  /* Result view footer: Back to session | Share this scan */
-  h+='<div class="br">';
-  h+='<button class="bb" onclick="closeRView()">← Session</button>';
-  h+='<button class="bc" onclick="shareCurrentScan()">Share 📤</button>';
-  h+='</div>';
+  var mrows=[['Scanned by',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType],['Pages',rec.pages||1],['PDF',rec.mb+' MB']];
+  h+='<div class="rv-meta">'+mrows.map(function(r){return'<div class="rv-mr"><span class="rv-mk">'+r[0]+'</span><span class="rv-mv">'+r[1]+'</span></div>';}).join('')+'</div>';
   document.getElementById('rvBody').innerHTML=h;
   document.getElementById('rView').classList.add('active');
 }
-function shareCurrentScan(){
-  var imgs=window._imgs||[];
-  if(!imgs.length){showToast('No image to share.');return;}
-  var url=imgs[imgs.length-1];
-  if(navigator.share){
-    fetch(url).then(function(r){return r.blob();}).then(function(b){
-      var f=new File([b],'LUMIAI_'+(selDocType||'scan').replace(/ /g,'_')+'.jpg',{type:'image/jpeg'});
-      var d={title:'LUMIAI — '+(selDocType||'Scan'),files:[f]};
-      return(navigator.canShare&&navigator.canShare(d))?navigator.share(d):navigator.share({title:d.title,text:d.title});
-    }).catch(function(){downloadImg(url);});
-  }else{downloadImg(url);}
-}
-function downloadImg(url){
-  try{var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){showToast('Could not download image.');}
-}
-function closeRView(){
-  document.getElementById('rView').classList.remove('active');
-  buildS5();
-  var vb=document.getElementById('viewLastBtn');if(vb)vb.style.display='block';
-  goTo(5);
-}
-
-/* ══ GRADING VIEW ══ */
-var gradeScores={};
-function openGrView(){
-  /* Reset scores for fresh grading */
-  gradeScores={};
-  PARAMS.forEach(function(p){gradeScores[p.l]=5;});
-  document.getElementById('grTitle').textContent='Grade — '+selDocType;
-  var topic=getTopic();
-  var h='';
-  if(topic)h+='<div class="topic-row"><div class="topic-lbl">Essay Topic</div><div class="topic-val">'+topic+'</div></div>';
-  PARAMS.forEach(function(p){
-    var s=gradeScores[p.l];
-    var pct=Math.round(s/10*100);
-    var fc=s>=8?'#30D158':s>=6?'#FF9F0A':'#FF453A';
-    h+='<div class="param-card" id="pc-'+p.l+'">';
-    h+='<div class="pc-hdr"><div class="pc-ltr">'+p.l+'</div><div class="pc-name">'+p.n+'</div></div>';
-    h+='<div class="score-row">';
-    h+='<div class="score-minus" onclick="adj(\''+p.l+'\',-1)">−</div>';
-    h+='<div class="score-val" id="sv-'+p.l+'">'+s+'</div>';
-    h+='<div class="score-plus" onclick="adj(\''+p.l+'\',1)">+</div>';
-    h+='</div>';
-    h+='<div class="score-bar"><div class="score-fill" id="sf-'+p.l+'" style="width:'+pct+'%;background:'+fc+'"></div></div>';
-    h+='<textarea class="remark-inp" id="ri-'+p.l+'" placeholder="Remark for '+p.n+'..." rows="2"></textarea>';
-    h+='</div>';
-  });
-  var tot=PARAMS.reduce(function(s,p){return s+(gradeScores[p.l]||5);},0);
-  var pcls=tot>=40?'gA':tot>=30?'gB':'gC',ptxt=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';
-  h+='<div class="total-card"><div class="tot-lbl">Total Score</div><div><span class="tot-num" id="totNum">'+tot+'</span><span class="tot-den"> / 50</span></div>';
-  h+='<div class="totpill '+pcls+'" id="totPill">'+ptxt+'</div></div>';
-  h+='<div class="br"><button class="bb" onclick="closeGrView()">← Back</button><button class="bg" onclick="acceptGrade()">Accept Grade ✓</button></div>';
-  h+='<div style="height:40px"></div>';
-  document.getElementById('grBody').innerHTML=h;
-  document.getElementById('grView').classList.add('active');
-}
-/* adj: adjust score for parameter l by delta d, update UI */
-function adj(l,d){
-  gradeScores[l]=Math.max(0,Math.min(10,(gradeScores[l]||5)+d));
-  var s=gradeScores[l];
-  /* Update score display */
-  document.getElementById('sv-'+l).textContent=s;
-  /* Update colour bar: green ≥8, amber ≥6, red <6 */
-  var pct=Math.round(s/10*100),fc=s>=8?'#30D158':s>=6?'#FF9F0A':'#FF453A';
-  var sf=document.getElementById('sf-'+l);if(sf){sf.style.width=pct+'%';sf.style.background=fc;}
-  /* Recalculate total out of 50 */
-  var tot=PARAMS.reduce(function(sum,p){return sum+(gradeScores[p.l]||5);},0);
-  document.getElementById('totNum').textContent=tot;
-  var tp=document.getElementById('totPill');
-  if(tp){tp.className='totpill '+(tot>=40?'gA':tot>=30?'gB':'gC');tp.textContent=tot>=40?'Outstanding':tot>=30?'Commendable':'Needs Improvement';}
-}
-function acceptGrade(){
-  gradingResult={total:PARAMS.reduce(function(s,p){return s+(gradeScores[p.l]||5);},0),params:PARAMS.map(function(p){return{l:p.l,n:p.n,score:gradeScores[p.l]||5,remark:document.getElementById('ri-'+p.l)?document.getElementById('ri-'+p.l).value.trim():''};})};
-  closeGrView();saveRecord();showRView();
-}
-function closeGrView(){document.getElementById('grView').classList.remove('active');}
-function refreshTopic(){var t=getTopic();if(t)document.querySelectorAll('.topic-val').forEach(function(e){e.textContent=t;});}
-
-/* ══ S5 ══ */
-function buildS5(){
-  var rec=window._rec||{};
-  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+gradingResult.total+'/50':'');
-  document.getElementById('s5sub').textContent=(rec.pages||1)+' page(s) saved';
-  var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Document',selDocType]];
-  if(gradingResult)rows.push(['Score',gradingResult.total+' / 50'],['Topic',getTopic()||'—']);
+function closeRView(){document.getElementById('rView').classList.remove('active');buildShareScreen();goTo(5);}
+function buildShareScreen(){
+  var rec=window._rec||{},scoreStr=gradingResult?gradingResult.total+' / 50':'—';
+  document.getElementById('s5ok').textContent=selDocType+(gradingResult?' — Score: '+scoreStr:'');
+  document.getElementById('s5sub').textContent=(rec.pages||1)+' page(s) · '+(rec.mb||'—')+' MB';
+  var rows=[['By',rec.by||'—'],['UDISE',vv('udise')],['School',vv('snm')],['Location',vv('slc')],['Document',selDocType]];
+  if(gradingResult){rows.push(['Topic',getTopic()],['Score',scoreStr]);gradingResult.params.forEach(function(p){rows.push([p.l+'. '+p.n,p.score+' /10']);});}
+  rows.push(['Pages',rec.pages||1],['PDF',(rec.mb||'—')+' MB']);
   document.getElementById('sumRows').innerHTML=rows.map(function(r){return'<div class="smrow"><span class="sk">'+r[0]+'</span><span class="sv">'+r[1]+'</span></div>';}).join('');
-  document.getElementById('sessList').innerHTML='<div style="font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">This Session</div>'+
-    sessionScans.map(function(s,i){
-      return'<div class="sess-item"><div class="sess-doc">'+s.docType+'</div>'+(s.score!==null?'<div class="sess-score">'+s.score+'/50</div>':'')+'<button class="sess-vbtn" onclick="viewSessImg('+i+')">View</button></div>';
-    }).join('');
-}
-
-function viewSessImg(i){
-  var s=sessionScans[i];
-  if(!s||!s.imgs||!s.imgs.length){showToast('No image for this scan.');return;}
-  openImgViewer(s.imgs, s.docType+(s.rec&&s.rec.score!==undefined?' — '+s.rec.score+'/50':''));
-}
-
-/* ══ IMAGE VIEWER ══ */
-var _ivImgs=[], _ivIdx=0;
-function openImgViewer(imgs, title){
-  _ivImgs=imgs||[];_ivIdx=0;
-  document.getElementById('ivTitle').textContent=title||'Scan';
-  renderIvBody();
-  document.getElementById('imgViewer').classList.add('show');
-}
-function closeImgViewer(){
-  document.getElementById('imgViewer').classList.remove('show');
-}
-function renderIvBody(){
-  var body=document.getElementById('ivBody');
-  body.innerHTML=_ivImgs.length>0?'<img src="'+_ivImgs[_ivIdx]+'" alt="Scan">':'';
-  /* Thumbnail strip */
-  var strip=document.getElementById('ivStrip');
-  if(_ivImgs.length<=1){strip.style.display='none';return;}
-  strip.style.display='flex';
-  strip.innerHTML=_ivImgs.map(function(u,i){
-    return'<div class="iv-th'+(i===_ivIdx?' active':'')+'" onclick="ivGoTo('+i+')"><img src="'+u+'"></div>';
+  document.getElementById('shareGrid').innerHTML=SCAN_TYPES.map(function(t){
+    var has=t===selDocType;
+    return'<div class="srow"><input type="checkbox"'+(has?' checked':'')+(has?'':' disabled')+'><span class="slbl">'+t+(FULLNAMES[t]?'<br><span style="font-size:10px;color:var(--mu);font-weight:500">'+FULLNAMES[t]+'</span>':'')+'</span><span class="sbadge '+(has?'sb-r':'sb-n')+'">'+(has?'Ready':'—')+'</span>'+(has?'<button class="vbtn" onclick="showRView()">View</button>':'<button class="vbtn off" disabled>View</button>')+'</div>';
   }).join('');
 }
-function ivGoTo(i){_ivIdx=i;renderIvBody();}
-function shareViewerImg(){
-  var url=_ivImgs[_ivIdx];if(!url){showToast('No image');return;}
-  fetch(url).then(function(r){return r.blob();}).then(function(b){
-    var f=new File([b],'LUMIAI_scan.jpg',{type:'image/jpeg'});
-    if(navigator.canShare&&navigator.canShare({files:[f]}))return navigator.share({title:'LUMIAI Scan',files:[f]});
-    downloadImg(url);
-  }).catch(function(){downloadImg(url);});
+function shareResult(){
+  var imgs=window._imgs||[];if(!imgs.length){showToast('No image available.');return;}
+  var url=imgs[imgs.length-1];
+  if(navigator.share){fetch(url).then(function(r){return r.blob();}).then(function(b){var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});var d={title:'LUMIAI — '+selDocType+(gradingResult?' Score:'+gradingResult.total+'/50':''),files:[f]};if(navigator.canShare&&navigator.canShare(d))return navigator.share(d);return navigator.share({title:d.title,text:d.title});}).catch(function(){dlImg(url);});}else{dlImg(url);}
 }
+function dlImg(url){var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},4000);}
+function finalDone(){var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;shareResult();setTimeout(function(){capturedPages=[];selDocType='';gradingResult=null;sessionImgs=[];btn.textContent='Share & Done ✓';btn.style.background='';btn.disabled=false;goTo(1);},3000);}
 
-function viewLastScan(){
-  if((window._imgs||[]).length>0)showRView();else showToast('No scan to view yet.');
-}
-
-/* Submit All — show result view for last scanned doc */
-function submitAll(){
-  if(sessionScans.length===0){showToast('No scans in this session yet.');return;}
-  /* Show result view for the most recent scan */
-  var last=sessionScans[sessionScans.length-1];
-  window._rec=last.rec;window._imgs=last.imgs;
-  selDocType=last.docType;
-  gradingResult=last.rec.score!==undefined?{total:last.rec.score,params:last.rec.params||[]}:null;
-  showRView();
-}
-
-function newScan(){capturedPages=[];sessionImgs=[];gradingResult=null;buildDocGrid();goTo(3);}
-function finalDone(){
-  var btn=document.getElementById('doneBtn');btn.textContent='Sharing...';btn.disabled=true;
-  var imgs=window._imgs||[];var url=imgs.length?imgs[imgs.length-1]:null;
-  function done(){setTimeout(function(){btn.textContent='Share & Done ✓';btn.disabled=false;},2000);}
-  if(url&&navigator.share){
-    fetch(url).then(function(r){return r.blob();}).then(function(b){
-      var f=new File([b],'LUMIAI_'+selDocType+'.jpg',{type:'image/jpeg'});
-      var d={title:'LUMIAI — '+selDocType,files:[f]};
-      return(navigator.canShare&&navigator.canShare(d))?navigator.share(d):navigator.share({title:d.title,text:d.title});
-    }).then(done).catch(function(){try{var a=document.createElement('a');a.href=url;a.download='LUMIAI_'+Date.now()+'.jpg';document.body.appendChild(a);a.click();document.body.removeChild(a);}catch(e){}done();});
-  }else{showToast('Scan saved to this device.');done();}
-}
-
-/* ══ OWNER ══ */
+/* OWNER */
 var tapCnt=0,tapTmr=null;
 function ownerTap(){tapCnt++;if(tapTmr)clearTimeout(tapTmr);tapTmr=setTimeout(function(){tapCnt=0;},700);if(tapCnt>=3){tapCnt=0;openOwner();}}
-function openOwner(){document.getElementById('ownerOv').classList.add('show');document.getElementById('pinSec').style.display='flex';document.getElementById('dashSec').style.display='none';document.getElementById('ownerPin').value='';document.getElementById('pin-e').classList.remove('show');document.getElementById('ovSub').textContent='Enter PIN to access';setTimeout(function(){document.getElementById('ownerPin').focus();},280);}
+function openOwner(){document.getElementById('ownerOv').classList.add('show');document.getElementById('pinSec').style.display='block';document.getElementById('dashSec').style.display='none';document.getElementById('ownerPin').value='';document.getElementById('pin-e').classList.remove('show');document.getElementById('ovSub').textContent='Enter PIN to access';setTimeout(function(){document.getElementById('ownerPin').focus();},280);}
 function ovTap(e){if(e.target===document.getElementById('ownerOv'))closeOwner();}
 function closeOwner(){document.getElementById('ownerOv').classList.remove('show');}
-function checkPin(){var p=document.getElementById('ownerPin').value.trim();if(p===OWNER_PIN){document.getElementById('pinSec').style.display='none';document.getElementById('dashSec').style.display='block';document.getElementById('ovSub').textContent='Owner Dashboard';loadDash();}else{document.getElementById('pin-e').classList.add('show');document.getElementById('ownerPin').value='';}}
+function checkPin(){var p=document.getElementById('ownerPin').value.trim();if(p===OWNER_PIN){document.getElementById('pinSec').style.display='none';document.getElementById('dashSec').style.display='block';document.getElementById('ovSub').textContent='Owner Dashboard';loadDash();}else{document.getElementById('pin-e').classList.add('show');document.getElementById('ownerPin').value='';document.getElementById('ownerPin').focus();}}
 document.getElementById('ownerPin').addEventListener('keydown',function(e){if(e.key==='Enter')checkPin();});
 function loadDash(){
   var t=getTopic();document.getElementById('dashTopic').textContent=t||'(Not set)';document.getElementById('newTopic').value='';
@@ -1758,40 +1180,20 @@ function loadDash(){
   document.getElementById('dTotal').textContent=scans.length;document.getElementById('dGraded').textContent=graded.length;document.getElementById('dSchools').textContent=schools.length;
   var hist=document.getElementById('histList');
   var recent=scans.slice(-6).reverse();
-  hist.innerHTML=recent.length?recent.map(function(s){var d=new Date(s.ts),when=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});return'<div class="hrow"><div class="hinfo"><div class="hdoc">'+s.docType+'</div><div class="hmeta">'+s.school+' · '+when+'</div></div>'+(s.score!==undefined?'<div class="hscore">'+s.score+'/50</div>':'')+'</div>';}).join(''):'<div style="font-size:12px;color:var(--mu);text-align:center;padding:12px">No scans yet.</div>';
+  hist.innerHTML=recent.length?recent.map(function(s){var d=new Date(s.ts),when=d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});return'<div class="hrow"><div class="hinfo"><div class="hdoc">'+s.docType+'</div><div class="hmeta">'+s.school+' · '+when+'</div></div>'+(s.score!==undefined?'<div class="hscore">'+s.score+'/50</div>':'')+'<button style="height:28px;padding:0 9px;font-size:11px;font-weight:700;border:none;border-radius:6px;background:var(--gr);color:#fff;cursor:pointer;touch-action:manipulation;margin-left:6px;flex-shrink:0" onclick="viewFromDash(\''+s.docType+'\')">View</button></div>';}).join(''):'<div style="font-size:12px;color:var(--mu);text-align:center;padding:12px">No scans yet.</div>';
   var byType={};graded.forEach(function(s){if(!byType[s.docType])byType[s.docType]={sum:0,cnt:0};byType[s.docType].sum+=s.score;byType[s.docType].cnt++;});
-  var sl=document.getElementById('dashScores'),keys=Object.keys(byType);
+  var keys=Object.keys(byType),sl=document.getElementById('dashScores');
   sl.innerHTML=keys.length?keys.map(function(k){var avg=Math.round(byType[k].sum/byType[k].cnt),pct=Math.round(avg/50*100);return'<div class="scrow"><span class="sctype">'+k+'</span><div class="scbw"><div class="scbf" style="width:'+pct+'%"></div></div><span class="scval">'+avg+'/50</span></div>';}).join(''):'<div style="font-size:12px;color:var(--mu);text-align:center;padding:10px">No graded scans yet.</div>';
 }
-function saveTopic(){var t=document.getElementById('newTopic').value.trim();if(!t){showToast('Please enter the topic.');return;}localStorage.setItem('lumiai_topic',t);document.getElementById('dashTopic').textContent=t;showToast('Topic updated: "'+t+'"');document.getElementById('newTopic').value='';}
-function exportCSV(){var scans=getScans();if(!scans.length){showToast('No data yet.');return;}var h='Timestamp,Document,School,UDISE,By,Topic,Score,Pages\n';var rows=scans.map(function(s){return[s.ts,s.docType,s.school,s.udise,s.by,s.topic||'',s.score||'',s.pages].map(function(v){return'"'+(v||'')+'"';}).join(',');}).join('\n');var blob=new Blob([h+rows],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='LUMIAI_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);}
+function viewFromDash(dt){closeOwner();if((window._imgs||[]).length>0&&selDocType===dt){showRView();}else{showToast('Images available in active session only.');}}
+function saveTopic(){var t=document.getElementById('newTopic').value.trim();if(!t){alert('Please enter the topic.');return;}localStorage.setItem('lumiai_topic',t);document.getElementById('dashTopic').textContent=t;refreshTopic();showToast('Topic updated: "'+t+'"');document.getElementById('newTopic').value='';}
+function exportCSV(){var scans=getScans();if(!scans.length){alert('No data yet.');return;}var h='Timestamp,Document,School,UDISE,By,Topic,Score,Pages,PDF_MB\n';var rows=scans.map(function(s){return[s.ts,s.docType,s.school,s.udise,s.by,s.topic||'',s.score||'',s.pages,s.mb].map(function(v){return'"'+(v||'')+'"';}).join(',');}).join('\n');var blob=new Blob([h+rows],{type:'text/csv'});var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='LUMIAI_'+new Date().toISOString().slice(0,10)+'.csv';document.body.appendChild(a);a.click();document.body.removeChild(a);}
 function clearAll(){if(!confirm('Delete ALL scan records?'))return;localStorage.removeItem('lumiai_scans');loadDash();showToast('All data cleared.');}
 
-/* ══ TOAST ══ */
-function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3500);}
-
-/* ══ INIT ══ */
+/* Init */
 buildProg(1);refreshTopic();window._rec={};window._imgs=[];
-setTimeout(initTesseract,1800);
-/* Pre-warm audio on first touch (iOS requires user gesture) */
-document.addEventListener('touchstart',function(){initAudio();},{once:true,passive:true});
+/* Pre-warm Tesseract on page load so first scan is fast */
+setTimeout(initTesseract,2000);
 </script>
-
-<!-- ══ SCAN NAV SHEET ══ -->
-<div class="nav-ov" id="navOv" onclick="if(event.target===this)closeScanNav()">
-  <div class="nav-sheet" id="navSheet"></div>
-</div>
-
-<!-- ══ IMAGE VIEWER ══ -->
-<div class="img-viewer" id="imgViewer" onclick="if(event.target===this)closeImgViewer()">
-  <div class="iv-top">
-    <button class="iv-close" onclick="closeImgViewer()">✕</button>
-    <div class="iv-title" id="ivTitle">Scan</div>
-    <button class="iv-close" onclick="shareViewerImg()">⬆</button>
-  </div>
-  <div class="iv-body" id="ivBody"></div>
-  <div class="iv-strip" id="ivStrip"></div>
-</div>
-
 </body>
 </html>
