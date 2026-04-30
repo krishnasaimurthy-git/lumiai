@@ -1,282 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <title>LUMIAI PRO | Enterprise Scanner</title>
-    <style>
-        :root {
-            --ios-yellow: #FFD60A;
-            --ios-bg: #000000;
-            --ios-card: #1C1C1E;
-            --ios-blue: #0A84FF;
-            --ios-green: #30D158;
-            --ios-text: #FFFFFF;
-            --ios-secondary: #8E8E93;
-            --radius: 12px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>LUMIAI | Enterprise Scanner</title>
+<style>
+/* RESTORED ORIGINAL BRAND COLORS */
+:root {
+  --sl: #1E2245; --sl2: #2D3561; --sl3: #3D4A7A;
+  --co: #CC785C; --co2: #B8634A; --col: #E8A088;
+  --gr: #1D9E75; --mu: #6B7BA0; --sf: #F7F5F2;
+  --bd: #DDE4F0; --radius: 12px;
+}
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            margin: 0; background: var(--ios-bg); color: var(--ios-text); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; height: 100vh;
-        }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-        /* Top Navigation Apple Style */
-        .nav-header {
-            padding: 50px 20px 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
-        }
-        .nav-title { font-weight: 600; font-size: 17px; letter-spacing: -0.4px; }
-        
-        /* Modern Rectangular Buttons (No Ovals) */
-        .btn {
-            height: 50px; border-radius: var(--radius); border: none;
-            font-size: 16px; font-weight: 600; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            transition: all 0.2s ease; width: 100%;
-        }
-        .btn-primary { background: var(--ios-yellow); color: #000; }
-        .btn-secondary { background: var(--ios-card); color: #fff; }
-        .btn-outline { background: transparent; border: 1px solid var(--ios-secondary); color: #fff; }
-        .btn:active { transform: scale(0.97); opacity: 0.8; }
+body {
+  height: 100vh; width: 100vw; overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  /* RESTORED ORIGINAL GRADIENT */
+  background: linear-gradient(160deg, var(--sl) 0%, var(--sl2) 48%, var(--sl3) 100%);
+  color: #fff;
+}
 
-        /* Review Gallery */
-        .gallery-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 20px;
-            overflow-y: auto; max-height: 400px;
-        }
-        .gallery-item {
-            aspect-ratio: 3/4; background: var(--ios-card); border-radius: 8px;
-            position: relative; border: 1px solid rgba(255,255,255,0.1);
-        }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-        .page-badge {
-            position: absolute; bottom: 5px; right: 5px; 
-            background: rgba(0,0,0,0.6); font-size: 10px; padding: 2px 6px; border-radius: 4px;
-        }
+/* TOP NAVIGATION */
+.nav-header {
+  padding: 50px 20px 10px;
+  display: flex; justify-content: space-between; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  background: rgba(0,0,0,0.15);
+}
+.nav-title { font-weight: 800; font-size: 19px; letter-spacing: 1px; color: #fff; }
+.step-tag { font-size: 12px; color: rgba(255,255,255,0.5); font-weight: 600; }
 
-        /* Apple Camera Interface */
-        .camera-ui {
-            position: fixed; inset: 0; background: #000; z-index: 1000; display: none;
-        }
-        .camera-ui.active { display: flex; flex-direction: column; }
-        .cam-frame {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 80%; height: 60%; border: 2px solid var(--ios-yellow);
-            border-radius: 10px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.5);
-            pointer-events: none;
-        }
-        .shutter-container {
-            height: 150px; background: #000; display: flex; 
-            align-items: center; justify-content: space-around; padding-bottom: 30px;
-        }
-        .shutter-btn {
-            width: 72px; height: 72px; border-radius: 50%; border: 4px solid #fff;
-            padding: 4px; background: transparent; cursor: pointer;
-        }
-        .shutter-inner {
-            width: 100%; height: 100%; background: #fff; border-radius: 50%;
-        }
+/* RECTANGULAR BUTTONS (NO OVALS) */
+.btn {
+  height: 52px; border-radius: var(--radius); border: none;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  transition: all 0.1s ease; width: 100%;
+}
+.btn-primary { background: var(--co); color: #fff; }
+.btn-secondary { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+.btn-success { background: var(--gr); color: #fff; }
+.btn:active { transform: scale(0.96); opacity: 0.9; }
 
-        /* Step screens */
-        .screen { display: none; padding: 20px; height: calc(100vh - 100px); overflow-y: auto; }
-        .screen.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+/* CARDS */
+.card {
+  margin: 20px; background: #fff; border-radius: 20px;
+  padding: 24px; color: var(--sl); box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.screen { display: none; height: calc(100vh - 120px); overflow-y: auto; }
+.screen.active { display: block; animation: slideUp 0.3s ease-out; }
+@keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 13px; color: var(--ios-secondary); margin-bottom: 8px; text-transform: uppercase; }
-        input, select {
-            width: 100%; background: var(--ios-card); border: 1px solid #333;
-            color: #fff; padding: 14px; border-radius: var(--radius); font-size: 16px; outline: none;
-        }
-        
-        .result-card { background: var(--ios-card); border-radius: var(--radius); padding: 20px; margin-top: 20px; }
-    </style>
+/* FORM ELEMENTS */
+.fg { margin-bottom: 18px; }
+.fg label { display: block; font-size: 11px; font-weight: 700; color: var(--mu); margin-bottom: 6px; text-transform: uppercase; }
+input, select {
+  width: 100%; height: 48px; padding: 0 14px; border: 1.5px solid var(--bd);
+  border-radius: var(--radius); background: #FAFBFF; color: var(--sl); font-size: 15px; outline: none;
+}
+input:focus { border-color: var(--co); background: #fff; }
+
+/* GALLERY VIEW (CONSOLIDATED PLACE) */
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px;
+}
+.gallery-item {
+  aspect-ratio: 3/4; background: var(--sf); border-radius: 8px;
+  position: relative; overflow: hidden; border: 1px solid var(--bd);
+}
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+.page-badge {
+  position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.6);
+  color: #fff; font-size: 9px; padding: 2px 5px; border-radius: 4px;
+}
+
+/* APPLE IPHONE SCANNER UI */
+.cam-view { position: fixed; inset: 0; background: #000; z-index: 1000; display: none; flex-direction: column; }
+.cam-view.active { display: flex; }
+.cam-frame {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 85%; height: 65%; border: 2px solid var(--col);
+  border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.6); pointer-events: none;
+}
+.shutter-bar {
+  height: 160px; background: #000; display: flex; 
+  align-items: center; justify-content: space-around; padding-bottom: 40px;
+}
+.shutter-btn {
+  width: 76px; height: 76px; border-radius: 50%; border: 4px solid #fff;
+  padding: 4px; background: transparent;
+}
+.shutter-inner { width: 100%; height: 100%; background: #fff; border-radius: 50%; }
+
+/* EVALUATION CARD */
+.score-box { background: var(--sl); color: #fff; border-radius: 15px; padding: 20px; text-align: center; margin-bottom: 15px; }
+.score-big { font-size: 48px; font-weight: 900; color: var(--col); }
+</style>
 </head>
 <body>
 
-    <div class="nav-header">
-        <div class="nav-title" id="headerTitle">Identify Yourself</div>
-        <div id="stepCounter" style="color: var(--ios-secondary); font-size: 14px;">Step 1/5</div>
-    </div>
+<div class="nav-header">
+  <div class="nav-title" id="hdrTxt" onmousedown="startSecret()" onmouseup="stopSecret()" ontouchstart="startSecret()" ontouchend="stopSecret()">LUMIAI</div>
+  <div class="step-tag" id="stepTag">Step 1 of 5</div>
+</div>
 
-    <div class="screen active" id="s1">
-        <div class="form-group">
-            <label>Organization Role</label>
-            <select id="role" onchange="toggleRoleFields()">
-                <option value="tcs">TCS Personnel</option>
-                <option value="agency">Agency Representative</option>
-                <option value="school">School Authority</option>
-            </select>
-        </div>
-        <div id="dynamicFields"></div>
-        <button class="btn btn-primary" onclick="nextStep(2)">Continue</button>
+<div class="screen active" id="s1">
+  <div class="card">
+    <div class="fg">
+      <label>Your Role</label>
+      <select id="role" onchange="updateFields()">
+        <option value="tcs">🏢 TCS Personnel</option>
+        <option value="agency">🤝 Agency Representative</option>
+        <option value="school">🏫 School Authority</option>
+      </select>
     </div>
+    <div id="dynamicFields"></div>
+    <button class="btn btn-primary" onclick="showStep(2)">Next Step</button>
+  </div>
+</div>
 
-    <div class="screen" id="s2">
-        <div class="form-group"><label>UDISE Code</label><input type="number" id="udise" placeholder="Enter 11-digit code"></div>
-        <div class="form-group"><label>School Name</label><input type="text" id="schoolName"></div>
-        <div class="form-group"><label>Location</label><input type="text" id="location"></div>
-        <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary" onclick="prevStep(1)">Back</button>
-            <button class="btn btn-primary" onclick="nextStep(3)">Next</button>
-        </div>
+<div class="screen" id="s2">
+  <div class="card">
+    <div class="fg"><label>UDISE Code</label><input type="number" id="udise" placeholder="11-digit code"></div>
+    <div class="fg"><label>School Name</label><input type="text" id="schName"></div>
+    <div class="fg"><label>Location</label><input type="text" id="schLoc"></div>
+    <div style="display:grid; grid-template-columns: 1fr 2fr; gap:10px">
+      <button class="btn btn-secondary" onclick="showStep(1)">Back</button>
+      <button class="btn btn-primary" onclick="showStep(3)">Next</button>
     </div>
+  </div>
+</div>
 
-    <div class="screen" id="s3">
-        <div class="form-group">
-            <label>Select Category</label>
-            <select id="scanCategory">
-                <option value="Junior Winner">Junior Winner ★</option>
-                <option value="Senior Winner">Senior Winner ★</option>
-                <option value="ECF">ECF</option>
-                <option value="WSF">WSF</option>
-            </select>
-        </div>
-        <button class="btn btn-primary" onclick="startScanning()">Launch Camera</button>
-        <button class="btn btn-outline" style="margin-top:10px" onclick="prevStep(2)">Back</button>
+<div class="screen" id="s3">
+  <div class="card">
+    <div class="fg">
+      <label>Scan Category</label>
+      <select id="cat">
+        <option value="Winner">Junior Winner ★</option>
+        <option value="Winner">Senior Winner ★</option>
+        <option value="ECF">ECF Document</option>
+        <option value="GCF">GCF Document</option>
+      </select>
     </div>
+    <button class="btn btn-primary" onclick="openCamera()">Open Apple Scanner</button>
+    <button class="btn btn-secondary" style="margin-top:10px" onclick="showStep(2)">Back</button>
+  </div>
+</div>
 
-    <div class="screen" id="s4">
-        <h3 style="margin: 0 0 10px 20px;">Scanned Sheets</h3>
-        <div class="gallery-grid" id="gallery"></div>
-        <div style="padding: 20px; display: flex; flex-direction: column; gap: 10px;">
-            <button class="btn btn-outline" onclick="startScanning()">+ Add More Sheets</button>
-            <button class="btn btn-primary" onclick="submitAndGrade()">Submit Final Essay</button>
-            <button class="btn btn-secondary" onclick="prevStep(3)">Back</button>
-        </div>
+<div class="screen" id="s4">
+  <div class="card" style="margin-top:10px">
+    <h3 style="margin-bottom:15px; font-size:16px">Review Scanned Sheets</h3>
+    <div class="gallery-grid" id="gallery"></div>
+    <div style="display:flex; flex-direction:column; gap:10px">
+      <button class="btn btn-secondary" onclick="openCamera()">+ Add Another Sheet</button>
+      <button class="btn btn-success" onclick="startBatchGrading()">Submit Final Essay</button>
+      <button class="btn btn-outline" style="border:1px solid var(--bd)" onclick="showStep(3)">Back</button>
     </div>
+  </div>
+</div>
 
-    <div class="screen" id="s5">
-        <div class="result-card">
-            <div style="text-align:center">
-                <div style="color: var(--ios-green); font-size: 40px;">✔</div>
-                <h2 style="margin:10px 0">Grading Complete</h2>
-                <div style="font-size: 48px; font-weight: 800;" id="finalScore">42<span style="font-size:20px; color:var(--ios-secondary)">/50</span></div>
-            </div>
-            <div id="gradingDetails" style="margin-top:20px; font-size: 14px; line-height: 1.6;"></div>
-        </div>
-        <div style="margin-top:20px; display:flex; flex-direction:column; gap:10px">
-            <button class="btn btn-primary" onclick="shareResults()">Share Report</button>
-            <button class="btn btn-secondary" onclick="location.reload()">Done (Lock Document)</button>
-        </div>
+<div class="screen" id="s5">
+  <div class="card">
+    <div class="score-box">
+      <div style="font-size:12px; opacity:0.7">AI EVALUATION SCORE</div>
+      <div class="score-big" id="finalScore">--</div>
+      <div style="font-size:14px">Quality: Excellent</div>
     </div>
+    <div id="aiComments" style="font-size:13px; line-height:1.5; color:var(--mu); margin-bottom:20px"></div>
+    <button class="btn btn-primary" onclick="alert('PDF Generated. Opening Share Menu...')">Share PDF Report</button>
+    <button class="btn btn-secondary" style="margin-top:10px" onclick="location.reload()">Start New Session</button>
+  </div>
+</div>
 
-    <div class="camera-ui" id="cameraInterface">
-        <div style="flex:1; position:relative">
-            <video id="video" style="width:100%; height:100%; object-fit:cover" autoplay playsinline></video>
-            <div class="cam-frame"></div>
-            <div style="position:absolute; top:40px; width:100%; text-align:center; color:var(--ios-yellow); font-weight:600">Position Essay in Frame</div>
-        </div>
-        <div class="shutter-container">
-            <div style="width:50px"></div>
-            <div class="shutter-btn" onclick="captureSnapshot()">
-                <div class="shutter-inner"></div>
-            </div>
-            <div id="captureCount" style="width:50px; text-align:center; font-weight:bold">0</div>
-        </div>
-        <button class="btn btn-outline" style="width:80%; align-self:center; margin-bottom:20px" onclick="closeCamera()">Finish Scanning</button>
+<div class="cam-view" id="camView">
+  <div style="flex:1; position:relative">
+    <video id="v" style="width:100%; height:100%; object-fit:cover" autoplay playsinline></video>
+    <div class="cam-frame"></div>
+    <div style="position:absolute; top:40px; width:100%; text-align:center; font-weight:700; text-shadow:0 2px 4px #000">ALIGN DOCUMENT</div>
+  </div>
+  <div class="shutter-bar">
+    <button class="btn btn-secondary" style="width:80px; height:40px" onclick="closeCamera()">Done</button>
+    <div class="shutter-btn" onclick="snap()">
+      <div class="shutter-inner"></div>
     </div>
+    <div id="snapCount" style="width:80px; text-align:center; font-weight:800; font-size:20px">0</div>
+  </div>
+</div>
 
-    <audio id="shutterSound" src="https://assets.mixkit.co/active_storage/sfx/700/700-preview.mp3"></audio>
+<audio id="clickSnd" src="https://assets.mixkit.co/active_storage/sfx/700/700-preview.mp3"></audio>
 
 <script>
-    let scans = [];
-    let currentStep = 1;
+let scans = [];
+let secretTimer;
+let masterTopic = "Global Climate Solutions";
 
-    function toggleRoleFields() {
-        const role = document.getElementById('role').value;
-        const container = document.getElementById('dynamicFields');
-        const config = {
-            tcs: ['Employee ID', 'Name', 'Office Location'],
-            agency: ['Agency Name', 'Agent Name', 'Mobile Number'],
-            school: ['School Name', 'Principal Name', 'Designation']
-        };
-        container.innerHTML = config[role].map(f => `<div class="form-group"><label>${f}</label><input type="text"></div>`).join('');
-    }
+function showStep(n) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('s' + n).classList.add('active');
+  document.getElementById('stepTag').innerText = `Step ${n} of 5`;
+}
 
-    function nextStep(n) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById('s' + n).classList.add('active');
-        currentStep = n;
-        updateUI();
-    }
+function updateFields() {
+  const role = document.getElementById('role').value;
+  const div = document.getElementById('dynamicFields');
+  const fields = {
+    tcs: ['Employee ID', 'Full Name', 'TCS Location'],
+    agency: ['Agency Name', 'Agent Name', 'Mobile'],
+    school: ['School Name', 'Your Name', 'Designation']
+  };
+  div.innerHTML = fields[role].map(f => `<div class="fg"><label>${f}</label><input type="text"></div>`).join('');
+}
 
-    function prevStep(n) { nextStep(n); }
+async function openCamera() {
+  document.getElementById('camView').classList.add('active');
+  const s = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+  document.getElementById('v').srcObject = s;
+}
 
-    function updateUI() {
-        const titles = ["Identify Yourself", "School Details", "Category Selection", "Review Scans", "Evaluation Results"];
-        document.getElementById('headerTitle').innerText = titles[currentStep-1];
-        document.getElementById('stepCounter').innerText = `Step ${currentStep}/5`;
-    }
+function snap() {
+  document.getElementById('clickSnd').play();
+  // Mock image capture
+  scans.push("https://images.unsplash.com/photo-1586075010633-de4d2107ad0f?q=80&w=200");
+  document.getElementById('snapCount').innerText = scans.length;
+  
+  // Flash effect
+  document.body.style.background = "#fff";
+  setTimeout(() => { document.body.style.background = ""; }, 50);
+}
 
-    async function startScanning() {
-        document.getElementById('cameraInterface').classList.add('active');
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-        document.getElementById('video').srcObject = stream;
-    }
+function closeCamera() {
+  document.getElementById('camView').classList.remove('active');
+  renderGallery();
+  showStep(4);
+}
 
-    function captureSnapshot() {
-        // Play iPhone-style Shutter Sound
-        document.getElementById('shutterSound').play();
-        
-        // Mock capture (In production, draw video to canvas)
-        const mockImg = "https://images.unsplash.com/photo-1586075010633-de4d2107ad0f?auto=format&fit=crop&q=80&w=200";
-        scans.push(mockImg);
-        document.getElementById('captureCount').innerText = scans.length;
-        
-        // Visual haptic feedback
-        document.body.style.opacity = "0.5";
-        setTimeout(() => document.body.style.opacity = "1", 100);
-    }
+function renderGallery() {
+  const g = document.getElementById('gallery');
+  g.innerHTML = scans.map((s, i) => `
+    <div class="gallery-item">
+      <img src="${s}">
+      <div class="page-badge">Pg ${i+1}</div>
+    </div>
+  `).join('');
+}
 
-    function closeCamera() {
-        document.getElementById('cameraInterface').classList.remove('active');
-        renderGallery();
-        nextStep(4);
-    }
+function startBatchGrading() {
+  if (scans.length === 0) return alert("Please scan at least one page.");
+  
+  showStep(5);
+  document.getElementById('aiComments').innerText = "Analyzing handwritten text across " + scans.length + " sheets... Checking relevance to: " + masterTopic;
+  
+  setTimeout(() => {
+    document.getElementById('finalScore').innerText = "44/50";
+    document.getElementById('aiComments').innerHTML = `
+      <b>Relevance:</b> Excellent match to Topic.<br>
+      <b>Structure:</b> Consistent across all ${scans.length} pages.<br>
+      <b>Verdict:</b> Verified Enterprise Scan.
+    `;
+  }, 2000);
+}
 
-    function renderGallery() {
-        const container = document.getElementById('gallery');
-        container.innerHTML = scans.map((src, i) => `
-            <div class="gallery-item">
-                <img src="${src}">
-                <div class="page-badge">Page ${i+1}</div>
-            </div>
-        `).join('');
-    }
+// SECRET SPACE LOGIC
+function startSecret() { secretTimer = setTimeout(() => { masterTopic = prompt("Set Master Topic:", masterTopic); }, 3000); }
+function stopSecret() { clearTimeout(secretTimer); }
 
-    function submitAndGrade() {
-        if(scans.length === 0) return alert("Please scan at least one page.");
-        
-        // Final Submission Lock logic
-        document.getElementById('s4').innerHTML = `
-            <div style="text-align:center; padding:50px">
-                <div class="shutter-inner" style="width:50px; height:50px; margin:0 auto; animation: spin 1s infinite linear;"></div>
-                <p>AI analyzing ${scans.length} pages...</p>
-            </div>
-        `;
-        
-        setTimeout(() => {
-            nextStep(5);
-            document.getElementById('gradingDetails').innerHTML = `
-                <b>Topic Match:</b> High (95%)<br>
-                <b>Structure:</b> Strong Introduction, Logical flow.<br>
-                <b>Creativity:</b> Excellent use of rural metaphors.<br>
-                <b>OCR Confidence:</b> 91% (Good Scan)
-            `;
-        }, 2000);
-    }
-
-    function shareResults() {
-        alert("Generating 3MB PDF Report... Redirecting to Share Menu.");
-    }
-
-    toggleRoleFields();
+updateFields();
 </script>
-
 </body>
 </html>
