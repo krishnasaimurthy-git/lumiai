@@ -741,7 +741,7 @@ function openCam(){
     });
 }
 
-function startCamStream(stream){
+function startCamStream(stream){var startStream=startCamStream;
   camStream=stream;
   var v=document.getElementById('vid');
   v.srcObject=stream;v.muted=true;v.setAttribute('playsinline','true');
@@ -1624,82 +1624,6 @@ function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.c
 
 /* ══ INIT ══ */
 
-function openCam(){
-  initAudio();initTesseract(); /* pre-warm */
-  document.getElementById('camView').classList.add('active');
-  document.getElementById('prevView').classList.remove('active');
-  sheetFound=false;sheetStable=0;
-  setStat('look','Point at document');
-  document.getElementById('camHint').textContent='Hold camera over the document';
-  document.getElementById('docErr').classList.remove('show');
-  resetCrop();
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';return;}
-  var con={video:{facingMode:{ideal:'environment'},width:{ideal:4096,min:1280},height:{ideal:3072,min:720}},audio:false};
-  navigator.mediaDevices.getUserMedia(con).then(startStream).catch(function(){navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false}).then(startStream).catch(function(){document.getElementById('vid').style.display='none';document.getElementById('camDenied').style.display='flex';});});
-  updatePgLbl();
-}
-function startStream(stream){
-  camStream=stream;var vid=document.getElementById('vid');
-  vid.srcObject=stream;vid.muted=true;vid.setAttribute('playsinline','true');vid.play().catch(function(){});
-  vid.addEventListener('loadedmetadata',function(){resizeCrop();startDetLoop();},{once:true});
-  var track=stream.getVideoTracks()[0];
-  if(track){try{track.applyConstraints({advanced:[{focusMode:'continuous'},{exposureMode:'continuous'},{whiteBalanceMode:'continuous'}]}).catch(function(){});}catch(e){}}
-  var ta=document.getElementById('tapArea');
-  if(ta)ta.onclick=function(e){
-    var w=document.getElementById('camWrap'),rect=w.getBoundingClientRect();
-    var x=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));
-    var y=Math.max(0,Math.min(1,(e.clientY-rect.top)/rect.height));
-    var ring=document.getElementById('focusRing');
-    if(ring){ring.style.left=(e.clientX-rect.left)+'px';ring.style.top=(e.clientY-rect.top)+'px';ring.style.display='block';ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);}
-    var tr=camStream&&camStream.getVideoTracks()[0];if(!tr)return;
-    try{tr.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:x,y:y}]}]}).catch(function(){});}catch(ex){}
-    setTimeout(function(){try{tr.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2500);
-  };
-}
-function closeCam(){stopCamera();document.getElementById('camView').classList.remove('active');}
-function closePrev(){document.getElementById('prevView').classList.remove('active');}
-function stopCamera(){
-  if(detLoop){clearInterval(detLoop);detLoop=null;}
-  if(animId){cancelAnimationFrame(animId);animId=null;}
-  if(camStream){camStream.getTracks().forEach(function(t){t.stop();});camStream=null;}
-  var v=document.getElementById('vid');if(v)v.srcObject=null;
-  clearCrop();
-}
-
-/* Tap-to-focus */
-document.getElementById('tapArea').addEventListener('click',function(e){
-  var wrap=document.getElementById('camWrap'),rect=wrap.getBoundingClientRect();
-  var x=e.clientX-rect.left,y=e.clientY-rect.top;
-  var ring=document.getElementById('focusRing');
-  ring.style.left=x+'px';ring.style.top=y+'px';ring.style.display='block';
-  ring.classList.remove('go');void ring.offsetWidth;ring.classList.add('go');
-  setTimeout(function(){ring.style.display='none';ring.classList.remove('go');},800);
-  if(camStream){var track=camStream.getVideoTracks()[0];if(track&&track.getCapabilities){var caps=track.getCapabilities();if(caps.focusMode&&caps.focusMode.indexOf('manual')>=0){var xn=Math.max(0,Math.min(1,x/rect.width)),yn=Math.max(0,Math.min(1,y/rect.height));try{track.applyConstraints({advanced:[{focusMode:'manual',pointsOfInterest:[{x:xn,y:yn}]}]}).catch(function(){});}catch(ex){}setTimeout(function(){try{track.applyConstraints({advanced:[{focusMode:'continuous'}]}).catch(function(){});}catch(e){}},2000);}}}
-});
-
-/* Dynamic crop */
-function resizeCrop(){var w=document.getElementById('camWrap'),cc=document.getElementById('cropCanvas');cc.width=w.offsetWidth;cc.height=w.offsetHeight;}
-function resetCrop(){cropR={x:.03,y:.04,w:.94,h:.92};cropT={x:.03,y:.04,w:.94,h:.92};}
-function lerp(a,b,t){return a+(b-a)*t;}
-function animCrop(){
-  cropR.x=lerp(cropR.x,cropT.x,.09);cropR.y=lerp(cropR.y,cropT.y,.09);
-  cropR.w=lerp(cropR.w,cropT.w,.09);cropR.h=lerp(cropR.h,cropT.h,.09);
-  drawCrop();animId=requestAnimationFrame(animCrop);
-}
-function drawCrop(){
-  var cc=document.getElementById('cropCanvas');if(!cc||!cc.width||!sheetFound)return;
-  var ctx=cc.getContext('2d'),W=cc.width,H=cc.height;
-  var x=Math.round(cropR.x*W),y=Math.round(cropR.y*H),w=Math.round(cropR.w*W),h=Math.round(cropR.h*H);
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='rgba(0,0,0,.32)';ctx.fillRect(0,0,W,H);ctx.clearRect(x,y,w,h);
-  ctx.strokeStyle='rgba(232,160,136,.55)';ctx.lineWidth=1.5;ctx.strokeRect(x+1,y+1,w-2,h-2);
-  var cs=28;ctx.strokeStyle='#CC785C';ctx.lineWidth=4.5;ctx.lineCap='round';
-  ctx.beginPath();ctx.moveTo(x+cs,y);ctx.lineTo(x,y);ctx.lineTo(x,y+cs);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x+w-cs,y);ctx.lineTo(x+w,y);ctx.lineTo(x+w,y+cs);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x,y+h-cs);ctx.lineTo(x,y+h);ctx.lineTo(x+cs,y+h);ctx.stroke();
-  ctx.beginPath();ctx.moveTo(x+w,y+h-cs);ctx.lineTo(x+w,y+h);ctx.lineTo(x+w-cs,y+h);ctx.stroke();
-}
-function clearCrop(){var cc=document.getElementById('cropCanvas');if(cc)cc.getContext('2d').clearRect(0,0,cc.width,cc.height);}
 
 function startDetLoop(){
   if(detLoop)clearInterval(detLoop);
@@ -1752,8 +1676,8 @@ function _cap(url){capturedPages.push(url);sessionImgs.push(url);stopCamera();sh
 
 /* OCR IDENTIFICATION */
 async function showPreviewAndIdentify(url){
-  document.getElementById('camView').classList.remove('active');
-  document.getElementById('prevView').classList.add('active');
+  document.getElementById('camScreen').classList.remove('active');
+  document.getElementById('prevScreen').classList.add('active');
   document.getElementById('prevImg').src=url;
   document.getElementById('pgPill').textContent=capturedPages.length+' page'+(capturedPages.length>1?'s':'');
   document.getElementById('idPill').className='id-pill wait';document.getElementById('idPill').textContent='Reading text...';
