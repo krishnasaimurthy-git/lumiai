@@ -6,8 +6,8 @@
 <meta name="theme-color" content="#0D0F1A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="LUMIAI">
-<title>LUMIAI — TBI Scanner</title>
+<meta name="apple-mobile-web-app-title" content="TDI Orchestrator">
+<title>TDI Orchestrator — AI Document Scanner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -651,7 +651,15 @@ select option{background:var(--bg2)}
 .grade-inline{display:flex;align-items:center;gap:8px}
 .mini-spin{width:14px;height:14px;border:2px solid var(--amber-dim);border-top-color:var(--amber);border-radius:50%;animation:spin .6s linear infinite}
 
-/* ══ OFFLINE BANNER ══ */
+/* ══ LANG CHIPS ══ */
+.lang-chip{
+  padding:10px 8px;border-radius:10px;border:1px solid var(--border-lit);
+  background:var(--bg2);cursor:pointer;text-align:center;
+  font-size:12px;font-weight:600;color:var(--tx-med);
+  touch-action:manipulation;transition:all .12s;
+}
+.lang-chip:active{transform:scale(.93)}
+.lang-chip.sel{border-color:var(--amber);background:var(--amber-dim);color:var(--amber)}
 #offlineBanner{
   background:var(--crimson-dim);border-bottom:1px solid rgba(232,84,84,.2);
   padding:7px 16px;text-align:center;font-size:12px;color:var(--crimson);
@@ -669,8 +677,8 @@ select option{background:var(--bg2)}
 
 <!-- LOADING SPLASH -->
 <div id="splash">
-  <div class="splash-logo">LUM<em>I</em>AI</div>
-  <div class="splash-sub">TBI School Scanner</div>
+  <div class="splash-logo">TDI <em>O</em>rchestrator</div>
+  <div class="splash-sub">AI Document Scanner</div>
   <div class="splash-bar"><div class="splash-bar-fill"></div></div>
 </div>
 
@@ -692,8 +700,8 @@ select option{background:var(--bg2)}
         </svg>
       </div>
       <div>
-        <div class="logo-text">LUM<em>I</em>AI</div>
-        <div class="logo-sub">TBI Scanner</div>
+        <div class="logo-text">TDI <em>O</em>rchestrator</div>
+        <div class="logo-sub">AI Document Scanner</div>
       </div>
     </div>
     <!-- GLOBAL NAV -->
@@ -755,7 +763,6 @@ select option{background:var(--bg2)}
           <!-- TCS Fields -->
           <div id="tcs-fields" style="display:none">
             <div class="divider"></div>
-            <div class="fg"><label class="fl">Employee ID <span class="req">*</span></label><input id="tid" type="text" inputmode="numeric" placeholder="e.g. 12345678" autocomplete="off"><div class="em" id="tid-e">Required.</div></div>
             <div class="fg"><label class="fl">Full Name <span class="req">*</span></label><input id="tnm" type="text" placeholder="Your full name"><div class="em" id="tnm-e">Required.</div></div>
             <div class="fg"><label class="fl">Location <span class="req">*</span></label><input id="tlc" type="text" placeholder="City / Office"><div class="em" id="tlc-e">Required.</div></div>
           </div>
@@ -771,7 +778,6 @@ select option{background:var(--bg2)}
           <!-- School Fields -->
           <div id="school-fields" style="display:none">
             <div class="divider"></div>
-            <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="ss" type="text" placeholder="School name"><div class="em" id="ss-e">Required.</div></div>
             <div class="fg"><label class="fl">Your Name <span class="req">*</span></label><input id="sn" type="text" placeholder="Your full name"><div class="em" id="sn-e">Required.</div></div>
             <div class="fg"><label class="fl">Designation <span class="req">*</span></label><input id="sd" type="text" placeholder="e.g. Headmaster, Teacher"><div class="em" id="sd-e">Required.</div></div>
           </div>
@@ -786,10 +792,10 @@ select option{background:var(--bg2)}
       <div style="text-align:center;padding:20px 0 8px">
         <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:20px;padding:7px 18px">
           <div style="width:6px;height:6px;border-radius:50%;background:var(--amber)"></div>
-          <div style="font-family:var(--font-display);font-size:12px;font-weight:800;color:var(--tx-hi);letter-spacing:3px">S<span style="color:var(--amber)">AI</span> · SEVA</div>
+          <div style="font-family:var(--font-display);font-size:12px;font-weight:800;color:var(--tx-hi);letter-spacing:3px">TDI <span style="color:var(--amber)">Orchestrator</span></div>
           <div style="width:6px;height:6px;border-radius:50%;background:var(--amber)"></div>
         </div>
-        <div style="font-size:9px;color:var(--tx-lo);letter-spacing:.18em;text-transform:uppercase;margin-top:6px">School Event &amp; Visit Analytics</div>
+        <div style="font-size:9px;color:var(--tx-lo);letter-spacing:.18em;text-transform:uppercase;margin-top:6px">Tata Digital India · AI Document Intelligence</div>
       </div>
     </div>
 
@@ -802,11 +808,24 @@ select option{background:var(--bg2)}
           <span class="card-badge badge-amber">Step 2</span>
         </div>
         <div class="card-body">
-          <div class="fg"><label class="fl">UDISE Code <span class="req">*</span></label><input id="udise" type="text" inputmode="numeric" placeholder="11-digit UDISE code" maxlength="11"><div class="em" id="ud-e">Required.</div></div>
           <div class="fg"><label class="fl">TBI Code <span class="req">*</span></label><input id="tbicode" type="text" placeholder="e.g. TBI-HYD-001" autocomplete="off"><div class="em" id="tbi-e">Required. Used as Student ID prefix.</div></div>
           <div class="fg"><label class="fl">School Name <span class="req">*</span></label><input id="snm" type="text" placeholder="Full school name"><div class="em" id="snm-e">Required.</div></div>
           <div class="fg"><label class="fl">District / City <span class="req">*</span></label><input id="slc" type="text" placeholder="e.g. Hyderabad, Telangana"><div class="em" id="slc-e">Required.</div></div>
           <div class="fg"><label class="fl">Essay Topic (optional)</label><input id="essayTopic" type="text" placeholder="e.g. My Dream for India 2047"></div>
+
+          <!-- LANGUAGE SELECTOR — affects OCR pipeline -->
+          <div class="fg">
+            <label class="fl">Essay Language <span style="font-size:9px;color:var(--tx-lo);text-transform:none;letter-spacing:0">(select for best OCR)</span></label>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="langChips">
+              <div class="lang-chip sel" data-lang="eng" onclick="pickLang(this,'eng')">🇬🇧 English</div>
+              <div class="lang-chip" data-lang="tel" onclick="pickLang(this,'tel')">తెలుగు Telugu</div>
+              <div class="lang-chip" data-lang="tam" onclick="pickLang(this,'tam')">தமிழ் Tamil</div>
+              <div class="lang-chip" data-lang="kan" onclick="pickLang(this,'kan')">ಕನ್ನಡ Kannada</div>
+              <div class="lang-chip" data-lang="mal" onclick="pickLang(this,'mal')">മലയാളം Malayalam</div>
+              <div class="lang-chip" data-lang="hin" onclick="pickLang(this,'hin')">हिन्दी Hindi</div>
+            </div>
+            <div style="font-size:10px;color:var(--tx-lo);margin-top:5px">⚡ First OCR load takes ~10s per language. Subsequent scans are instant.</div>
+          </div>
 
           <div class="btn-row">
             <button class="btn btn-secondary" onclick="navTo('identity')">← Back</button>
@@ -1090,7 +1109,7 @@ select option{background:var(--bg2)}
   <div class="owner-panel">
     <div class="panel-drag"></div>
     <div class="panel-hdr">
-      <div class="panel-title">LUMIAI Owner</div>
+      <div class="panel-title">TDI Orchestrator</div>
       <div class="panel-sub" id="ownerSubTitle">Enter 4-digit PIN</div>
     </div>
     <div class="panel-body">
@@ -1102,6 +1121,15 @@ select option{background:var(--bg2)}
       </div>
       <!-- Dashboard -->
       <div id="ownerDash" style="display:none">
+        <!-- API KEY CONFIG — critical for grading to work -->
+        <div style="background:rgba(232,146,58,.08);border:1px solid var(--border-amber);border-radius:12px;padding:12px 14px;margin-bottom:14px">
+          <div style="font-size:10px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">⚡ Claude API Key</div>
+          <div style="display:flex;gap:8px">
+            <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-…" style="flex:1;height:40px;font-size:13px;background:var(--bg2);border:1px solid var(--border-lit);border-radius:8px;padding:0 12px;color:var(--tx-hi);font-family:monospace;outline:none">
+            <button onclick="saveAPIKey()" style="height:40px;padding:0 14px;background:var(--amber);color:#000;border:none;border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;font-family:var(--font-body)">SAVE</button>
+          </div>
+          <div id="apiKeyStatus" style="font-size:11px;margin-top:6px;color:var(--tx-lo)">Not set — AI grading disabled</div>
+        </div>
         <div class="fg">
           <label class="fl">Current Essay Topic</label>
           <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--amber);font-family:var(--font-display)" id="currentTopic">Not set</div>
@@ -1175,10 +1203,11 @@ var STATE = {
   school: {},
   tbiCode: '',
   topic: '',
+  lang: 'eng',
   selCat: '',
-  students: [],        // [{idx, code, rank, imgs[], idbKeys[], gradeResult, rec, processing}]
-  forms: {},           // {ECF:{imgs:[],idbKeys:[],rec}, WSF:{...}, GCF:{...}}
-  sessionDocs: [],     // final session documents
+  students: [],
+  forms: {},
+  sessionDocs: [],
 };
 
 /* ════════════════════════════════
@@ -1319,7 +1348,6 @@ function s1Next() {
   var ok = true;
   if (!STATE.role) { document.getElementById('role-e').classList.add('show'); ok = false; }
   if (STATE.role === 'tcs') {
-    ok = requireField('tid', 'tid-e') && ok;
     ok = requireField('tnm', 'tnm-e') && ok;
     ok = requireField('tlc', 'tlc-e') && ok;
   }
@@ -1329,15 +1357,13 @@ function s1Next() {
     ok = requireField('am', 'am-e') && ok;
   }
   if (STATE.role === 'school') {
-    ok = requireField('ss', 'ss-e') && ok;
     ok = requireField('sn', 'sn-e') && ok;
     ok = requireField('sd', 'sd-e') && ok;
   }
   if (!ok) return;
-  // Save identity
-  if (STATE.role === 'tcs') STATE.identity = { id: getVal('tid'), name: getVal('tnm'), loc: getVal('tlc') };
+  if (STATE.role === 'tcs') STATE.identity = { name: getVal('tnm'), loc: getVal('tlc') };
   if (STATE.role === 'agency') STATE.identity = { agency: getVal('aa'), name: getVal('an'), mobile: getVal('am') };
-  if (STATE.role === 'school') STATE.identity = { school: getVal('ss'), name: getVal('sn'), desig: getVal('sd') };
+  if (STATE.role === 'school') STATE.identity = { name: getVal('sn'), desig: getVal('sd') };
   navTo('school');
 }
 
@@ -1345,19 +1371,18 @@ function s1Next() {
    S2 — SCHOOL INFO
 ═══════════════════════════════ */
 function s2Next() {
-  var ok = requireField('udise', 'ud-e') &&
-           requireField('tbicode', 'tbi-e') &&
+  var ok = requireField('tbicode', 'tbi-e') &&
            requireField('snm', 'snm-e') &&
            requireField('slc', 'slc-e');
   if (!ok) return;
   STATE.school = {
-    udise: getVal('udise'),
     tbiCode: getVal('tbicode'),
     name: getVal('snm'),
     location: getVal('slc')
   };
   STATE.tbiCode = getVal('tbicode');
   STATE.topic = getVal('essayTopic') || getLSTopic();
+  STATE.lang = _selectedLang;
   if (STATE.topic) saveLSTopic(STATE.topic);
   navTo('scan');
 }
@@ -1795,8 +1820,42 @@ function enhanceImage(dataUrl) {
 }
 
 /* ════════════════════════════════
-   PREVIEW ENGINE
+   DOCUMENT TYPE VALIDATION
+   If OCR text doesn't match expected form type → reject with error
+   Keyword fingerprints per form type
 ═══════════════════════════════ */
+var DOC_FINGERPRINTS = {
+  ECF: ['event completion', 'ecf', 'completion form', 'event details', 'event date', 'venue'],
+  WSF: ['winner shortlist', 'wsf', 'shortlisting', 'winner name', 'rank', '1st winner', 'runner up', 'shortlisted'],
+  GCF: ['gift', 'gcf', 'distribution', 'received', 'signature', 'gifts confirmation'],
+  Junior: ['junior', 'essay', 'student name', 'class', 'school name'],
+  Senior: ['senior', 'essay', 'student name', 'class', 'school name']
+};
+
+/* Returns {ok: bool, detected: string|null, expected: string} */
+function validateDocType(ocrText, expectedCat) {
+  if (!ocrText || ocrText.length < 20) return { ok: true }; // can't validate thin text → pass
+  var lower = ocrText.toLowerCase();
+  var expected = DOC_FINGERPRINTS[expectedCat] || [];
+
+  // Check if expected keywords present
+  var expectedHits = expected.filter(function(kw){ return lower.indexOf(kw) >= 0; }).length;
+  var expectedMatch = expectedHits >= 1; // at least one keyword match
+
+  // Check if OTHER form type keywords dominate
+  var otherCats = Object.keys(DOC_FINGERPRINTS).filter(function(c){ return c !== expectedCat; });
+  var bestOther = null, bestOtherHits = 0;
+  otherCats.forEach(function(cat) {
+    var hits = DOC_FINGERPRINTS[cat].filter(function(kw){ return lower.indexOf(kw) >= 0; }).length;
+    if (hits > bestOtherHits) { bestOtherHits = hits; bestOther = cat; }
+  });
+
+  // Wrong doc: other cat has hits AND expected has none
+  if (!expectedMatch && bestOtherHits >= 1 && bestOther) {
+    return { ok: false, detected: bestOther, expected: expectedCat };
+  }
+  return { ok: true };
+}
 var PREV = { ocrText: '', rotationDeg: 0 };
 
 function showPreview(url) {
@@ -1825,19 +1884,37 @@ function showPreview(url) {
       document.getElementById('prevErrMsg').textContent = 'Image too dark or blurry.\nPlease retake in better lighting.';
       document.getElementById('prevErr').classList.add('show');
       if (navigator.vibrate) navigator.vibrate([120, 60, 120]);
-      // Pop last captured page
       CAM.capturedPages.pop();
       CAM.capturedKeys.pop();
-    } else {
-      PREV.ocrText = text;
-      document.getElementById('prevPill').className = 'prev-pill ok';
-      document.getElementById('prevPill').textContent = '✓ Scanned OK';
-      document.getElementById('prevSubmitRow').style.display = 'flex';
-      document.getElementById('prevSaveBtn').textContent = CAM.mode === 'form' ? 'Save Form ✓' : 'Save Essay ✓';
-      // Start background AI grading for essays immediately
-      if (CAM.mode === 'student' && CAM.targetIdx >= 0) {
-        startBackgroundGrading(CAM.targetIdx, text);
-      }
+      return;
+    }
+
+    /* ── DOCUMENT TYPE VALIDATION ── */
+    var expectedCat = STATE.selCat;
+    var validation = validateDocType(text, expectedCat);
+    if (!validation.ok) {
+      document.getElementById('prevPill').className = 'prev-pill fail';
+      document.getElementById('prevPill').textContent = 'Wrong Document';
+      document.getElementById('prevErrTitle').textContent = '⚠ Wrong Form Scanned';
+      document.getElementById('prevErrMsg').textContent =
+        'Expected: ' + expectedCat + '\n' +
+        'Detected: ' + (validation.detected || 'unknown') + '\n\n' +
+        'Please scan the correct document.';
+      document.getElementById('prevErr').classList.add('show');
+      if (navigator.vibrate) navigator.vibrate([200, 80, 200, 80, 200]);
+      CAM.capturedPages.pop();
+      CAM.capturedKeys.pop();
+      return;
+    }
+
+    PREV.ocrText = text;
+    document.getElementById('prevPill').className = 'prev-pill ok';
+    document.getElementById('prevPill').textContent = '✓ Scanned OK';
+    document.getElementById('prevSubmitRow').style.display = 'flex';
+    document.getElementById('prevSaveBtn').textContent = CAM.mode === 'form' ? 'Save Form ✓' : 'Save Essay ✓';
+    // Start background AI grading for essays immediately
+    if (CAM.mode === 'student' && CAM.targetIdx >= 0) {
+      startBackgroundGrading(CAM.targetIdx, text);
     }
   });
 }
@@ -1942,11 +2019,18 @@ function startBackgroundGrading(idx, ocrText) {
     })
     .catch(function(err) {
       s.processing = false;
-      s.gradeResult = fallbackGrade(ocrText);
+      var msg = (err && err.message) || '';
+      if (msg === 'NO_API_KEY') {
+        showToast('⚠ Set API key in Owner panel to enable AI grading');
+        s.gradeResult = null; // no fallback — prompt owner to fix
+      } else {
+        s.gradeResult = fallbackGrade(ocrText);
+        showToast('API error — using offline estimate. Check Owner panel.');
+        console.error('[TDI] Grading error:', msg);
+      }
       buildStudentRecord(idx);
       renderStudentRows();
       refreshHub();
-      showToast('Offline — using estimated grade');
     });
 }
 
@@ -1970,24 +2054,49 @@ function buildGradingPrompt(s, topic, ocrText) {
     '],"total":38,"summary":"warm 1-sentence evaluation"}';
 }
 
+/* ── API KEY: stored in localStorage, set via Owner panel ── */
+function getAPIKey() { return localStorage.getItem('tdi_api_key') || ''; }
+function setAPIKey(k) { localStorage.setItem('tdi_api_key', k.trim()); }
+
 function callClaudeAPI(prompt) {
+  var apiKey = getAPIKey();
+  if (!apiKey) return Promise.reject(new Error('NO_API_KEY'));
+
+  /* ROOT CAUSE FIXED:
+     1. Added x-api-key header (required — was missing, caused 401/403)
+     2. Added anthropic-version header (required — was missing, caused 400)
+     3. Added anthropic-dangerous-request-in-browser header (required for browser CORS)
+     4. Model string corrected to current production ID
+     5. Error body surfaced for debugging */
   return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-request-in-browser': 'true'
+    },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 1000,
       messages: [{ role: 'user', content: prompt }]
     })
   })
-  .then(function(r) { return r.json(); })
+  .then(function(r) {
+    if (!r.ok) {
+      return r.text().then(function(body) {
+        throw new Error('API_HTTP_' + r.status + ': ' + body.slice(0, 200));
+      });
+    }
+    return r.json();
+  })
   .then(function(data) {
+    if (data.error) throw new Error('API_ERR: ' + (data.error.message || JSON.stringify(data.error)));
     var txt = '';
     if (data.content) data.content.forEach(function(b) { if (b.type === 'text') txt += b.text; });
     var m = txt.match(/\{[\s\S]*\}/);
-    if (!m) throw new Error('no json');
+    if (!m) throw new Error('NO_JSON_IN_RESPONSE');
     var res = JSON.parse(m[0]);
-    // Sanitize scores
     res.params.forEach(function(p) { p.score = Math.min(10, Math.max(0, parseInt(p.score) || 7)); });
     var tot = res.params.reduce(function(s, p) { return s + p.score; }, 0);
     res.total = tot;
@@ -2022,10 +2131,10 @@ function buildStudentRecord(idx) {
     docType: s.cat + ' — ' + s.rank,
     studentCode: s.code,
     school: STATE.school.name || '',
-    udise: STATE.school.udise || '',
     tbiCode: STATE.tbiCode,
     by: getWhoStr(),
     topic: STATE.topic || getLSTopic(),
+    lang: STATE.lang || 'eng',
     idbKeys: s.idbKeys
   };
   if (s.gradeResult) {
@@ -2045,9 +2154,9 @@ function buildFormRecord(cat) {
     ts: new Date().toISOString(),
     docType: cat,
     school: STATE.school.name || '',
-    udise: STATE.school.udise || '',
     tbiCode: STATE.tbiCode,
     by: getWhoStr(),
+    lang: STATE.lang || 'eng',
     idbKeys: f.idbKeys
   };
   f.rec = rec;
@@ -2184,7 +2293,7 @@ function showResultScreen(s) {
   }
   // Metadata
   h += '<div class="card"><div class="card-body">';
-  var mrows = [['Code', s.code], ['Category', s.cat], ['Rank', s.rank], ['School', STATE.school.name || '—'], ['UDISE', STATE.school.udise || '—'], ['TBI Code', STATE.tbiCode || '—']];
+  var mrows = [['Code', s.code], ['Category', s.cat], ['Rank', s.rank], ['School', STATE.school.name || '—'], ['TBI Code', STATE.tbiCode || '—'], ['Language', (STATE.lang || 'eng').toUpperCase()]];
   mrows.forEach(function(r) {
     h += '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border)">';
     h += '<span style="font-size:12px;color:var(--tx-lo)">' + r[0] + '</span>';
@@ -2325,59 +2434,163 @@ function exitDiscard() {
 }
 
 /* ════════════════════════════════
-   OCR
+   LANGUAGE SELECTION
+   Maps chip lang codes → Tesseract lang strings
+   Tesseract lang data pulled from CDN per language
 ═══════════════════════════════ */
-var _ocrWorker = null;
-async function initOCR() {
-  if (_ocrWorker) return;
+var LANG_MAP = {
+  eng: 'eng',
+  tel: 'tel',          // Telugu
+  tam: 'tam',          // Tamil
+  kan: 'kan',          // Kannada
+  mal: 'mal',          // Malayalam
+  hin: 'hin'           // Hindi (Devanagari)
+};
+var _selectedLang = 'eng'; // default
+var _ocrWorkers = {};       // cache per language
+
+function pickLang(el, lang) {
+  _selectedLang = lang;
+  document.querySelectorAll('.lang-chip').forEach(function(c){ c.classList.remove('sel'); });
+  el.classList.add('sel');
+  STATE.lang = lang;
+  // Pre-warm OCR worker for selected language in background
+  setTimeout(function(){ initOCR(lang); }, 200);
+}
+
+/* ════════════════════════════════
+   OCR ENGINE — MULTI-LANGUAGE
+   Strategy:
+   1. Use selected language worker (primary)
+   2. Always also run English pass (secondary) for form fields, codes
+   3. Merge: longest text wins, unless primary is very short (fallback gracefully)
+   Tesseract v5 langPath pulls from projectnaptha CDN which has all Indian scripts
+═══════════════════════════════ */
+async function initOCR(lang) {
+  lang = lang || _selectedLang || 'eng';
+  if (_ocrWorkers[lang]) return _ocrWorkers[lang];
   try {
-    _ocrWorker = await Tesseract.createWorker('eng', 1, {
+    var worker = await Tesseract.createWorker(lang, 1, {
       logger: function() {},
       workerPath: 'https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/worker.min.js',
       langPath: 'https://tessdata.projectnaptha.com/4.0.0',
       corePath: 'https://cdn.jsdelivr.net/npm/tesseract.js-core@5/tesseract-core-simd.wasm.js'
     });
-  } catch(e) { _ocrWorker = null; }
+    _ocrWorkers[lang] = worker;
+    return worker;
+  } catch(e) {
+    console.warn('[TDI] OCR worker init failed for', lang, e);
+    return null;
+  }
 }
 
 function runOCR(url) {
-  return initOCR().then(function() {
-    if (!_ocrWorker) return Promise.resolve('ok_no_ocr');
-    return _ocrWorker.recognize(url).then(function(r) {
-      var txt = (r.data.text || '').trim();
-      return txt.replace(/\s/g, '').length < 5 ? '__unreadable__' : txt;
-    }).catch(function() { return 'ok_no_ocr'; });
+  var lang = _selectedLang || 'eng';
+  var tasks = [_runOCRLang(url, lang)];
+  // Secondary English pass only if primary isn't English
+  if (lang !== 'eng') tasks.push(_runOCRLang(url, 'eng'));
+
+  return Promise.all(tasks).then(function(results) {
+    // Pick the most content-rich result
+    var best = results.reduce(function(a, b) {
+      return ((b || '').replace(/\s/g, '').length > (a || '').replace(/\s/g, '').length) ? b : a;
+    }, '');
+    if (!best || best.replace(/\s/g, '').length < 5) return '__unreadable__';
+    return best;
+  }).catch(function() { return 'ok_no_ocr'; });
+}
+
+function _runOCRLang(url, lang) {
+  return initOCR(lang).then(function(worker) {
+    if (!worker) return '';
+    return worker.recognize(url).then(function(r) {
+      return (r.data.text || '').trim();
+    }).catch(function() { return ''; });
   });
 }
 
 /* ════════════════════════════════
    OWNER PANEL
 ═══════════════════════════════ */
+/* ════════════════════════════════
+   OWNER PANEL — SECURE PIN LOGIN
+   Lockout: 3 wrong attempts → 30s cooldown
+═══════════════════════════════ */
+var _pinAttempts = 0;
+var _pinLocked = false;
+var _pinLockTimer = null;
+
 function openOwner() {
   document.getElementById('ownerSheet').classList.add('open');
   document.getElementById('pinSection').style.display = 'flex';
   document.getElementById('ownerDash').style.display = 'none';
-  document.getElementById('ownerPin').value = '';
   document.getElementById('pin-e').classList.remove('show');
+  document.getElementById('pin-e').textContent = 'Incorrect PIN.';
+  var pinEl = document.getElementById('ownerPin');
+  pinEl.value = '';
+  if (_pinLocked) {
+    pinEl.disabled = true;
+    document.getElementById('pin-e').textContent = 'Too many attempts. Wait 30s.';
+    document.getElementById('pin-e').classList.add('show');
+  } else {
+    pinEl.disabled = false;
+    setTimeout(function(){ pinEl.focus(); }, 300);
+  }
 }
 function closeOwner() { document.getElementById('ownerSheet').classList.remove('open'); }
+
 function checkPin() {
-  var p = document.getElementById('ownerPin').value.trim();
+  if (_pinLocked) { showToast('Locked — wait 30 seconds'); return; }
+  var p = (document.getElementById('ownerPin').value || '').trim();
   if (p === OWNER_PIN) {
+    _pinAttempts = 0;
     document.getElementById('pinSection').style.display = 'none';
     document.getElementById('ownerDash').style.display = 'block';
     document.getElementById('ownerSubTitle').textContent = 'Owner Dashboard';
     loadDash();
   } else {
-    document.getElementById('pin-e').classList.add('show');
+    _pinAttempts++;
     document.getElementById('ownerPin').value = '';
+    if (_pinAttempts >= 3) {
+      _pinLocked = true;
+      document.getElementById('pin-e').textContent = 'Too many attempts. Locked for 30s.';
+      document.getElementById('ownerPin').disabled = true;
+      _pinLockTimer = setTimeout(function() {
+        _pinLocked = false;
+        _pinAttempts = 0;
+        document.getElementById('ownerPin').disabled = false;
+        document.getElementById('pin-e').textContent = 'Incorrect PIN.';
+        document.getElementById('pin-e').classList.remove('show');
+      }, 30000);
+    }
+    document.getElementById('pin-e').classList.add('show');
   }
 }
 document.getElementById('ownerPin').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkPin(); });
 
+function saveAPIKey() {
+  var k = document.getElementById('apiKeyInput').value.trim();
+  if (!k.startsWith('sk-ant-')) { showToast('Invalid key — must start with sk-ant-'); return; }
+  setAPIKey(k);
+  document.getElementById('apiKeyStatus').textContent = '✓ Key saved (' + k.slice(0,14) + '…)';
+  document.getElementById('apiKeyStatus').style.color = 'var(--jade)';
+  document.getElementById('apiKeyInput').value = '';
+  showToast('API key saved — AI grading enabled');
+}
+
 function loadDash() {
   var t = getLSTopic();
   document.getElementById('currentTopic').textContent = t || '(Not set)';
+  // Populate API key status
+  var k = getAPIKey();
+  var statusEl = document.getElementById('apiKeyStatus');
+  if (k) {
+    statusEl.textContent = '✓ Key set (' + k.slice(0,14) + '…) — AI grading enabled';
+    statusEl.style.color = 'var(--jade)';
+  } else {
+    statusEl.textContent = '⚠ Not set — AI grading disabled. Enter key above.';
+    statusEl.style.color = 'var(--crimson)';
+  }
   var all = getLSAllScans();
   var graded = all.filter(function(s){ return s.score !== undefined; });
   var schools = [];
@@ -2406,9 +2619,9 @@ function saveTopic() {
 function exportCSV() {
   var all = getLSAllScans();
   if (!all.length) { showToast('No data to export'); return; }
-  var h = 'Timestamp,DocType,StudentCode,TBICode,School,UDISE,By,Topic,Score\n';
+  var h = 'Timestamp,DocType,StudentCode,TBICode,School,By,Topic,Language,Score\n';
   var rows = all.map(function(s) {
-    return [s.ts, s.docType, s.studentCode||'', s.tbiCode||'', s.school||'', s.udise||'', s.by||'', s.topic||'', s.score||'']
+    return [s.ts, s.docType, s.studentCode||'', s.tbiCode||'', s.school||'', s.by||'', s.topic||'', s.lang||'', s.score||'']
       .map(function(v){ return '"' + (v+'').replace(/"/g,'""') + '"'; }).join(',');
   }).join('\n');
   var blob = new Blob([h + rows], { type: 'text/csv' });
@@ -2478,8 +2691,8 @@ document.addEventListener('touchstart', function() { initAudio(); }, { once: tru
 // Init IndexedDB early
 initIDB();
 
-// Load OCR in background
-setTimeout(initOCR, 1000);
+// Load OCR in background (English default)
+setTimeout(function(){ initOCR('eng'); }, 1000);
 
 // Check online state
 checkOnline();
@@ -2496,8 +2709,8 @@ buildProg(1);
 
 function buildProg(n) { /* legacy - now handled by updateNavUI */ }
 
-console.log('%c🔆 LUMIAI Scanner Ready', 'font-family:monospace;font-size:16px;color:#E8923A;font-weight:bold');
-console.log('%cVersion: Production Demo Build · IndexedDB + Claude AI Grading', 'font-family:monospace;font-size:11px;color:#9AA3C2');
+console.log('%c🔆 TDI Orchestrator Ready', 'font-family:monospace;font-size:16px;color:#E8923A;font-weight:bold');
+console.log('%cVersion: Production Demo Build · IndexedDB + Claude AI Grading · TDI', 'font-family:monospace;font-size:11px;color:#9AA3C2');
 </script>
 </body>
 </html>
