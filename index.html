@@ -723,6 +723,16 @@ select option{background:var(--bg2)}
         <button class="btn btn-primary" style="max-width:200px;height:44px" onclick="checkPin()">Unlock</button>
       </div>
       <div id="ownerDash" style="display:none">
+        <!-- API KEY -->
+        <div class="fg">
+          <label class="fl">Anthropic API Key <span class="req">*</span></label>
+          <div style="display:flex;gap:8px">
+            <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-…" autocomplete="off" style="flex:1;font-size:13px;letter-spacing:.05em">
+            <button onclick="saveApiKey()" style="height:46px;padding:0 14px;border-radius:10px;border:none;background:var(--amber);color:#000;font-weight:700;font-size:12px;cursor:pointer;flex-shrink:0;font-family:var(--font-display)">SAVE</button>
+          </div>
+          <div id="apiKeyStatus" style="font-size:11px;margin-top:5px;color:var(--tx-lo)">Not set — AI grading will use fallback</div>
+        </div>
+        <div class="divider"></div>
         <div class="fg">
           <label class="fl">Current Essay Topic</label>
           <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;font-size:14px;font-weight:600;color:var(--amber);font-family:var(--font-display)" id="currentTopic">Not set</div>
@@ -1715,6 +1725,14 @@ function _doSaveScan() {
 function startBackgroundGrading(idx, ocrText) {
   var s = STATE.students[idx];
   if (!s) return;
+  if (!getApiKey()) {
+    s.gradeResult = fallbackGrade(ocrText);
+    s.processing = false;
+    buildStudentRecord(idx);
+    renderStudentRows(); refreshHub();
+    showToast('⚠ No API key — tap 👤 Owner to add one');
+    return;
+  }
   if (!navigator.onLine) {
     s.gradeResult = fallbackGrade(ocrText);
     s.processing = false;
@@ -1777,11 +1795,16 @@ function buildGradingPrompt(s, topic, ocrText) {
     '],"total":38,"summary":"One warm encouraging sentence."}';
 }
 
+function getApiKey() { return localStorage.getItem('lumiai_apikey') || ''; }
+
 function callClaudeAPI(prompt) {
+  var key = getApiKey();
+  if (!key) return Promise.reject(new Error('No API key set — open Owner panel (👤) and enter your Anthropic API key.'));
   return fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'x-api-key': key,
       'anthropic-version': '2023-06-01',
       'anthropic-dangerous-direct-browser-access': 'true'
     },
@@ -1799,7 +1822,6 @@ function callClaudeAPI(prompt) {
     if (data.error) throw new Error(data.error.message || JSON.stringify(data.error));
     var txt = '';
     if (data.content) data.content.forEach(function(b){ if(b.type==='text') txt += b.text; });
-    // Strip markdown fences if any
     txt = txt.replace(/```json\s*/gi,'').replace(/```\s*/g,'').trim();
     var m = txt.match(/\{[\s\S]*\}/);
     if (!m) throw new Error('No JSON in response: ' + txt.substring(0,200));
@@ -2058,9 +2080,34 @@ function checkPin() {
 }
 document.getElementById('ownerPin').addEventListener('keydown', function(e){ if(e.key==='Enter') checkPin(); });
 
+function saveApiKey() {
+  var k = document.getElementById('apiKeyInput').value.trim();
+  if (!k) { showToast('Paste your API key first'); return; }
+  if (!k.startsWith('sk-ant-')) { showToast('Key should start with sk-ant-…'); return; }
+  localStorage.setItem('lumiai_apikey', k);
+  document.getElementById('apiKeyInput').value = '';
+  updateApiKeyStatus();
+  showToast('✓ API key saved — AI grading enabled');
+}
+function updateApiKeyStatus() {
+  var el = document.getElementById('apiKeyStatus'); if (!el) return;
+  var k = getApiKey();
+  if (k) {
+    el.style.color = 'var(--jade)';
+    el.textContent = '✓ Key set: ' + k.substring(0,12) + '…' + k.slice(-4) + ' — AI grading active';
+  } else {
+    el.style.color = 'var(--crimson)';
+    el.textContent = '✗ Not set — AI grading will use fallback estimates';
+  }
+}
+
 function loadDash() {
   var t = getLSTopic();
   document.getElementById('currentTopic').textContent = t||'(Not set)';
+  updateApiKeyStatus();
+  // Pre-fill masked key hint
+  var inp = document.getElementById('apiKeyInput');
+  if (inp) inp.placeholder = getApiKey() ? 'Key saved — paste new to replace' : 'sk-ant-api03-…';
   var all = getLSAllScans();
   var graded = all.filter(function(s){ return s.score!==undefined; });
   var schools = [];
